@@ -1,0 +1,44 @@
+{
+  "type": "wordpress-plugin",
+  "repositories": [
+    
+  ],
+  "require": {
+    "tgmpa/tgm-plugin-activation": "^2.6",
+    "composer/installers": "^1",
+    "light/composer-ignore-plugin": "^1.0"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "extra": {
+    "installer-paths": {
+    },
+    "light-ignore-plugin": {
+      "tgmpa/tgm-plugin-activation": [
+        ".editorconfig",
+        ".scrutinizer.yml",
+        ".travis.yml",
+        "*.md",
+        "*.json",
+        "*.xml",
+        "example.php",
+        "languages",
+        "plugins"
+      ],
+      "composer": [
+        "LICENSE"
+      ]
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "MBWPAI\\": "src/"
+    },
+    "files": [
+      "src/helper/plugins.php",
+      "src/helper/functions.php",
+
+      "vendor/tgmpa/tgm-plugin-activation/class-tgm-plugin-activation.php"
+    ]
+  }
+}
