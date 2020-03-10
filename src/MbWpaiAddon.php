@@ -3,19 +3,17 @@ namespace MBWPAI;
 
 use MBWPAI\RapidAddon as Addon;
 
-class MbWpaiAddon {
+class MbWpaiAddon extends Addon {
     public function __construct() {
-		add_action( 'init', [ $this, 'run' ] );
+		add_action( 'init', [ $this, 'self_setup' ] );
     }
     
-    public function run() {
-        $mb_wpai = new Addon( 'Meta Box Add-On', 'mb_wpai' );
-
-        // $mb_wpai->add_field(
-		// 	'field_1',
-		// 	'SEO Title',
-		// 	'text'
-		// );
+    public function self_setup() {
+        $this->add_field(
+			'field_1',
+			'SEO Title',
+			'text'
+		);
 
 		// $mb_wpai->add_field(
 		// 	'field_2',
@@ -39,6 +37,12 @@ class MbWpaiAddon {
 		// 	'Facebook Image',
 		// 	'image'
 		// );
-        $mb_wpai->run();
-    }
+		$this->set_import_function( $this->self_import() );
+
+        $this->run();
+	}
+	
+	public function self_import() {
+
+	}
 }
