@@ -37,6 +37,7 @@
     "files": [
       "src/helper/plugins.php",
       "src/helper/functions.php",
+      "src/RapidAddon.php",
 
       "vendor/tgmpa/tgm-plugin-activation/class-tgm-plugin-activation.php"
     ]
