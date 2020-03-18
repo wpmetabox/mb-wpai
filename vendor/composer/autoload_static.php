@@ -10,6 +10,7 @@ class ComposerStaticInit954ee4d752f1358901de37917a5c3035
         'a5f882d89ab791a139cd2d37e50cdd80' => __DIR__ . '/..' . '/tgmpa/tgm-plugin-activation/class-tgm-plugin-activation.php',
         'c6e8da6a4c2c43028f96fa8eaf89d6be' => __DIR__ . '/../..' . '/src/helper/plugins.php',
         '0812bb316757729740644ec5e29385b3' => __DIR__ . '/../..' . '/src/helper/functions.php',
+        '9bc32c184b1ad419e39fd781c6818068' => __DIR__ . '/../..' . '/src/MbWpaiAddon.php',
         '422cbfa39173775d4779988b3daadddf' => __DIR__ . '/..' . '/tgmpa/tgm-plugin-activation/class-tgm-plugin-activation.php',
     );
 
