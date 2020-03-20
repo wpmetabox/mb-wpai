@@ -23,9 +23,9 @@ $mb_wpai = new RapidAddon('Meta Box Add-on', 'mb_wpai');
 $fields = [];
 $mb_objects = [];
 
-$fields_1 = [ 'text', 'textarea' ];
-$fields_2 = [ 'image', 'single_image', 'image_select', 'image_upload', 'image_advanced' ];
-$fields_3 = [ 'group' ];
+$field_text = [ 'text', 'textarea', 'date', 'location', 'radio', 'checkbox' ];
+$field_image = [ 'image', 'single_image', 'image_select', 'image_upload', 'image_advanced' ];
+$field_group = [ 'group' ];
 
 add_action( 'init', 'get_mb_fields', 99);
 
@@ -59,9 +59,8 @@ function get_mb_fields( $custom_type ) {
 
 function generate_fields( $mbs, $obj ) {
     global $fields;
-    global $fields_1;
-    global $fields_2;
-    global $fields_3;
+    global $field_image;
+    global $field_group;
     // print("<pre>".print_r($fields,true)."</pre>");
 
     // $obj->add_options( 
@@ -74,10 +73,8 @@ function generate_fields( $mbs, $obj ) {
 	// );
 
     foreach( $fields as $field ) {
-        if ( in_array( $field['type'], $fields_3 ) ) {
+        if ( in_array( $field['type'], $field_group ) ) {
             // print("<pre>".print_r($field,true)."</pre>");
-            // $content_data_start = 'a:' . count( $field['fields'] ) . '{';
-            // var_dump( $content_data_start );
 			$child_fields = [];
 
 			foreach( $field['fields'] as $child_field ) {
@@ -109,9 +106,8 @@ function execute( $mbs ) {
 function mb_wpai_import( $post_id, $data, $import_options ) {
     global $mb_wpai;
     global $fields;
-    global $fields_1;
-    global $fields_2;
-    global $fields_3;
+    global $field_image;
+    global $field_group;
     global $wpdb;
 
     $table = $wpdb->prefix . 'postmeta';
@@ -125,45 +121,69 @@ function mb_wpai_import( $post_id, $data, $import_options ) {
     foreach( $fields as $field ) {
         $data_lines = explode( "\r\n", $data[ $field['id'] ] );
 
-        if ( in_array( $field['type'], $fields_2 ) ) { // image
-            foreach ( $data_lines as $d ) {
-				$wpdb->insert( $table, [
-					'post_id'    => $post_id,
-					'meta_key'   => $field['id'],
-					'meta_value' => attachment_url_to_postid( $d ),
-				] );
-			}
-        }
-        elseif ( in_array( $field['type'], $fields_3 ) ) { // group
-            $content_data = 'a:' . count( $field['fields'] ) . ':{';
+        mb_import_text();
 
-            foreach ( $field['fields'] as $field_child ) {
-                $content_data .= 's:' . strlen( $field_child['id'] ) . ':"' . $field_child['id'] . '"' . ';s:' . strlen( $data[ $field_child['id'] ] ) . ':"' . $data[ $field_child['id'] ] . '"' . ';';
-            }
+        mb_import_image();
 
-            $content_data .= '}';
-
-            $wpdb->insert( $table, [
-                'post_id'    => $post_id,
-                'meta_key'   => $field['id'],
-                'meta_value' => $content_data,
-            ] );
-        }
-        else {
-            foreach ( $data_lines as $d ) { // remain fields
-				$wpdb->insert( $table, [
-					'post_id'    => $post_id,
-					'meta_key'   => $field['id'],
-					'meta_value' => $d,
-				] );
-            }
-		}
-		// foreach ( $data_lines as $d ) {
-		// 	$wpdb->insert( $table, [
-		// 		'post_id'    => $post_id,
-		// 		'meta_key'   => $field['id'],
-		// 		'meta_value' => $d,
-		// 	] );
-		// }
+        mb_import_group();
     }
+}
+
+// import image
+function mb_import_image( $type, $post_id, $data, $field, $data_lines ) {
+    global $field_image;
+    global $fields;
+
+    if ( ! in_array( $type, $field_image ) ) {
+        return;
+    }
+
+    foreach ( $data_lines as $d ) {
+        $wpdb->insert( $table, [
+            'post_id'    => $post_id,
+            'meta_key'   => $field['id'],
+            'meta_value' => attachment_url_to_postid( $d ),
+        ] );
+    }
+}
+
+// import text
+function mb_import_text( $type, $post_id, $data, $field, $data_lines ) {
+    global $field_text;
+
+    if ( ! in_array( $type, $field_text ) ) {
+        return;
+    }
+
+    foreach ( $data_lines as $d ) {
+        $wpdb->insert( $table, [
+            'post_id'    => $post_id,
+            'meta_key'   => $field['id'],
+            'meta_value' => $d,
+        ] );
+    }
+}
+
+// import group
+function mb_import_group( $type, $post_id, $data, $field, $data_lines ) {
+    global $field_group;
+    global $fields;
+
+    if ( ! in_array( $type, $field_group ) ) {
+        return;
+    }
+
+    $content_data = 'a:' . count( $field['fields'] ) . ':{';
+
+    foreach ( $field['fields'] as $field_child ) {
+        $content_data .= 's:' . strlen( $field_child['id'] ) . ':"' . $field_child['id'] . '"' . ';s:' . strlen( $data[ $field_child['id'] ] ) . ':"' . $data[ $field_child['id'] ] . '"' . ';';
+    }
+
+    $content_data .= '}';
+
+    $wpdb->insert( $table, [
+        'post_id'    => $post_id,
+        'meta_key'   => $field['id'],
+        'meta_value' => $content_data,
+    ] );
 }
