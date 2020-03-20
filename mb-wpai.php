@@ -24,8 +24,8 @@ $fields = [];
 $mb_objects = [];
 
 $fields_1 = [ 'text', 'textarea' ];
-$fields_2 = [ 'image' ];
-$fields_3 = [ 'radio' ];
+$fields_2 = [ 'image', 'single_image', 'image_select', 'image_upload', 'image_advanced' ];
+$fields_3 = [ 'group' ];
 
 add_action( 'init', 'get_mb_fields', 99);
 
@@ -33,7 +33,7 @@ function get_mb_fields( $custom_type ) {
     global $mb_objects;
     global $fields;
 
-    $custom_type = 'customer';
+    $custom_type = 'fish';
 
     $meta_box_registry = rwmb_get_registry( 'meta_box' );
 
@@ -59,9 +59,9 @@ function get_mb_fields( $custom_type ) {
 
 function generate_fields( $mbs, $obj ) {
     global $fields;
-    // global $fields_1;
-    // global $fields_2;
-    // global $fields_3;   
+    global $fields_1;
+    global $fields_2;
+    global $fields_3;
     // print("<pre>".print_r($fields,true)."</pre>");
 
     // $obj->add_options( 
@@ -74,12 +74,25 @@ function generate_fields( $mbs, $obj ) {
 	// );
 
     foreach( $fields as $field ) {
-        // if ( in_array( $field['type'], $fields_2 ) ) {
-        //     $obj->import_images( $field['id'], $field['name'] );
-        // } elseif ( in_array( $field['type'], $fields_1 ) ) {
-        //     $obj->add_field( $field['id'], $field['name'], $field['type'] );
-        // }
-        $obj->add_field( $field['id'], $field['name'], 'textarea', null, 'Enter each value in a new line' );
+        if ( in_array( $field['type'], $fields_3 ) ) {
+            // print("<pre>".print_r($field,true)."</pre>");
+            // $content_data_start = 'a:' . count( $field['fields'] ) . '{';
+            // var_dump( $content_data_start );
+			$child_fields = [];
+
+			foreach( $field['fields'] as $child_field ) {
+				array_push( $child_fields, $obj->add_field( $child_field['id'], $child_field['name'], 'textarea', null, 'Enter each value in a new line' ) );
+			}
+
+            $obj->add_options( 
+				$obj->add_field( $field['id'], $field['name'], 'text' ),
+				'( Open )',
+				$child_fields
+			);
+        } else {
+            $obj->add_field( $field['id'], $field['name'], 'textarea', null, 'Enter each value in a new line' );
+        }
+        
     }
 }
 
@@ -110,26 +123,47 @@ function mb_wpai_import( $post_id, $data, $import_options ) {
     // ] );
 
     foreach( $fields as $field ) {
-        // if ( in_array( $field['type'], $fields_1 ) || in_array( $field['type'], $fields_3 ) ) {
-        //     update_post_meta( $post_id, $field['id'], $data[ $field['id'] ] );
-        // }
-        // elseif ( in_array( $field['type'], $fields_2 ) ) {
-        //     foreach ( $images as $image ) {
-        //         $wpdb->insert( $table, [
-        //             'post_id'    => $post_id,
-        //             'meta_key'   => $field['id'],
-        //             'meta_value' => $data[ $field['id'] ],
-        //         ] );
-        //     }
-        // }
-        
         $data_lines = explode( "\r\n", $data[ $field['id'] ] );
-        foreach ( $data_lines as $d ) {
+
+        if ( in_array( $field['type'], $fields_2 ) ) { // image
+            foreach ( $data_lines as $d ) {
+				$wpdb->insert( $table, [
+					'post_id'    => $post_id,
+					'meta_key'   => $field['id'],
+					'meta_value' => attachment_url_to_postid( $d ),
+				] );
+			}
+        }
+        elseif ( in_array( $field['type'], $fields_3 ) ) { // group
+            $content_data = 'a:' . count( $field['fields'] ) . ':{';
+
+            foreach ( $field['fields'] as $field_child ) {
+                $content_data .= 's:' . strlen( $field_child['id'] ) . ':"' . $field_child['id'] . '"' . ';s:' . strlen( $data[ $field_child['id'] ] ) . ':"' . $data[ $field_child['id'] ] . '"' . ';';
+            }
+
+            $content_data .= '}';
+
             $wpdb->insert( $table, [
                 'post_id'    => $post_id,
                 'meta_key'   => $field['id'],
-                'meta_value' => $d,
+                'meta_value' => $content_data,
             ] );
         }
+        else {
+            foreach ( $data_lines as $d ) { // remain fields
+				$wpdb->insert( $table, [
+					'post_id'    => $post_id,
+					'meta_key'   => $field['id'],
+					'meta_value' => $d,
+				] );
+            }
+		}
+		// foreach ( $data_lines as $d ) {
+		// 	$wpdb->insert( $table, [
+		// 		'post_id'    => $post_id,
+		// 		'meta_key'   => $field['id'],
+		// 		'meta_value' => $d,
+		// 	] );
+		// }
     }
 }
