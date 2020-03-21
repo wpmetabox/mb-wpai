@@ -74,6 +74,8 @@ function generate_group_fields( $field, $obj ) {
         return;
     }
 
+    // print("<pre>".print_r($field,true)."</pre>");
+
     $child_fields = [];
 
     foreach( $field['fields'] as $child_field ) {
@@ -90,6 +92,8 @@ function generate_group_fields( $field, $obj ) {
 
     foreach( $field['fields'] as $child_field ) {
         if ( in_array( $child_field['type'], $field_group ) ) {
+            // print("<pre>".print_r($child_field,true)."</pre>");
+            // var_dump( count( $child_field ) );
             generate_group_fields( $child_field, $obj );
         }
     }
@@ -126,16 +130,16 @@ function mb_wpai_import( $post_id, $data, $import_options ) {
     foreach( $fields as $field ) {
         $data_lines = explode( "\r\n", $data[ $field['id'] ] );
 
-        mb_import_text( $post_id, $data, $field, $data_lines, $table );
+        mb_import_text( $post_id, $data_lines, $field, $table );
 
-        mb_import_image( $post_id, $data, $field, $data_lines, $table );
+        mb_import_image( $post_id, $data_lines, $field, $table );
 
-        mb_import_group( $post_id, $data, $field, $data_lines, $table );
+        mb_import_group( $post_id, $data, $field, $table );
     }
 }
 
 // import image
-function mb_import_image( $post_id, $data, $field, $data_lines, $table ) {
+function mb_import_image( $post_id, $data, $field, $table ) {
     global $wpdb;
     global $field_image;
 
@@ -143,7 +147,7 @@ function mb_import_image( $post_id, $data, $field, $data_lines, $table ) {
         return;
     }
 
-    foreach ( $data_lines as $d ) {
+    foreach ( $data as $d ) {
         $wpdb->insert( $table, [
             'post_id'    => $post_id,
             'meta_key'   => $field['id'],
@@ -153,7 +157,7 @@ function mb_import_image( $post_id, $data, $field, $data_lines, $table ) {
 }
 
 // import text
-function mb_import_text( $post_id, $data, $field, $data_lines, $table ) {
+function mb_import_text( $post_id, $data, $field, $table ) {
     global $wpdb;
     global $field_text;
 
@@ -161,7 +165,7 @@ function mb_import_text( $post_id, $data, $field, $data_lines, $table ) {
         return;
     }
 
-    foreach ( $data_lines as $d ) {
+    foreach ( $data as $d ) {
         $wpdb->insert( $table, [
             'post_id'    => $post_id,
             'meta_key'   => $field['id'],
@@ -171,7 +175,7 @@ function mb_import_text( $post_id, $data, $field, $data_lines, $table ) {
 }
 
 // import group
-function mb_import_group( $post_id, $data, $field, $data_lines, $table ) {
+function mb_import_group( $post_id, $data, $field, $table ) {
     global $wpdb;
     global $field_group;
 
@@ -179,27 +183,32 @@ function mb_import_group( $post_id, $data, $field, $data_lines, $table ) {
         return;
     }
 
+    $content_data .= 'a:' . count( $field['fields'] ) . ':{';
+
+    $content_data .= mb_get_group_data( $field['fields'], $data );
+
+    $content_data .= '}';
+
     $wpdb->insert( $table, [
         'post_id'    => $post_id,
         'meta_key'   => $field['id'],
-        'meta_value' => mb_get_group_data( $field['fields'] ),
+        'meta_value' => $content_data,
     ] );
 }
 
-function mb_get_group_data( $field, $content_data ) {
-    $content_data = 'a:' . count( $field ) . ':{';
-
-    foreach ( $field as $field_child ) {
-        $content_data .= 's:' . strlen( $field_child['id'] )  . ':"' . $field_child['id'] . '"' . ';s:' . strlen( $data[ $field_child['id'] ] ) . ':"' . $data[ $field_child['id'] ] . '"' . ';';
-    }
+function mb_get_group_data( $field, $data ) {
+    global $field_group;
+    $content_data = '';
 
     foreach ( $field as $field_child ) {
         if ( in_array( $field_child['type'], $field_group ) ) {
-            mb_get_group_data( $field_child, $content_data );
+            $content_child = mb_get_group_data( $field_child['fields'], $data  );
+            $temp = count( $field_child['fields'] );
+            $content_data .= 's:' . strlen( $field_child['id'] )  . ':"' . $field_child['id'] . '"' . ';a:' . $temp . ':{' . $content_child . '}';
+        } else {
+            $content_data .= 's:' . strlen( $field_child['id'] )  . ':"' . $field_child['id'] . '"' . ';s:' . strlen( $data[ $field_child['id'] ] ) . ':"' . $data[ $field_child['id'] ] . '"' . ';';
         }
     }
-
-    $content_data .= '}';
 
     return $content_data;
 }
