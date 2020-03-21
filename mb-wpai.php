@@ -93,7 +93,6 @@ function generate_group_fields( $field, $obj ) {
     foreach( $field['fields'] as $child_field ) {
         if ( in_array( $child_field['type'], $field_group ) ) {
             // print("<pre>".print_r($child_field,true)."</pre>");
-            // var_dump( count( $child_field ) );
             generate_group_fields( $child_field, $obj );
         }
     }
@@ -198,17 +197,52 @@ function mb_import_group( $post_id, $data, $field, $table ) {
 
 function mb_get_group_data( $field, $data ) {
     global $field_group;
+    
     $content_data = '';
 
     foreach ( $field as $field_child ) {
-        if ( in_array( $field_child['type'], $field_group ) ) {
-            $content_child = mb_get_group_data( $field_child['fields'], $data  );
-            $temp = count( $field_child['fields'] );
-            $content_data .= 's:' . strlen( $field_child['id'] )  . ':"' . $field_child['id'] . '"' . ';a:' . $temp . ':{' . $content_child . '}';
-        } else {
-            $content_data .= 's:' . strlen( $field_child['id'] )  . ':"' . $field_child['id'] . '"' . ';s:' . strlen( $data[ $field_child['id'] ] ) . ':"' . $data[ $field_child['id'] ] . '"' . ';';
-        }
+        $content_data .= process_group( $field_child, $data );
+        $content_data .= process_image( $field_child, $data );
+        $content_data .= process_text( $field_child, $data );
     }
+
+    return $content_data;
+}
+
+function process_text( $field, $data ) {
+    global $field_text;
+
+    if ( ! in_array( $field['type'], $field_text ) ) {
+        return '';
+    }
+
+    $content_data .= 's:' . strlen( $field['id'] )  . ':"' . $field['id'] . '"' . ';s:' . strlen( $data[ $field['id'] ] ) . ':"' . $data[ $field['id'] ] . '"' . ';';
+
+    return $content_data;
+}
+
+function process_image( $field, $data ) {
+    global $field_image;
+
+    if ( ! in_array( $field['type'], $field_image ) ) {
+        return '';
+    }
+
+    $content_data .= 's:' . strlen( $field['id'] )  . ':"' . $field['id'] . '"' . ';s:' . strlen( $data[ $field['id'] ] ) . ':"' . attachment_url_to_postid( $data[ $field['id'] ] ) . '"' . ';';
+
+    return $content_data;
+}
+
+function process_group( $field, $data ) {
+    global $field_group;
+
+    if ( ! in_array( $field['type'], $field_group ) ) {
+        return '';
+    }
+
+    $temp_1 = mb_get_group_data( $field['fields'], $data  );
+    $temp_2 = count( $field['fields'] );
+    $content_data .= 's:' . strlen( $field['id'] )  . ':"' . $field['id'] . '"' . ';a:' . $temp_2 . ':{' . $temp_1 . '}';
 
     return $content_data;
 }
