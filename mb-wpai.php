@@ -23,7 +23,7 @@ $mb_wpai = new RapidAddon('Meta Box Add-on', 'mb_wpai');
 $fields = [];
 $mb_objects = [];
 
-$field_text = [ 'text', 'textarea', 'date', 'map', 'radio', 'checkbox', 'autocomplete' ];
+$field_text = [ 'text', 'textarea', 'date', 'map', 'radio', 'checkbox', 'autocomplete', 'number' ];
 $field_image = [ 'image', 'single_image', 'image_select', 'image_upload', 'image_advanced', 'file', 'file_advanced', 'file_upload' ];
 $field_group = [ 'group' ];
 
@@ -33,7 +33,7 @@ function get_mb_fields( $custom_type ) {
     global $mb_objects;
     global $fields;
 
-    $custom_type = 'fish';
+    $custom_type = 'event';
 
     $meta_box_registry = rwmb_get_registry( 'meta_box' );
 
@@ -164,12 +164,30 @@ function mb_import_text( $post_id, $data, $field, $table ) {
         return;
     }
 
-    foreach ( $data as $d ) {
+    if ( $field['clone'] ) {
+        $content_data = 'a:' . count( $data ) . ':{';
+        $i = 0;
+        foreach ( $data as $d ) {
+            $content_data .= 'i:' . $i . ";s:" . strlen( $d ) . ':"' . $d . '";';
+            $i++;
+        }
+
+        $content_data .= '}';
+
         $wpdb->insert( $table, [
             'post_id'    => $post_id,
             'meta_key'   => $field['id'],
-            'meta_value' => $d,
+            'meta_value' => $content_data,
         ] );
+    }
+    else {
+        foreach ( $data as $d ) {
+            $wpdb->insert( $table, [
+                'post_id'    => $post_id,
+                'meta_key'   => $field['id'],
+                'meta_value' => $d,
+            ] );
+        }
     }
 }
 
@@ -216,7 +234,26 @@ function process_text( $field, $data ) {
         return '';
     }
 
-    $content_data .= 's:' . strlen( $field['id'] )  . ':"' . $field['id'] . '"' . ';s:' . strlen( $data[ $field['id'] ] ) . ':"' . $data[ $field['id'] ] . '"' . ';';
+    $data_lines = explode( "\r\n", $data[ $field['id'] ] );
+
+    if ( $field['clone'] ) {
+        $content_data .= 's:' . strlen( $field['id'] ) . ':"' . $field['id'] . '"' . ';';
+
+        $content_data .= 'a:' . count( $data_lines ) . ':{';
+
+        $i = 0;
+        foreach ( $data_lines as $d ) {
+            $content_data .= 'i:' . $i . ';s:' . strlen( $d ) . ':"' . $d . '"' . ';';
+            $i++;
+        }
+
+        $content_data .= '}';
+    }
+    else {
+        foreach ( $data_lines as $d ) {
+            $content_data .= 's:' . strlen( $field['id'] ) . ':"' . $field['id'] . '"' . ';s:' . strlen( $d[ $field['id'] ] ) . ':"' . $d[ $field['id'] ] . '"' . ';';
+        }
+    }
 
     return $content_data;
 }
