@@ -228,7 +228,7 @@ function process_image( $field, $data ) {
         return '';
     }
 
-    $content_data .= 's:' . strlen( $field['id'] )  . ':"' . $field['id'] . '"' . ';s:' . strlen( $data[ $field['id'] ] ) . ':"' . attachment_url_to_postid( $data[ $field['id'] ] ) . '"' . ';';
+    $content_data .= 's:' . strlen( $field['id'] )  . ':"' . $field['id'] . '"' . ';s:' . strlen( attachment_url_to_postid( $data[ $field['id'] ] ) ) . ':"' . attachment_url_to_postid( $data[ $field['id'] ] ) . '"' . ';';
 
     return $content_data;
 }
