@@ -24,7 +24,8 @@ $fields = [];
 $mb_objects = [];
 
 $field_text = [ 'text', 'textarea', 'date', 'map', 'radio', 'checkbox', 'autocomplete', 'number' ];
-$field_image = [ 'image', 'single_image', 'image_select', 'image_upload', 'image_advanced', 'file', 'file_advanced', 'file_upload' ];
+$field_image = [ 'image', 'single_image', 'image_select', 'image_upload', 'file', 'file_upload' ];
+$field_multi_images = [ 'image_advanced', 'file_advanced' ];
 $field_group = [ 'group' ];
 
 add_action( 'init', 'get_mb_fields', 99);
@@ -141,8 +142,9 @@ function mb_wpai_import( $post_id, $data, $import_options ) {
 function mb_import_image( $post_id, $data, $field, $table ) {
     global $wpdb;
     global $field_image;
+    global $field_multi_images;
 
-    if ( ! in_array( $field['type'], $field_image ) ) {
+    if ( ! in_array( $field['type'], $field_image ) && ! in_array( $field['type'], $field_multi_images ) ) {
         return;
     }
 
@@ -260,12 +262,29 @@ function process_text( $field, $data ) {
 
 function process_image( $field, $data ) {
     global $field_image;
+    global $field_multi_images;
 
-    if ( ! in_array( $field['type'], $field_image ) ) {
-        return '';
+    $content_data = '';
+
+    if ( in_array( $field['type'], $field_image ) ) {
+        $content_data .= 's:' . strlen( $field['id'] )  . ':"' . $field['id'] . '"' . ';s:' . strlen( attachment_url_to_postid( $data[ $field['id'] ] ) ) . ':"' . attachment_url_to_postid( $data[ $field['id'] ] ) . '"' . ';';
     }
 
-    $content_data .= 's:' . strlen( $field['id'] )  . ':"' . $field['id'] . '"' . ';s:' . strlen( attachment_url_to_postid( $data[ $field['id'] ] ) ) . ':"' . attachment_url_to_postid( $data[ $field['id'] ] ) . '"' . ';';
+    if ( in_array( $field['type'], $field_multi_images ) ) {
+        $data_lines = explode( "\r\n", $data[ $field['id'] ] );
+
+        $content_data .= 's:' . strlen( $field['id'] ) . ':"' . $field['id'] . '"' . ';';
+        $content_data .= 'a:' . count( $data_lines ) . ':{';
+
+        $i = 0;
+        foreach ( $data_lines as $d ) {
+            $d = attachment_url_to_postid( $d );
+            $content_data .= 'i:' . $i . ';s:' . strlen( $d ) . ':"' . $d . '"' . ';';
+            $i++;
+        }
+
+        $content_data .= '}';
+    }
 
     return $content_data;
 }
