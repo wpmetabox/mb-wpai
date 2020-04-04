@@ -155,12 +155,25 @@ function mb_import_image( $post_id, $data, $field, $table ) {
         return;
     }
 
-    foreach ( $data as $d ) {
+    if ( $field['clone'] ) {
+        foreach ( $data as $d ) {
+            $content_data[] = attachment_url_to_postid( $d );
+        }
+
         $wpdb->insert( $table, [
             'post_id'    => $post_id,
             'meta_key'   => $field['id'],
-            'meta_value' => attachment_url_to_postid( $d ),
+            'meta_value' => serialize( $content_data ),
         ] );
+    }
+    else {
+        foreach ( $data as $d ) {
+            $wpdb->insert( $table, [
+                'post_id'    => $post_id,
+                'meta_key'   => $field['id'],
+                'meta_value' => attachment_url_to_postid( $d ),
+            ] );
+        }
     }
 }
 
@@ -207,8 +220,9 @@ function mb_import_group( $post_id, $data, $field, $table ) {
     if ( $field['clone'] ) {
         $content_data[] = mb_get_group_data( $field['fields'], $data );
     }
-
-    $content_data = mb_get_group_data( $field['fields'], $data );
+    else {
+        $content_data = mb_get_group_data( $field['fields'], $data );
+    }
 
     $wpdb->insert( $table, [
         'post_id'    => $post_id,
@@ -220,18 +234,10 @@ function mb_import_group( $post_id, $data, $field, $table ) {
 function mb_get_group_data( $field, $data ) {
     global $field_group;
     
-    if ( $field['clone'] ) {
-        $content_data .= 'a:1:{i:0';
-    }
-
     foreach ( $field as $field_child ) {
         $content_data[] = process_group( $field_child, $data );
         $content_data[] = process_image( $field_child, $data );
         $content_data[] = process_text( $field_child, $data );
-    }
-
-    if ( $field['clone'] ) {
-        $content_data .= '}';
     }
 
     return $content_data;
