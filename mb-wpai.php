@@ -239,7 +239,7 @@ function mb_get_group_data( $field, $data ) {
         $content_data[] = process_image( $field_child, $data );
         $content_data[] = process_text( $field_child, $data );
     }
-
+    var_dump($content_data);
     return $content_data;
 }
 
@@ -256,8 +256,6 @@ function process_text( $field, $data ) {
         foreach ( $data_lines as $d ) {
             $content_data[] = $d;
         }
-
-        $content_data .= '}';
     }
     else {
         foreach ( $data_lines as $d ) {
