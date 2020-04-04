@@ -980,28 +980,46 @@ class RapidAddon {
 		$data = array(); // parsed data
 
 		if ( ! empty($import->options[$this->slug])){
-
+			// error_log( print_r( $import->options[$this->slug] ) );
+			// log( print_r( $import->options[$this->slug] ) );
 			$this->logger = $parsingData['logger'];
 
 			$cxpath = $xpath_prefix . $import->xpath;
 
 			$tmp_files = array();
 
-			foreach ($options[$this->slug] as $option_name => $option_value) {					
+			foreach ($options[$this->slug] as $option_name => $option_value) {
+				// error_log( print_r( $option_value ) );
 				if ( isset($import->options[$this->slug][$option_name]) and $import->options[$this->slug][$option_name] != '') {						
 					if ($import->options[$this->slug][$option_name] == "xpath") {
 						if ($import->options[$this->slug]['xpaths'][$option_name] == ""){
 							$count and $data[$option_name] = array_fill(0, $count, "");
 						} else {
 							$data[$option_name] = XmlImportParser::factory($xml, $cxpath, (string) $import->options[$this->slug]['xpaths'][$option_name], $file)->parse();
-							$tmp_files[] = $file;						
+							$tmp_files[] = $file;
 						}
-					} 
-					else {							
-						$data[$option_name] = XmlImportParser::factory($xml, $cxpath, (string) $import->options[$this->slug][$option_name], $file)->parse();
-						$tmp_files[] = $file;
 					}
+					else {
+						// $data[$option_name] = XmlImportParser::factory($xml, $cxpath, (string) $import->options[$this->slug][$option_name], $file)->parse();
+						$string_data = (string) $import->options[$this->slug][$option_name];
+						$lines = explode( "\r\n", $string_data );
 
+						$i = 0;
+						// error_log( print_r( $lines[0] ) );
+						for ( $i = 1; $i < count( $lines ); $i++ ) {
+							// error_log( print_r( $lines[$i] ) );
+							for ( $x = 1; $x <= $lines[0]; $x++ ) {
+								// error_log( print_r( $x ) );
+								$l = str_replace( '_i_', $x, $lines[$i]);
+								// error_log( print_r( $l ) );
+								$data[$option_name][] = XmlImportParser::factory($xml, $cxpath, $l, $file)->parse();
+								
+							}
+							$tmp_files[] = $file;
+						}
+						// $data[$option_name] = $lines;
+					}
+					// error_log( print_r( $data[$option_name] ) );
 
 				} else {
 					$data[$option_name] = array_fill(0, $count, "");
@@ -1015,10 +1033,11 @@ class RapidAddon {
 
 		}
 
-
+		var_dump( $data );
 		return $data;
 	}
-
+	// a:1:{s:16:"text_9z0sebegmsd";a:2:{i:0;s:8:"Standard";i:1;s:8:"Standard";}}
+	// a:2:{i:0;s:8:"Standard";i:1;s:5:"Media";}
 
 	function can_update_meta($meta_key, $import_options) {
 

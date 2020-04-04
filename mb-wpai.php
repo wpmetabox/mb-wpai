@@ -135,11 +135,9 @@ function mb_wpai_import( $post_id, $data, $import_options ) {
     $table = $wpdb->prefix . 'postmeta';
 
     foreach( $fields as $field ) {
-        $data_lines = explode( "\r\n", $data[ $field['id'] ] );
+        mb_import_text( $post_id, $data[ $field['id'] ], $field, $table );
 
-        mb_import_text( $post_id, $data_lines, $field, $table );
-
-        mb_import_image( $post_id, $data_lines, $field, $table );
+        mb_import_image( $post_id, $data, $field, $table );
 
         mb_import_group( $post_id, $data, $field, $table );
     }
@@ -187,15 +185,13 @@ function mb_import_text( $post_id, $data, $field, $table ) {
     }
 
     if ( $field['clone'] ) {
-        foreach ( $data as $d ) {
-            $content_data[] = $d;
-        }
-
         $wpdb->insert( $table, [
             'post_id'    => $post_id,
             'meta_key'   => $field['id'],
-            'meta_value' => serialize( $content_data ),
+            'meta_value' => serialize( $data ),
         ] );
+        // a:1:{s:16:"text_9z0sebegmsd";a:2:{i:0;s:8:"Standard";i:1;s:8:"Standard";}}
+        // a:2:{i:0;s:8:"Standard";i:1;s:5:"Media";}
     }
     else {
         foreach ( $data as $d ) {
