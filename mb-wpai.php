@@ -29,6 +29,11 @@ $field_multi_images = [ 'image_advanced', 'file_advanced' ];
 $field_group = [ 'group' ];
 
 add_action( 'init', 'get_mb_fields', 99);
+add_action( 'init', 'enqueue_scripts', 99);
+
+function enqueue_scripts() {
+    wp_enqueue_script( 'mb-wpai', plugin_dir_url( __FILE__ ) . 'assets/scripts.js', ['jquery'], '1.0.0', true );
+}
 
 function get_mb_fields( $custom_type ) {
     global $mb_objects;
@@ -61,6 +66,8 @@ function get_mb_fields( $custom_type ) {
 function generate_fields( $mbs, $obj ) {
     global $fields;
     // print("<pre>".print_r($fields,true)."</pre>");
+
+    // var_dump( get_post_types(array('_builtin' => false, 'show_ui' => true), 'objects') );
 
     foreach( $fields as $field ) {
         generate_normal_fields( $field, $obj );
@@ -167,19 +174,14 @@ function mb_import_text( $post_id, $data, $field, $table ) {
     }
 
     if ( $field['clone'] ) {
-        $content_data = 'a:' . count( $data ) . ':{';
-        $i = 0;
         foreach ( $data as $d ) {
-            $content_data .= 'i:' . $i . ";s:" . strlen( $d ) . ':"' . $d . '";';
-            $i++;
+            $content_data[] = $d;
         }
-
-        $content_data .= '}';
 
         $wpdb->insert( $table, [
             'post_id'    => $post_id,
             'meta_key'   => $field['id'],
-            'meta_value' => $content_data,
+            'meta_value' => serialize( $content_data ),
         ] );
     }
     else {
@@ -202,28 +204,34 @@ function mb_import_group( $post_id, $data, $field, $table ) {
         return;
     }
 
-    $content_data .= 'a:' . count( $field['fields'] ) . ':{';
+    if ( $field['clone'] ) {
+        $content_data[] = mb_get_group_data( $field['fields'], $data );
+    }
 
-    $content_data .= mb_get_group_data( $field['fields'], $data );
-
-    $content_data .= '}';
+    $content_data = mb_get_group_data( $field['fields'], $data );
 
     $wpdb->insert( $table, [
         'post_id'    => $post_id,
         'meta_key'   => $field['id'],
-        'meta_value' => $content_data,
+        'meta_value' => serialize( $content_data ),
     ] );
 }
 
 function mb_get_group_data( $field, $data ) {
     global $field_group;
     
-    $content_data = '';
+    if ( $field['clone'] ) {
+        $content_data .= 'a:1:{i:0';
+    }
 
     foreach ( $field as $field_child ) {
-        $content_data .= process_group( $field_child, $data );
-        $content_data .= process_image( $field_child, $data );
-        $content_data .= process_text( $field_child, $data );
+        $content_data[] = process_group( $field_child, $data );
+        $content_data[] = process_image( $field_child, $data );
+        $content_data[] = process_text( $field_child, $data );
+    }
+
+    if ( $field['clone'] ) {
+        $content_data .= '}';
     }
 
     return $content_data;
@@ -239,21 +247,15 @@ function process_text( $field, $data ) {
     $data_lines = explode( "\r\n", $data[ $field['id'] ] );
 
     if ( $field['clone'] ) {
-        $content_data .= 's:' . strlen( $field['id'] ) . ':"' . $field['id'] . '"' . ';';
-
-        $content_data .= 'a:' . count( $data_lines ) . ':{';
-
-        $i = 0;
         foreach ( $data_lines as $d ) {
-            $content_data .= 'i:' . $i . ';s:' . strlen( $d ) . ':"' . $d . '"' . ';';
-            $i++;
+            $content_data[] = $d;
         }
 
         $content_data .= '}';
     }
     else {
         foreach ( $data_lines as $d ) {
-            $content_data .= 's:' . strlen( $field['id'] ) . ':"' . $field['id'] . '"' . ';s:' . strlen( $d[ $field['id'] ] ) . ':"' . $d[ $field['id'] ] . '"' . ';';
+            $content_data[] = $d[ $field['id'] ];
         }
     }
 
@@ -264,26 +266,17 @@ function process_image( $field, $data ) {
     global $field_image;
     global $field_multi_images;
 
-    $content_data = '';
-
     if ( in_array( $field['type'], $field_image ) ) {
-        $content_data .= 's:' . strlen( $field['id'] )  . ':"' . $field['id'] . '"' . ';s:' . strlen( attachment_url_to_postid( $data[ $field['id'] ] ) ) . ':"' . attachment_url_to_postid( $data[ $field['id'] ] ) . '"' . ';';
+        $content_data = attachment_url_to_postid( $data[ $field['id'] ] );
     }
 
     if ( in_array( $field['type'], $field_multi_images ) ) {
         $data_lines = explode( "\r\n", $data[ $field['id'] ] );
 
-        $content_data .= 's:' . strlen( $field['id'] ) . ':"' . $field['id'] . '"' . ';';
-        $content_data .= 'a:' . count( $data_lines ) . ':{';
-
-        $i = 0;
         foreach ( $data_lines as $d ) {
             $d = attachment_url_to_postid( $d );
-            $content_data .= 'i:' . $i . ';s:' . strlen( $d ) . ':"' . $d . '"' . ';';
-            $i++;
+            $content_data[] = $d;
         }
-
-        $content_data .= '}';
     }
 
     return $content_data;
@@ -296,9 +289,13 @@ function process_group( $field, $data ) {
         return '';
     }
 
-    $temp_1 = mb_get_group_data( $field['fields'], $data  );
-    $temp_2 = count( $field['fields'] );
-    $content_data .= 's:' . strlen( $field['id'] )  . ':"' . $field['id'] . '"' . ';a:' . $temp_2 . ':{' . $temp_1 . '}';
+    $content_data[] = mb_get_group_data( $field['fields'], $data  );
 
     return $content_data;
 }
+
+// a:1:{i:0;a:3:{s:16:"text_era7ad2vaij";a:1:{i:0;s:8:"Standard";}s:17:"number_fnvnrj00qi";a:1:{i:0;s:3:"100";}}}
+
+// {i:0;a:2:{s:16:"text_era7ad2vaij";a:1:{i:0;s:6:"Medium";}s:17:"number_fnvnrj00qi";a:1:{i:0;s:3:"200";}}
+
+// {i:0;a:3:{s:16:"text_era7ad2vaij";a:1:{i:0;s:8:"Standard";}s:17:"number_fnvnrj00qi";a:1:{i:0;s:3:"100";}}

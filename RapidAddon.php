@@ -143,6 +143,9 @@ class RapidAddon {
 		add_filter('wp_all_import_post_type_image', array($this, 'post_type_image'), 10, 1 );
 		add_action('pmxi_extend_options_featured',  array($this, 'wpai_api_metabox'), 10, 2);
 		add_action('admin_init', array($this, 'admin_notice_ignore'));
+		add_action( 'pmxi_after_xml_import', [ $this, 'after_xml_import' ], 10, 2 );
+		add_filter( 'wpallimport_xml_row', [ $this, 'wpai_xml_row' ], 10, 1 );
+
 	}        
 
 	function parse($data) {
@@ -150,8 +153,8 @@ class RapidAddon {
 		if ( ! $this->is_active_addon($data['import']->options['custom_type'])) return false;
 
 		$parsedData = $this->helper_parse($data, $this->options_array());
+		// var_dump($parsedData);
 		return $parsedData;
-
 	}
 
 
@@ -470,6 +473,9 @@ class RapidAddon {
 					'field_value' => ( $current_values[$this->slug][$field_slug] == '' && $this->isWizard ) ? $field_params['default_text'] : $current_values[$this->slug][$field_slug]
 				)
 			);
+			?>
+			<!-- <button class="clone-field">Clone</button> -->
+			<?php
 
 		} else if ($field_params['type'] == 'wp_editor') {
 
@@ -938,7 +944,19 @@ class RapidAddon {
 		function filter_is_show_add_new_images($is_show, $post_type){
 			return ($this->is_active_addon($post_type)) ? false : $is_show;
 		}
+		function after_xml_import( $import_id, $import ) {
+		}
 
+		function wpai_xml_row( $xml_node ) {
+			// print("<pre>".print_r($xml_node,true)."</pre>");
+			return $xml_node;
+		}
+		function wpai_custom_types( $custom_types ) {	
+
+			var_dump( $custom_types );
+			return $custom_types;
+		
+		}
 	/**
 	*
 	* disable the default images section
@@ -996,6 +1014,7 @@ class RapidAddon {
 			}
 
 		}
+
 
 		return $data;
 	}
@@ -1179,6 +1198,7 @@ class RapidAddon {
 				}
 			}
 		}
+		var_dump( $options );
 		return $custom_types;
 	}
 
