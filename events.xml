@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<events>
+	<event title="Test Event">
+		<tickets>
+			<ticket price="10" title="Standard"/>
+			<ticket price="20" title="Media"/>
+		</tickets>
+		<location>Hanoi, Vietnam</location>
+		<date>2020-03-16</date>
+		<description>This is the test event 1</description>
+		<image>http://localhost/metaboxplugins/wp-content/uploads/2020/03/10d3d5de083cdf2d526025d38d14ceff.png</image>
+	</event>
+	<event title="Test Event 2">
+		<tickets>
+			<ticket price="100" title="Standard"/>
+			<ticket price="200" title="Media"/>
+		</tickets>
+		<location>HCMC, Vietnam</location>
+		<date>2020-09-16</date>
+		<description>This is the test event 1</description>
+		<image>http://localhost/metaboxplugins/wp-content/uploads/2020/03/1__6qxsKKM-RQ9B-bH0rEUQ.png</image>
+	</event>
+</events>

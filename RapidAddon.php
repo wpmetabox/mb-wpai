@@ -1004,19 +1004,40 @@ class RapidAddon {
 						$string_data = (string) $import->options[$this->slug][$option_name];
 						$lines = explode( "\r\n", $string_data );
 
-						$i = 0;
-						// error_log( print_r( $lines[0] ) );
-						for ( $i = 1; $i < count( $lines ); $i++ ) {
-							// error_log( print_r( $lines[$i] ) );
-							for ( $x = 1; $x <= $lines[0]; $x++ ) {
-								// error_log( print_r( $x ) );
-								$l = str_replace( '_i_', $x, $lines[$i]);
-								// error_log( print_r( $l ) );
-								$data[$option_name][] = XmlImportParser::factory($xml, $cxpath, $l, $file)->parse();
-								
-							}
-							$tmp_files[] = $file;
+						$lines_num = $lines[0];
+
+						$temp = [];
+
+						$temp_2 = [];
+						
+						for ( $x = 1; $x <= $lines_num; $x++ ) {
+							$l = str_replace( '_i_', $x, $lines[1]);
+							$temp[] = XmlImportParser::factory($xml, $cxpath, $l, $file)->parse();
 						}
+						for ( $x = 1; $x <= $lines_num; $x++ ) {
+						foreach ( $temp as $k => $v ) {
+							$temp_2[] = $v[0];
+						}}
+
+						$data[$option_name] = array_chunk( $temp_2, ceil( count( $temp_2 ) / $lines_num ) );
+
+						$tmp_files[] = $file;
+
+						// [ a, a, a ]
+						// [ b, b, b ]
+						// => [ a, b ], [ a, b ], [ a, b ]
+						// error_log( print_r( $lines[0] ) );
+						// for ( $i = 1; $i < count( $lines ); $i++ ) {
+						// 	// error_log( print_r( $lines[$i] ) );
+						// 	for ( $x = 1; $x <= $lines[0]; $x++ ) {
+						// 		// error_log( print_r( $x ) );
+						// 		$l = str_replace( '_i_', $x, $lines[$i]);
+						// 		error_log( print_r( $l ) );
+						// 		$data[$option_name][] = XmlImportParser::factory($xml, $cxpath, $l, $file)->parse();
+						// 		$tmp_files[] = $file;
+						// 	}
+							
+						// }
 						// $data[$option_name] = $lines;
 					}
 					// error_log( print_r( $data[$option_name] ) );
