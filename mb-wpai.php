@@ -137,7 +137,7 @@ function mb_wpai_import( $post_id, $data, $import_options ) {
     foreach( $fields as $field ) {
         mb_import_text( $post_id, $data[ $field['id'] ], $field, $table );
 
-        mb_import_image( $post_id, $data, $field, $table );
+        mb_import_image( $post_id, $data[ $field['id'] ], $field, $table );
 
         mb_import_group( $post_id, $data, $field, $table );
     }

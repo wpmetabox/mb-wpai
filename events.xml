@@ -14,6 +14,8 @@
 		<tickets>
 			<ticket price="100" title="Standard"/>
 			<ticket price="200" title="Media"/>
+			<ticket price="30" title="Premium"/>
+			<ticket price="40" title="Advance"/>
 		</tickets>
 		<location>HCMC, Vietnam</location>
 		<date>2020-09-16</date>

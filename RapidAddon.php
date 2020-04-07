@@ -979,86 +979,89 @@ class RapidAddon {
 
 		$data = array(); // parsed data
 
-		if ( ! empty($import->options[$this->slug])){
-			// error_log( print_r( $import->options[$this->slug] ) );
-			// log( print_r( $import->options[$this->slug] ) );
-			$this->logger = $parsingData['logger'];
+		if ( ! $import->options[$this->slug] ) {
+			return;
+		}
+		$this->logger = $parsingData['logger'];
 
-			$cxpath = $xpath_prefix . $import->xpath;
+		$cxpath = $xpath_prefix . $import->xpath;
 
-			$tmp_files = array();
+		$tmp_files = array();
 
-			foreach ($options[$this->slug] as $option_name => $option_value) {
-				// error_log( print_r( $option_value ) );
-				if ( isset($import->options[$this->slug][$option_name]) and $import->options[$this->slug][$option_name] != '') {						
-					if ($import->options[$this->slug][$option_name] == "xpath") {
-						if ($import->options[$this->slug]['xpaths'][$option_name] == ""){
-							$count and $data[$option_name] = array_fill(0, $count, "");
-						} else {
-							$data[$option_name] = XmlImportParser::factory($xml, $cxpath, (string) $import->options[$this->slug]['xpaths'][$option_name], $file)->parse();
-							$tmp_files[] = $file;
-						}
-					}
-					else {
-						// $data[$option_name] = XmlImportParser::factory($xml, $cxpath, (string) $import->options[$this->slug][$option_name], $file)->parse();
-						$string_data = (string) $import->options[$this->slug][$option_name];
-						$lines = explode( "\r\n", $string_data );
+		foreach ($options[$this->slug] as $option_name => $option_value) {
+			if ( $import->options[$this->slug][$option_name] ) {						
+				$data[$option_name] = $this->parse_xpath( $xml, $cxpath, $import->options[$this->slug], $data, $option_name, $file );
+				$data[$option_name] = $this->parse_metabox( $xml, $cxpath, $import->options[$this->slug], $data, $option_name, $file );
+				
+				$tmp_files[] = $file;
 
-						$lines_num = $lines[0];
-
-						$temp = [];
-
-						$temp_2 = [];
-						
-						for ( $x = 1; $x <= $lines_num; $x++ ) {
-							$l = str_replace( '_i_', $x, $lines[1]);
-							$temp[] = XmlImportParser::factory($xml, $cxpath, $l, $file)->parse();
-						}
-						for ( $x = 1; $x <= $lines_num; $x++ ) {
-						foreach ( $temp as $k => $v ) {
-							$temp_2[] = $v[0];
-						}}
-
-						$data[$option_name] = array_chunk( $temp_2, ceil( count( $temp_2 ) / $lines_num ) );
-
-						$tmp_files[] = $file;
-
-						// [ a, a, a ]
-						// [ b, b, b ]
-						// => [ a, b ], [ a, b ], [ a, b ]
-						// error_log( print_r( $lines[0] ) );
-						// for ( $i = 1; $i < count( $lines ); $i++ ) {
-						// 	// error_log( print_r( $lines[$i] ) );
-						// 	for ( $x = 1; $x <= $lines[0]; $x++ ) {
-						// 		// error_log( print_r( $x ) );
-						// 		$l = str_replace( '_i_', $x, $lines[$i]);
-						// 		error_log( print_r( $l ) );
-						// 		$data[$option_name][] = XmlImportParser::factory($xml, $cxpath, $l, $file)->parse();
-						// 		$tmp_files[] = $file;
-						// 	}
-							
-						// }
-						// $data[$option_name] = $lines;
-					}
-					// error_log( print_r( $data[$option_name] ) );
-
-				} else {
-					$data[$option_name] = array_fill(0, $count, "");
-				}
-
+			} else {
+				$data[$option_name] = array_fill(0, $count, "");
 			}
+		}
 
-			foreach ($tmp_files as $file) { // remove all temporary files created
-				unlink($file);
-			}
-
+		foreach ($tmp_files as $file) { // remove all temporary files created
+			unlink($file);
 		}
 
 		var_dump( $data );
 		return $data;
 	}
-	// a:1:{s:16:"text_9z0sebegmsd";a:2:{i:0;s:8:"Standard";i:1;s:8:"Standard";}}
-	// a:2:{i:0;s:8:"Standard";i:1;s:5:"Media";}
+
+	function parse_xpath( $xml, $cxpath, $import_slug, $data, $option_name, $file ) {
+		if ( $import_slug[$option_name] != "xpath" ) {
+			return;
+		}
+		if ( "" == $import_slug['xpaths'][$option_name] ){
+			return $count and $data[$option_name] = array_fill( 0, $count, "" );
+		} else {
+			return XmlImportParser::factory($xml, $cxpath, (string) $import_slug['xpaths'][$option_name], $file)->parse();
+		}
+	}
+
+	function parse_metabox( $xml, $cxpath, $import_slug, $data, $option_name, $file ) {
+		$field = rwmb_get_field_settings( $data[$option_name] );
+
+		$this->parse_metabox_clone( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file );
+		$this->parse_metabox_not_clone( $field, $xml, $cxpath, $import_slug, $option_name, $file );
+	}
+
+	function parse_metabox_clone( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file ) {
+		if ( ! $field['clone'] ) {
+			return '';
+		}
+		$string_data = (string) $import_slug[$option_name];
+		$lines = explode( "\r\n", $string_data );
+
+		$lines_num = $lines[0];
+
+		$temp = [];
+
+		$temp_2 = [];
+		
+		for ( $x = 1; $x <= $lines_num; $x++ ) {
+			$l = str_replace( '_i_', $x, $lines[1]);
+			$temp[] = XmlImportParser::factory($xml, $cxpath, $l, $file)->parse();
+		}
+
+		// [ a, a, a ]
+		// [ b, b, b ]
+		// => [ a, b ], [ a, b ], [ a, b ]
+		for ( $x = 0; $x < $lines_num; $x++ ) {
+			foreach ( $temp as $k => $v ) {
+				$temp_2[] = $v[ $x ];
+			}
+		}
+
+		return array_chunk( $temp_2, ceil( count( $temp_2 ) / $lines_num ) );
+	}
+
+	function parse_metabox_not_clone( $field, $xml, $cxpath, $import_slug, $option_name, $file ) {
+		if ( $field['clone'] ) {
+			return;
+		}
+		return XmlImportParser::factory($xml, $cxpath, (string) $import_slug[$option_name], $file)->parse();
+	}
 
 	function can_update_meta($meta_key, $import_options) {
 
