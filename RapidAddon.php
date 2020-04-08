@@ -6,9 +6,10 @@ class RapidAddon {
 	public $name;
 	public $slug;
 	public $fields;
-	public $options = array();
-	public $accordions = array();
-	public $image_sections = array();
+	public $mb_fields = [];
+	public $options = [];
+	public $accordions = [];
+	public $image_sections = [];
 	public $import_function;
 	public $post_saved_function;
 	public $notice_text;
@@ -953,7 +954,7 @@ class RapidAddon {
 		}
 		function wpai_custom_types( $custom_types ) {	
 
-			var_dump( $custom_types );
+			// var_dump( $custom_types );
 			return $custom_types;
 		
 		}
@@ -989,11 +990,14 @@ class RapidAddon {
 		$tmp_files = array();
 
 		foreach ($options[$this->slug] as $option_name => $option_value) {
-			if ( $import->options[$this->slug][$option_name] ) {						
+			if ( $import->options[$this->slug][$option_name] ) {	
+				
 				$data[$option_name] = $this->parse_xpath( $xml, $cxpath, $import->options[$this->slug], $data, $option_name, $file );
 				$data[$option_name] = $this->parse_metabox( $xml, $cxpath, $import->options[$this->slug], $data, $option_name, $file );
-				
+				var_dump( $data[$option_name] );
 				$tmp_files[] = $file;
+
+				
 
 			} else {
 				$data[$option_name] = array_fill(0, $count, "");
@@ -1019,11 +1023,77 @@ class RapidAddon {
 		}
 	}
 
-	function parse_metabox( $xml, $cxpath, $import_slug, $data, $option_name, $file ) {
-		$field = rwmb_get_field_settings( $data[$option_name] );
+	function get_mb_fields() {
+		$mb_fields = [];
+		$meta_box_registry = rwmb_get_registry( 'meta_box' );
+		
+		$args = [
+			'object_type' => 'post',
+		];
+	
+		$metabox_fields = $meta_box_registry->get_by( $args );
 
-		$this->parse_metabox_clone( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file );
-		$this->parse_metabox_not_clone( $field, $xml, $cxpath, $import_slug, $option_name, $file );
+		foreach( $metabox_fields as $mb ) {
+			if ( 'event' === $mb->meta_box['post_types'][0] ) {
+				$mb_fields = array_merge( $mb->meta_box['fields'], $mb_fields );
+			}
+		}
+
+		return $mb_fields;
+	}
+
+	function parse_metabox( $xml, $cxpath, $import_slug, $data, $option_name, $file ) {
+		$this->mb_fields = $this->get_mb_fields();
+		
+		if ( ! $this->mb_fields ) {
+			return;
+		}
+
+		foreach ( $this->mb_fields as $field ) {
+			$this->parse_metabox_group( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file );
+		}
+
+		// $this->parse_metabox_clone( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file );
+		// $this->parse_metabox_not_clone( $field, $xml, $cxpath, $import_slug, $option_name, $file );
+	}
+
+	function parse_metabox_group( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file ) {
+		if ( "group" !== $field['type'] ) {
+			return;
+		}
+
+		$ele_num = $option_name === $field['id'] ? (int) $import_slug[$option_name] : 0;
+		
+		// var_dump( $option_name );
+		// var_dump( $ele_num );
+		$temp = [];
+
+		$temp_2 = [];
+		if ( $ele_num !== 0 ) {
+			for ( $x = 1; $x <= $ele_num; $x++ ) {
+				// $field['fields']
+				foreach ( $field['fields'] as $field_child ) {
+					
+					$string_data = (string) $import_slug[$field_child['id']];
+					// $data[option_name]
+					$l = str_replace( '_i_', $x, $string_data );
+					$temp[] = XmlImportParser::factory($xml, $cxpath, $l, $file)->parse();
+				}
+			}
+		}
+		if ( count( $temp ) !== 0 ) {
+			$loop_count = ceil( count( $temp ) / $ele_num );
+			for ( $x = 0; $x < $loop_count; $x++ ) {
+				foreach ( $temp as $k => $v ) {
+					$temp_2[] = $v[ $x ];
+				}
+			}
+			// var_dump($temp_2);
+			// var_dump(array_chunk( $temp_2, 8 ));
+			return array_chunk( $temp_2, count( $temp ) );
+		}
+		
+		return "";
 	}
 
 	function parse_metabox_clone( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file ) {
@@ -1033,7 +1103,7 @@ class RapidAddon {
 		$string_data = (string) $import_slug[$option_name];
 		$lines = explode( "\r\n", $string_data );
 
-		$lines_num = $lines[0];
+		$lines_num = (int) $lines[0];
 
 		$temp = [];
 
@@ -1058,7 +1128,7 @@ class RapidAddon {
 
 	function parse_metabox_not_clone( $field, $xml, $cxpath, $import_slug, $option_name, $file ) {
 		if ( $field['clone'] ) {
-			return;
+			return '';
 		}
 		return XmlImportParser::factory($xml, $cxpath, (string) $import_slug[$option_name], $file)->parse();
 	}
@@ -1241,7 +1311,7 @@ class RapidAddon {
 				}
 			}
 		}
-		var_dump( $options );
+		// var_dump( $options );
 		return $custom_types;
 	}
 

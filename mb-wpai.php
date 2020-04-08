@@ -42,7 +42,7 @@ function get_mb_fields( $custom_type ) {
     $custom_type = 'event';
 
     $meta_box_registry = rwmb_get_registry( 'meta_box' );
-
+    
     if ( ! $meta_box_registry ) {
         return;
     }
@@ -235,7 +235,7 @@ function mb_get_group_data( $field, $data ) {
         $content_data[] = process_image( $field_child, $data );
         $content_data[] = process_text( $field_child, $data );
     }
-    var_dump($content_data);
+    // var_dump($content_data);
     return $content_data;
 }
 
@@ -246,17 +246,13 @@ function process_text( $field, $data ) {
         return '';
     }
 
-    $data_lines = explode( "\r\n", $data[ $field['id'] ] );
-
     if ( $field['clone'] ) {
         foreach ( $data_lines as $d ) {
             $content_data[] = $d;
         }
     }
     else {
-        foreach ( $data_lines as $d ) {
-            $content_data[] = $d[ $field['id'] ];
-        }
+        $content_data[] = $data[ $field['id'] ];
     }
 
     return $content_data;
