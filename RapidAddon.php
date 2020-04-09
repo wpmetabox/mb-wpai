@@ -1087,24 +1087,10 @@ class RapidAddon {
 				}
 			}
 		}
-		// if ( count( $temp ) !== 0 ) {
-		// 	$loop_count = ceil( count( $temp ) / $ele_num );
-		// 	for ( $x = 0; $x < $loop_count; $x++ ) {
-		// 		foreach ( $temp as $k => $v ) {
-		// 			$temp_2[] = $v[ $x ];
-		// 		}
-		// 	}
-		// 	var_dump($temp_2);
-		// 	var_dump(array_chunk( $temp_2, 8 ));
 
-		// 	foreach( array_chunk( $temp_2, $ele_num ) as $arr ) {
-		// 		$temp_3[] = $arr;
-		// 	}
-			
-		// 	return array_chunk( $temp_3, count( $temp ) );
-		// 	return $temp_2;
-		// }
-
+		/**
+		 *  Tách array 8x2 => 1x16
+		 */
 		foreach ( $temp as $temp_k => $field ) {
 			foreach ( $field as $field_k => $val ) {
 				$temp_arr = [];
@@ -1115,6 +1101,9 @@ class RapidAddon {
 			}
 		}
 
+		/**
+		 *  2 data: price + title => divide into 2 array
+		 */
 		for ( $i = 0; $i < $child_num; $i++ ) {
 			$odd_child = [];
 			$even_child = [];
