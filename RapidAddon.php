@@ -1012,7 +1012,8 @@ class RapidAddon {
 			unlink($file);
 		}
 
-		var_dump( $data );
+		// var_dump( $data );
+		print("<pre>".print_r($data,true)."</pre>");
 		return $data;
 	}
 
@@ -1103,8 +1104,48 @@ class RapidAddon {
 		// 	return array_chunk( $temp_3, count( $temp ) );
 		// 	return $temp_2;
 		// }
+
+		foreach ( $temp as $temp_k => $field ) {
+			foreach ( $field as $field_k => $val ) {
+				$temp_arr = [];
+				foreach ( $val as $val_child ) {
+					$temp_arr[ $field_k ] = $val_child;
+					$temp_2[] = $temp_arr;
+				}
+			}
+		}
+
+		for ( $i = 0; $i < $child_num; $i++ ) {
+			$odd_child = [];
+			$even_child = [];
+			foreach( $temp_2 as $k => $v ) {
+				if ( $k % $child_num === 0 ) {
+					$odd_child[] = $temp_2[$k];
+				} else { 
+					$even_child[] = $temp_2[$k];
+				}
+			}
+
+			for ( $x = 0; $x <= count( $odd_child ) + 1; $x += $child_num ) {
+				for ( $y = 1; $y < $child_num; $y++ ) {
+					$odd_child[$x] = array_merge( $odd_child[$x], $odd_child[$x + $y] );
+					unset( $odd_child[$x + $y] );
+				}
+			}
+
+			// for ( $x = 0; $x <= count( $even_child ) + 1; $x += $child_num ) {
+			// 	for ( $y = 1; $y < $child_num; $y++ ) {
+			// 		$even_child[$x] = array_merge( $even_child[$x], $even_child[$x + $y] );
+			// 		unset( $even_child[$x + $y] );
+			// 	}
+			// }
+
+			// $temp_3[] = $even_child;
+			$temp_3[] = $odd_child;
+		}
 		
-		return $temp;
+		
+		return $temp_3;
 
 		// $temp = array(8) { 
 		// 	[0]=> array(1) { ["text_mfsud1jlsyn"]=> array(2) {[0]=> string(8) "Standard" [1]=> string(8) "Standard" } }
@@ -1116,6 +1157,36 @@ class RapidAddon {
 		// 	[6]=> array(1) { ["text_mfsud1jlsyn"]=> array(2) { [0]=> string(0) "" [1]=> string(7) "Advance" } } 
 		// 	[7]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> array(2) { [0]=> string(0) "" [1]=> string(2) "40" } } 
 		// 	}
+
+		// $temp_2 = array(16) { 
+		// 	[0]=> array(1) { ["text_mfsud1jlsyn"]=> string(8) "Standard" } 
+		// 	[1]=> array(1) { ["text_mfsud1jlsyn"]=> string(8) "Standard" } 
+		// 	[2]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(2) "10" } 
+		// 	[3]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(3) "100" } 
+		// 	[4]=> array(1) { ["text_mfsud1jlsyn"]=> string(5) "Media" } 
+		// 	[5]=> array(1) { ["text_mfsud1jlsyn"]=> string(5) "Media" } 
+		// 	[6]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(2) "20" } 
+		// 	[7]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(3) "200" } 
+		// 	[8]=> array(1) { ["text_mfsud1jlsyn"]=> string(0) "" } 
+		// 	[9]=> array(1) { ["text_mfsud1jlsyn"]=> string(7) "Premium" } 
+		// 	[10]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(0) "" } 
+		// 	[11]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(2) "30" } 
+		// 	[12]=> array(1) { ["text_mfsud1jlsyn"]=> string(0) "" } 
+		// 	[13]=> array(1) { ["text_mfsud1jlsyn"]=> string(7) "Advance" } 
+		// 	[14]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(0) "" } 
+		// 	[15]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(2) "40" } 
+		// }
+
+		// ["group_uereee9bj6d"]=> array(8) { 
+		// 	[0]=> array(1) { ["text_mfsud1jlsyn"]=> string(8) "Standard" } 
+		// 	[1]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(2) "10" } 
+		// 	[2]=> array(1) { ["text_mfsud1jlsyn"]=> string(5) "Media" } 
+		// 	[3]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(2) "20" } 
+		// 	[4]=> array(1) { ["text_mfsud1jlsyn"]=> string(0) "" } 
+		// 	[5]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(0) "" } 
+		// 	[6]=> array(1) { ["text_mfsud1jlsyn"]=> string(0) "" } 
+		// 	[7]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(0) "" } 
+		// }
 	}
 	// a:4:{i:0;a:4:{
 	//	i:0;s:8:"Standard";
