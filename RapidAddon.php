@@ -52,6 +52,9 @@ class RapidAddon {
 	function __construct($name, $slug) {
 		$this->name = $name;
 		$this->slug = $slug;
+		
+		// $this->mb_fields = $this->get_mb_fields();
+
 		if (!empty($_GET['id'])){
 			$this->isWizard = false;
 		}
@@ -975,6 +978,7 @@ class RapidAddon {
 		}
 
 	function helper_parse($parsingData, $options) {
+		$this->mb_fields = $this->get_mb_fields();
 
 		extract($parsingData);
 
@@ -992,12 +996,12 @@ class RapidAddon {
 		foreach ($options[$this->slug] as $option_name => $option_value) {
 			if ( $import->options[$this->slug][$option_name] ) {	
 				
-				$data[$option_name] = $this->parse_xpath( $xml, $cxpath, $import->options[$this->slug], $data, $option_name, $file );
+				// $data[$option_name] = $this->parse_xpath( $xml, $cxpath, $import->options[$this->slug], $data, $option_name, $file );
 				$data[$option_name] = $this->parse_metabox( $xml, $cxpath, $import->options[$this->slug], $data, $option_name, $file );
-				var_dump( $data[$option_name] );
-				$tmp_files[] = $file;
+				// var_dump( $option_name );
 
-				
+				// $data[$option_name] = XmlImportParser::factory($xml, $cxpath, (string) $import->options[$this->slug][$option_name], $file)->parse();
+				$tmp_files[] = $file;
 
 			} else {
 				$data[$option_name] = array_fill(0, $count, "");
@@ -1043,18 +1047,19 @@ class RapidAddon {
 	}
 
 	function parse_metabox( $xml, $cxpath, $import_slug, $data, $option_name, $file ) {
-		$this->mb_fields = $this->get_mb_fields();
-		
 		if ( ! $this->mb_fields ) {
 			return;
 		}
 
+		$data_field = '';
+
 		foreach ( $this->mb_fields as $field ) {
-			$this->parse_metabox_group( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file );
+			$data_field = $this->parse_metabox_group( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file );
+			// $this->parse_metabox_clone( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file );
+			// $this->parse_metabox_not_clone( $field, $xml, $cxpath, $import_slug, $option_name, $file );
 		}
 
-		// $this->parse_metabox_clone( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file );
-		// $this->parse_metabox_not_clone( $field, $xml, $cxpath, $import_slug, $option_name, $file );
+		return $data_field;
 	}
 
 	function parse_metabox_group( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file ) {
@@ -1063,12 +1068,12 @@ class RapidAddon {
 		}
 
 		$ele_num = $option_name === $field['id'] ? (int) $import_slug[$option_name] : 0;
+		$child_num = count( $field['fields'] );
 		
-		// var_dump( $option_name );
-		// var_dump( $ele_num );
-		$temp = [];
+		$temp = [];   // array data
+		$temp_2 = []; // array sort
+		$temp_3 = []; // array split
 
-		$temp_2 = [];
 		if ( $ele_num !== 0 ) {
 			for ( $x = 1; $x <= $ele_num; $x++ ) {
 				// $field['fields']
@@ -1077,25 +1082,47 @@ class RapidAddon {
 					$string_data = (string) $import_slug[$field_child['id']];
 					// $data[option_name]
 					$l = str_replace( '_i_', $x, $string_data );
-					$temp[] = XmlImportParser::factory($xml, $cxpath, $l, $file)->parse();
+					$temp[][$field_child['id']] = XmlImportParser::factory($xml, $cxpath, $l, $file)->parse();
 				}
 			}
 		}
-		if ( count( $temp ) !== 0 ) {
-			$loop_count = ceil( count( $temp ) / $ele_num );
-			for ( $x = 0; $x < $loop_count; $x++ ) {
-				foreach ( $temp as $k => $v ) {
-					$temp_2[] = $v[ $x ];
-				}
-			}
-			// var_dump($temp_2);
-			// var_dump(array_chunk( $temp_2, 8 ));
-			return array_chunk( $temp_2, count( $temp ) );
-		}
-		
-		return "";
-	}
+		// if ( count( $temp ) !== 0 ) {
+		// 	$loop_count = ceil( count( $temp ) / $ele_num );
+		// 	for ( $x = 0; $x < $loop_count; $x++ ) {
+		// 		foreach ( $temp as $k => $v ) {
+		// 			$temp_2[] = $v[ $x ];
+		// 		}
+		// 	}
+		// 	var_dump($temp_2);
+		// 	var_dump(array_chunk( $temp_2, 8 ));
 
+		// 	foreach( array_chunk( $temp_2, $ele_num ) as $arr ) {
+		// 		$temp_3[] = $arr;
+		// 	}
+			
+		// 	return array_chunk( $temp_3, count( $temp ) );
+		// 	return $temp_2;
+		// }
+		
+		return $temp;
+
+		// $temp = array(8) { 
+		// 	[0]=> array(1) { ["text_mfsud1jlsyn"]=> array(2) {[0]=> string(8) "Standard" [1]=> string(8) "Standard" } }
+		// 	[1]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> array(2) { [0]=> string(2) "10" [1]=> string(3) "100" } } 
+		// 	[2]=> array(1) { ["text_mfsud1jlsyn"]=> array(2) { [0]=> string(5) "Media" [1]=> string(5) "Media" } }
+		// 	[3]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> array(2) { [0]=> string(2) "20" [1]=> string(3) "200" } } 
+		// 	[4]=> array(1) { ["text_mfsud1jlsyn"]=> array(2) { [0]=> string(0) "" [1]=> string(7) "Premium" } } 
+		// 	[5]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> array(2) { [0]=> string(0) "" [1]=> string(2) "30" } } 
+		// 	[6]=> array(1) { ["text_mfsud1jlsyn"]=> array(2) { [0]=> string(0) "" [1]=> string(7) "Advance" } } 
+		// 	[7]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> array(2) { [0]=> string(0) "" [1]=> string(2) "40" } } 
+		// 	}
+	}
+	// a:4:{i:0;a:4:{
+	//	i:0;s:8:"Standard";
+	//	:1;s:2:"10";
+	//	i:2;s:5:"Media";
+	//	i:3;s:2:"20";}i:1;a:4:{i:0;s:0:"";i:1;s:0:"";i:2;s:0:"";i:3;s:0:"";}i:2;a:4:{i:0;s:8:"Standard";i:1;s:3:"100";i:2;s:5:"Media";i:3;s:3:"200";}i:3;a:4:{i:0;s:7:"Premium";i:1;s:2:"30";i:2;s:7:"Advance";i:3;s:2:"40";}}
+	// a:2:{i:0;a:2:{s:16:"text_mfsud1jlsyn";s:8:"Standard";s:28:"text_mfsud1jlsyn_vpd6i9813dd";s:2:"10";}i:1;a:2:{s:16:"text_mfsud1jlsyn";s:5:"Media";s:28:"text_mfsud1jlsyn_vpd6i9813dd";s:2:"20";}}
 	function parse_metabox_clone( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file ) {
 		if ( ! $field['clone'] ) {
 			return '';

@@ -139,7 +139,8 @@ function mb_wpai_import( $post_id, $data, $import_options ) {
 
         mb_import_image( $post_id, $data[ $field['id'] ], $field, $table );
 
-        mb_import_group( $post_id, $data, $field, $table );
+        mb_import_group( $post_id, $data[ $field['id'] ], $field, $table );
+        
     }
 }
 
@@ -213,29 +214,26 @@ function mb_import_group( $post_id, $data, $field, $table ) {
         return;
     }
 
-    if ( $field['clone'] ) {
-        $content_data[] = mb_get_group_data( $field['fields'], $data );
-    }
-    else {
-        $content_data = mb_get_group_data( $field['fields'], $data );
-    }
+    // $content_data[] = mb_get_group_data( $field['fields'], $data );
 
     $wpdb->insert( $table, [
         'post_id'    => $post_id,
         'meta_key'   => $field['id'],
-        'meta_value' => serialize( $content_data ),
+        'meta_value' => serialize( $data )
     ] );
 }
 
 function mb_get_group_data( $field, $data ) {
     global $field_group;
     
+    $content_data = [];
+
     foreach ( $field as $field_child ) {
-        $content_data[] = process_group( $field_child, $data );
-        $content_data[] = process_image( $field_child, $data );
-        $content_data[] = process_text( $field_child, $data );
+        $content_data[$field_child['id']] = process_group( $field_child, $data );
+        $content_data[$field_child['id']] = process_image( $field_child, $data );
+        $content_data[$field_child['id']] = process_text( $field_child, $data );
     }
-    // var_dump($content_data);
+
     return $content_data;
 }
 
@@ -246,34 +244,19 @@ function process_text( $field, $data ) {
         return '';
     }
 
-    if ( $field['clone'] ) {
-        foreach ( $data_lines as $d ) {
-            $content_data[] = $d;
-        }
-    }
-    else {
-        $content_data[] = $data[ $field['id'] ];
-    }
+    $content_data = $data[ $field['id'] ];
 
     return $content_data;
 }
 
 function process_image( $field, $data ) {
     global $field_image;
-    global $field_multi_images;
 
-    if ( in_array( $field['type'], $field_image ) ) {
-        $content_data = attachment_url_to_postid( $data[ $field['id'] ] );
+    if ( ! in_array( $field['type'], $field_image ) ) {
+        return '';
     }
 
-    if ( in_array( $field['type'], $field_multi_images ) ) {
-        $data_lines = explode( "\r\n", $data[ $field['id'] ] );
-
-        foreach ( $data_lines as $d ) {
-            $d = attachment_url_to_postid( $d );
-            $content_data[] = $d;
-        }
-    }
+    $content_data = attachment_url_to_postid( $data[ $field['id'] ] );
 
     return $content_data;
 }
@@ -285,13 +268,10 @@ function process_group( $field, $data ) {
         return '';
     }
 
-    $content_data[] = mb_get_group_data( $field['fields'], $data  );
+    $content_data[$field['id']] = mb_get_group_data( $field['fields'], $data  );
 
     return $content_data;
 }
 
-// a:1:{i:0;a:3:{s:16:"text_era7ad2vaij";a:1:{i:0;s:8:"Standard";}s:17:"number_fnvnrj00qi";a:1:{i:0;s:3:"100";}}}
 
-// {i:0;a:2:{s:16:"text_era7ad2vaij";a:1:{i:0;s:6:"Medium";}s:17:"number_fnvnrj00qi";a:1:{i:0;s:3:"200";}}
-
-// {i:0;a:3:{s:16:"text_era7ad2vaij";a:1:{i:0;s:8:"Standard";}s:17:"number_fnvnrj00qi";a:1:{i:0;s:3:"100";}}
+// a:2:{i:0;a:2:{s:16:"text_mfsud1jlsyn";s:8:"Standard";s:28:"text_mfsud1jlsyn_vpd6i9813dd";s:2:"10";}i:1;a:2:{s:16:"text_mfsud1jlsyn";s:5:"Media";s:28:"text_mfsud1jlsyn_vpd6i9813dd";s:2:"20";}}
