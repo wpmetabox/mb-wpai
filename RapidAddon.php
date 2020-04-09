@@ -1133,17 +1133,19 @@ class RapidAddon {
 				}
 			}
 
-			// for ( $x = 0; $x <= count( $even_child ) + 1; $x += $child_num ) {
-			// 	for ( $y = 1; $y < $child_num; $y++ ) {
-			// 		$even_child[$x] = array_merge( $even_child[$x], $even_child[$x + $y] );
-			// 		unset( $even_child[$x + $y] );
-			// 	}
-			// }
+			for ( $x = 0; $x <= count( $even_child ) + 1; $x += $child_num ) {
+				for ( $y = 1; $y < $child_num; $y++ ) {
+					$even_child[$x] = array_merge( $even_child[$x], $even_child[$x + $y] );
+					unset( $even_child[$x + $y] );
+				}
+			}
 
-			// $temp_3[] = $even_child;
 			$temp_3[] = $odd_child;
+			$temp_3[] = $even_child;
 		}
 		
+		unset( $temp_3[2] );
+		unset( $temp_3[3] );
 		
 		return $temp_3;
 
