@@ -8,7 +8,7 @@
 		<location>Hanoi, Vietnam</location>
 		<date>2020-03-16</date>
 		<description>This is the test event 1</description>
-		<image>http://localhost/metaboxplugins/wp-content/uploads/2020/03/10d3d5de083cdf2d526025d38d14ceff.png</image>
+		<image>http://localhost:8888/metabox/wp-content/uploads/2020/04/logo-laodongthudo.png</image>
 	</event>
 	<event title="Test Event 2">
 		<tickets>
@@ -20,6 +20,6 @@
 		<location>HCMC, Vietnam</location>
 		<date>2020-09-16</date>
 		<description>This is the test event 1</description>
-		<image>http://localhost/metaboxplugins/wp-content/uploads/2020/03/1__6qxsKKM-RQ9B-bH0rEUQ.png</image>
+		<image>http://localhost:8888/metabox/wp-content/uploads/2020/04/ezgif-2-5528a28b27fa.png</image>
 	</event>
 </events>

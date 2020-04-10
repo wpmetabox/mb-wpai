@@ -1052,7 +1052,6 @@ class RapidAddon {
 			return;
 		}
 
-		$data_field = '';
 		$f = [];
 
 		foreach ( $this->mb_fields as $field ) {
@@ -1063,14 +1062,14 @@ class RapidAddon {
 		}
 
 		if ( "group" === $f['type'] ) {
-			$data_field = $this->parse_metabox_group( $f, $xml, $cxpath, $import_slug, $data, $option_name, $file );
+			return $this->parse_metabox_group( $f, $xml, $cxpath, $import_slug, $data, $option_name, $file );
 		} elseif ( $f['clone'] ) {
-			$data_field = $this->parse_metabox_clone( $f, $xml, $cxpath, $import_slug, $data, $option_name, $file );
+			return $this->parse_metabox_clone( $f, $xml, $cxpath, $import_slug, $data, $option_name, $file );
 		} else {
-			$data_field = $this->parse_metabox_not_clone( $f, $xml, $cxpath, $import_slug, $option_name, $file );
+			return $this->parse_metabox_not_clone( $f, $xml, $cxpath, $import_slug, $option_name, $file );
 		}
 		
-		return $data_field;
+		return;
 	}
 
 	function parse_metabox_group( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file ) {
@@ -1125,6 +1124,12 @@ class RapidAddon {
 					$child[$x] = array_merge( $child[$x], $child[$x + $y] );
 					unset( $child[$x + $y] );
 				}
+			}
+
+			foreach ( $child as $k => $v ) {
+				$child[$k] = array_filter( $child[$k] );
+
+				if ( ! $child[$k] ) unset( $child[$k] );
 			}
 
 			$temp_3[] = $child;
@@ -1204,7 +1209,13 @@ class RapidAddon {
 			}
 		}
 
-		return array_chunk( $temp_2, ceil( count( $temp_2 ) / $lines_num ) );
+		$temp_2_chunk = array_chunk( $temp_2, ceil( count( $temp_2 ) / $lines_num ) );
+
+		foreach ( $temp_2_chunk as $k => $v ) {
+			$temp_2_chunk[$k] = array_filter( $temp_2_chunk[$k] );
+		}
+
+		return $temp_2_chunk;
 	}
 
 	function parse_metabox_not_clone( $field, $xml, $cxpath, $import_slug, $option_name, $file ) {

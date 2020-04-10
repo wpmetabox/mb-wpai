@@ -166,13 +166,11 @@ function mb_import_image( $post_id, $data, $field, $table ) {
         ] );
     }
     else {
-        foreach ( $data as $d ) {
-            $wpdb->insert( $table, [
-                'post_id'    => $post_id,
-                'meta_key'   => $field['id'],
-                'meta_value' => attachment_url_to_postid( $d ),
-            ] );
-        }
+        $wpdb->insert( $table, [
+            'post_id'    => $post_id,
+            'meta_key'   => $field['id'],
+            'meta_value' => attachment_url_to_postid( $data ),
+        ] );
     }
 }
 
@@ -195,13 +193,11 @@ function mb_import_text( $post_id, $data, $field, $table ) {
         // a:2:{i:0;s:8:"Standard";i:1;s:5:"Media";}
     }
     else {
-        foreach ( $data as $d ) {
-            $wpdb->insert( $table, [
-                'post_id'    => $post_id,
-                'meta_key'   => $field['id'],
-                'meta_value' => $d,
-            ] );
-        }
+        $wpdb->insert( $table, [
+            'post_id'    => $post_id,
+            'meta_key'   => $field['id'],
+            'meta_value' => $data,
+        ] );
     }
 }
 
