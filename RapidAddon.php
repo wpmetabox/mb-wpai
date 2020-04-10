@@ -1105,36 +1105,24 @@ class RapidAddon {
 		 *  2 data: price + title => divide into 2 array
 		 */
 		for ( $i = 0; $i < $child_num; $i++ ) {
-			$odd_child = [];
-			$even_child = [];
-			foreach( $temp_2 as $k => $v ) {
-				if ( $k % $child_num === 0 ) {
-					$odd_child[] = $temp_2[$k];
-				} else { 
-					$even_child[] = $temp_2[$k];
-				}
+			$child = [];
+
+			// đổi chỗ 0-1-2-3-4-5-6 => 0-2-4-6-1-3-5
+			for ( $x = $i; $x < count( $temp_2 ); $x += $child_num ) {
+				$child[] = $temp_2[$x];
 			}
 
-			for ( $x = 0; $x <= count( $odd_child ) + 1; $x += $child_num ) {
+			// sắp xếp các phần tử 0-2-4-6 vào 1 mảng
+			// 1-3-5-7 vào 1 mảng
+			for ( $x = 0; $x <= count( $child ) + 1; $x += $child_num ) {
 				for ( $y = 1; $y < $child_num; $y++ ) {
-					$odd_child[$x] = array_merge( $odd_child[$x], $odd_child[$x + $y] );
-					unset( $odd_child[$x + $y] );
+					$child[$x] = array_merge( $child[$x], $child[$x + $y] );
+					unset( $child[$x + $y] );
 				}
 			}
 
-			for ( $x = 0; $x <= count( $even_child ) + 1; $x += $child_num ) {
-				for ( $y = 1; $y < $child_num; $y++ ) {
-					$even_child[$x] = array_merge( $even_child[$x], $even_child[$x + $y] );
-					unset( $even_child[$x + $y] );
-				}
-			}
-
-			$temp_3[] = $odd_child;
-			$temp_3[] = $even_child;
+			$temp_3[] = $child;
 		}
-		
-		unset( $temp_3[2] );
-		unset( $temp_3[3] );
 		
 		return $temp_3;
 
