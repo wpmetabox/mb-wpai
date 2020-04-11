@@ -3,8 +3,8 @@
  * Plugin Name: WPAI Addon for MetaBox
  * Description: A complete add-on for importing Meta Box data.
  * Author:      Metabox.io
- * Author URI:  
- * Plugin URI:  
+ * Author URI:
+ * Plugin URI:
  * Version:     1.0.0
  * Text Domain: mb-wpai
  * Domain Path: languages
@@ -15,6 +15,7 @@
 defined( 'ABSPATH' ) || die;
 
 include "RapidAddon.php";
+include "src/Transformer.php";
 require_once( ABSPATH . "wp-config.php" );
 require_once( ABSPATH . "wp-includes/wp-db.php" );
 
@@ -42,7 +43,7 @@ function get_mb_fields( $custom_type ) {
     $custom_type = 'event';
 
     $meta_box_registry = rwmb_get_registry( 'meta_box' );
-    
+
     if ( ! $meta_box_registry ) {
         return;
     }
@@ -92,7 +93,7 @@ function generate_group_fields( $field, $obj ) {
         }
     }
 
-    $obj->add_options( 
+    $obj->add_options(
         $obj->add_field( $field['id'], $field['name'], 'text' ),
         '( Open )',
         $child_fields
@@ -140,7 +141,7 @@ function mb_wpai_import( $post_id, $data, $import_options ) {
         mb_import_image( $post_id, $data[ $field['id'] ], $field, $table );
 
         mb_import_group( $post_id, $data[ $field['id'] ], $field, $table );
-        
+
     }
 }
 
@@ -221,7 +222,7 @@ function mb_import_group( $post_id, $data, $field, $table ) {
 
 function mb_get_group_data( $field, $data ) {
     global $field_group;
-    
+
     $content_data = [];
 
     foreach ( $field as $field_child ) {

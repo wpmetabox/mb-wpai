@@ -1062,167 +1062,78 @@ class RapidAddon {
 		}
 
 		if ( "group" === $f['type'] ) {
-			return $this->parse_metabox_group( $f, $xml, $cxpath, $import_slug, $data, $option_name, $file );
+			return $this->parse_cloneable_group( $f, $xml, $cxpath, $import_slug, $data, $option_name, $file );
 		} elseif ( $f['clone'] ) {
-			return $this->parse_metabox_clone( $f, $xml, $cxpath, $import_slug, $data, $option_name, $file );
+			return $this->parse_cloneable_field( $f, $xml, $cxpath, $import_slug, $data, $option_name, $file );
 		} else {
-			return $this->parse_metabox_not_clone( $f, $xml, $cxpath, $import_slug, $option_name, $file );
+			return $this->parse_non_cloneable_field( $f, $xml, $cxpath, $import_slug, $option_name, $file );
 		}
 
 		return;
 	}
 
-	function parse_metabox_group( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file ) {
-
+	/**
+	 * Parse cloneable group.
+	 *
+	 * @param  [type] $field       [description]
+	 * @param  [type] $xml         [description]
+	 * @param  [type] $cxpath      [description]
+	 * @param  [type] $import_slug [description]
+	 * @param  [type] $data        [description]
+	 * @param  [type] $option_name [description]
+	 * @param  [type] $file        [description]
+	 * @return array
+	 */
+	function parse_cloneable_group( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file ) {
 		$ele_num = $option_name === $field['id'] ? (int) $import_slug[$option_name] : 0;
 		$child_num = count( $field['fields'] );
 
-		$temp = [];   // array data
-		$temp_2 = []; // array sort
-		$temp_3 = []; // array split
+		$values = [];
 
 		if ( $ele_num !== 0 ) {
 			for ( $x = 1; $x <= $ele_num; $x++ ) {
-				// $field['fields']
+				$group_value = [];
 				foreach ( $field['fields'] as $field_child ) {
 					if ( empty( $import_slug[ $field_child['id'] ] ) ) {
 						continue;
 					}
-					$string_data = (string) $import_slug[$field_child['id']];
-					// $data[option_name]
+					$string_data = (string) $import_slug[ $field_child['id'] ];
 					$l = str_replace( '_i_', $x, $string_data );
-					$temp[][$field_child['id']] = XmlImportParser::factory($xml, $cxpath, $l, $file)->parse();
+
+					// Parse child field.
+					$group_value[ $field_child['id'] ] = XmlImportParser::factory( $xml, $cxpath, $l, $file )->parse();
+
+					// $group_value[ $field_child['id'] ] = $this->parse_field( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file );
 				}
+
+				/**
+				 * $group_value = [
+				 *     // Non-cloneable fields.
+				 *     field1 => [value_post1, value_post2],
+				 *     field2 => [value_post1, value_post2],
+				 * ];
+				 */
+				$values[] = $group_value;
 			}
 		}
 
-		/**
-		 *  Tách array 8x2 => 1x16
-		 */
-		foreach ( $temp as $temp_k => $field ) {
-			foreach ( $field as $field_k => $val ) {
-				$temp_arr = [];
-				foreach ( $val as $val_child ) {
-					$temp_arr[ $field_k ] = $val_child;
-					$temp_2[] = $temp_arr;
-				}
-			}
-		}
-
-		/**
-		 *  2 data: price + title => divide into 2 array
-		 */
-		for ( $i = 0; $i < $child_num; $i++ ) {
-			$child = [];
-
-			// đổi chỗ 0-1-2-3-4-5-6 => 0-2-4-6-1-3-5
-			for ( $x = $i; $x < count( $temp_2 ); $x += $child_num ) {
-				$child[] = $temp_2[$x];
-			}
-
-			// sắp xếp các phần tử 0-2-4-6 vào 1 mảng
-			// 1-3-5-7 vào 1 mảng
-			for ( $x = 0; $x <= count( $child ) + 1; $x += $child_num ) {
-				for ( $y = 1; $y < $child_num; $y++ ) {
-					$child[$x] = array_merge( $child[$x], $child[$x + $y] );
-					unset( $child[$x + $y] );
-				}
-			}
-
-			foreach ( $child as $k => $v ) {
-				$child[$k] = array_filter( $child[$k] );
-
-				if ( ! $child[$k] ) unset( $child[$k] );
-			}
-
-			$temp_3[] = $child;
-		}
-
-		return $temp_3;
-
-		// result needed
-		/**
-		 * array(2) { --------- Array 2x2 -- 2 post, mỗi post 2 group
-		 * 	[0] { // post 1
-		 * 		array(2) {
-		 * 			[0] => array(2) { ["title"]=>Standard ["price"]=>10 }     // group 1
-		 *  		[1] => array(2) { ["title"]=>Media ["price"]=>20 }	      // group 2
-		 * 		}
-		 * 	}
-		 * 	[1] { // post 2
-		 * 		array(2) {
-		 * 			[2] => array(2) { ["title"]=>Standard ["price"]=>100 }	  // group 1
-		 *  		[3] => array(2) { ["title"]=>Media ["price"]=>200 }	      // group 2
-		 * 		}
-		 * 	}
-		 *  
-		 * }
-		 */
-
-		// $temp = array(8) { --------- Array 4x2
-		// 	[0]=> array(1) { ["title"]=> array(2) {[0]=> string(8) "Standard" [1]=> string(8) "Standard" } } // title_post_1 - title_post_2
-		// 	[1]=> array(1) { ["price"]=> array(2) { [0]=> string(2) "10" [1]=> string(3) "100" } }			 // price_post_1 - price_post_2
-		// 	[2]=> array(1) { ["title"]=> array(2) { [0]=> string(5) "Media" [1]=> string(5) "Media" } }		 // title_2_post_1 - title_2_post_2
-		// 	[3]=> array(1) { ["price"]=> array(2) { [0]=> string(2) "20" [1]=> string(3) "200" } }			 // price_2_post_1 - price_2_post_2
-
-		// 	[4]=> array(1) { ["text_mfsud1jlsyn"]=> array(2) { [0]=> string(0) "" [1]=> string(7) "Premium" } }
-		// 	[5]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> array(2) { [0]=> string(0) "" [1]=> string(2) "30" } }
-		// 	[6]=> array(1) { ["text_mfsud1jlsyn"]=> array(2) { [0]=> string(0) "" [1]=> string(7) "Advance" } }
-		// 	[7]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> array(2) { [0]=> string(0) "" [1]=> string(2) "40" } }
-		// 	}
-
-		// $temp_2 = array(16) { ----------- Array 8x1
-		// 	[0]=> array(1) { ["title"]=> string(8) "Standard" }
-		// 	[1]=> array(1) { ["title"]=> string(8) "Standard" }
-		// 	[2]=> array(1) { ["price"]=> string(2) "10" }
-		// 	[3]=> array(1) { ["price"]=> string(3) "100" }
-		// 	[4]=> array(1) { ["title"]=> string(5) "Media" }
-		// 	[5]=> array(1) { ["title"]=> string(5) "Media" }
-		// 	[6]=> array(1) { ["ptice"]=> string(2) "20" }
-		// 	[7]=> array(1) { ["price"]=> string(3) "200" }
-
-		// 	[8]=> array(1) { ["text_mfsud1jlsyn"]=> string(0) "" }
-		// 	[9]=> array(1) { ["text_mfsud1jlsyn"]=> string(7) "Premium" }
-		// 	[10]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(0) "" }
-		// 	[11]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(2) "30" }
-		// 	[12]=> array(1) { ["text_mfsud1jlsyn"]=> string(0) "" }
-		// 	[13]=> array(1) { ["text_mfsud1jlsyn"]=> string(7) "Advance" }
-		// 	[14]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(0) "" }
-		// 	[15]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(2) "40" }
-		// }
-
-		//  array(8) { ----------- Đổi chỗ các phần tử trong array, xếp các fields con thuộc 1 post ở cạnh nhau
-		// 	[0]=> array(1) { ["title"]=> string(8) "Standard" }
-		// 	[1]=> array(1) { ["price"]=> string(2) "10" }
-		// 	[2]=> array(1) { ["title"]=> string(5) "Media" }
-		// 	[3]=> array(1) { ["price"]=> string(2) "20" }
-		// 	[4]=> array(1) { ["title"]=> string(0) "Standard" }
-		// 	[5]=> array(1) { ["price"]=> string(0) "100" }
-		// 	[6]=> array(1) { ["title"]=> string(0) "Media" }
-		// 	[7]=> array(1) { ["price"]=> string(0) "200" }
-		// }
-
-		/**
-		 * array(2) { --------- Gộp 2 phần phần tử cạnh nhau ở bước trên thành 1 mảng => Array 4x2
-		 * 	[0] => array(2) { ["title"]=>Standard ["price"]=>10 }     // group 1
-		 *  [1] => array(2) { ["title"]=>Media ["price"]=>20 }	      // group 2
-		 *  [2] => array(2) { ["title"]=>Standard ["price"]=>100 }	  // group 3
-		 *  [3] => array(2) { ["title"]=>Media ["price"]=>200 }	      // group 4
-		 * }
-		 */
-
-		// từ mảng trên, lấy số phần tử chia cho số lần lặp => số post
-		// 4 / 2 = 2 (posts)
-		// gộp tiếp mỗi 2 phần tử thành 1 mảng thì ra kết quả mong muốn
+		return MBWPAI\Transformer::transform_cloneable_group( $values );
 	}
-	// a:4:{i:0;a:4:{
-	//	i:0;s:8:"Standard";
-	//	:1;s:2:"10";
-	//	i:2;s:5:"Media";
-	//	i:3;s:2:"20";}i:1;a:4:{i:0;s:0:"";i:1;s:0:"";i:2;s:0:"";i:3;s:0:"";}i:2;a:4:{i:0;s:8:"Standard";i:1;s:3:"100";i:2;s:5:"Media";i:3;s:3:"200";}i:3;a:4:{i:0;s:7:"Premium";i:1;s:2:"30";i:2;s:7:"Advance";i:3;s:2:"40";}}
-	// a:2:{i:0;a:2:{s:16:"text_mfsud1jlsyn";s:8:"Standard";s:28:"text_mfsud1jlsyn_vpd6i9813dd";s:2:"10";}i:1;a:2:{s:16:"text_mfsud1jlsyn";s:5:"Media";s:28:"text_mfsud1jlsyn_vpd6i9813dd";s:2:"20";}}
-	function parse_metabox_clone( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file ) {
 
+	/**
+	 * Parse cloneable field.
+	 *
+	 * @param  array $field        Field settings.
+	 * @param  [type] $xml         [description]
+	 * @param  [type] $cxpath      [description]
+	 * @param  [type] $import_slug [description]
+	 * @param  [type] $data        [description]
+	 * @param  [type] $option_name [description]
+	 * @param  [type] $file        [description]
+	 *
+	 * @return array [[clone1_post1, clone2_post1], [clone1_post2, clone2_post2]]
+	 */
+	function parse_cloneable_field( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file ) {
 		$string_data = (string) $import_slug[$option_name];
 		$lines = explode( "\r\n", $string_data );
 
@@ -1237,9 +1148,9 @@ class RapidAddon {
 			$temp[] = XmlImportParser::factory($xml, $cxpath, $l, $file)->parse();
 		}
 
-		// [ a, a, a ]
-		// [ b, b, b ]
-		// => [ a, b ], [ a, b ], [ a, b ]
+		// [ field_clone1_post1, field_clone1_post2, field_clone1_post3, ... ]
+		// [ field_clone2_post1, field_clone2_post2, ... ]
+		// => [ field_clone1_post1, field_clone2_post1 ], [ field_clone1_post2, field_clone2_post2 ], ...
 		for ( $x = 0; $x < $lines_num; $x++ ) {
 			foreach ( $temp as $k => $v ) {
 				$temp_2[] = $v[ $x ];
@@ -1255,7 +1166,7 @@ class RapidAddon {
 		return $temp_2_chunk;
 	}
 
-	function parse_metabox_not_clone( $field, $xml, $cxpath, $import_slug, $option_name, $file ) {
+	function parse_non_cloneable_field( $field, $xml, $cxpath, $import_slug, $option_name, $file ) {
 		return XmlImportParser::factory($xml, $cxpath, (string) $import_slug[$option_name], $file)->parse();
 	}
 
