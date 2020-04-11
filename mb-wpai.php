@@ -14,8 +14,10 @@
 
 defined( 'ABSPATH' ) || die;
 
-include "RapidAddon.php";
-include "src/Transformer.php";
+require __DIR__ . '/vendor/autoload.php';
+
+require 'RapidAddon.php';
+
 require_once( ABSPATH . "wp-config.php" );
 require_once( ABSPATH . "wp-includes/wp-db.php" );
 

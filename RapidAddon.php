@@ -1,5 +1,5 @@
 <?php
-// if ( !class_exists( 'RapidAddon' ) ) :
+// namespace MBWPAI;
 
 class RapidAddon {
 
@@ -1437,5 +1437,3 @@ class RapidAddon {
 		return $image;
 	}
 }
-
-// endif;

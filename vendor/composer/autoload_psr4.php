@@ -6,8 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Symfony\\Component\\Finder\\' => array($vendorDir . '/symfony/finder'),
     'MBWPAI\\' => array($baseDir . '/src'),
-    'Light\\Composer\\' => array($vendorDir . '/light/composer-ignore-plugin'),
-    'Composer\\Installers\\' => array($vendorDir . '/composer/installers/src/Composer/Installers'),
 );
