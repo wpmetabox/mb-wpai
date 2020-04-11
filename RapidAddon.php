@@ -1140,26 +1140,47 @@ class RapidAddon {
 
 		return $temp_3;
 
-		// $temp = array(8) {
-		// 	[0]=> array(1) { ["text_mfsud1jlsyn"]=> array(2) {[0]=> string(8) "Standard" [1]=> string(8) "Standard" } }
-		// 	[1]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> array(2) { [0]=> string(2) "10" [1]=> string(3) "100" } }
-		// 	[2]=> array(1) { ["text_mfsud1jlsyn"]=> array(2) { [0]=> string(5) "Media" [1]=> string(5) "Media" } }
-		// 	[3]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> array(2) { [0]=> string(2) "20" [1]=> string(3) "200" } }
+		// result needed
+		/**
+		 * array(2) { --------- Array 2x2 -- 2 post, mỗi post 2 group
+		 * 	[0] { // post 1
+		 * 		array(2) {
+		 * 			[0] => array(2) { ["title"]=>Standard ["price"]=>10 }     // group 1
+		 *  		[1] => array(2) { ["title"]=>Media ["price"]=>20 }	      // group 2
+		 * 		}
+		 * 	}
+		 * 	[1] { // post 2
+		 * 		array(2) {
+		 * 			[2] => array(2) { ["title"]=>Standard ["price"]=>100 }	  // group 1
+		 *  		[3] => array(2) { ["title"]=>Media ["price"]=>200 }	      // group 2
+		 * 		}
+		 * 	}
+		 *  
+		 * }
+		 */
+
+		// $temp = array(8) { --------- Array 4x2
+		// 	[0]=> array(1) { ["title"]=> array(2) {[0]=> string(8) "Standard" [1]=> string(8) "Standard" } } // title_post_1 - title_post_2
+		// 	[1]=> array(1) { ["price"]=> array(2) { [0]=> string(2) "10" [1]=> string(3) "100" } }			 // price_post_1 - price_post_2
+		// 	[2]=> array(1) { ["title"]=> array(2) { [0]=> string(5) "Media" [1]=> string(5) "Media" } }		 // title_2_post_1 - title_2_post_2
+		// 	[3]=> array(1) { ["price"]=> array(2) { [0]=> string(2) "20" [1]=> string(3) "200" } }			 // price_2_post_1 - price_2_post_2
+
 		// 	[4]=> array(1) { ["text_mfsud1jlsyn"]=> array(2) { [0]=> string(0) "" [1]=> string(7) "Premium" } }
 		// 	[5]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> array(2) { [0]=> string(0) "" [1]=> string(2) "30" } }
 		// 	[6]=> array(1) { ["text_mfsud1jlsyn"]=> array(2) { [0]=> string(0) "" [1]=> string(7) "Advance" } }
 		// 	[7]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> array(2) { [0]=> string(0) "" [1]=> string(2) "40" } }
 		// 	}
 
-		// $temp_2 = array(16) {
-		// 	[0]=> array(1) { ["text_mfsud1jlsyn"]=> string(8) "Standard" }
-		// 	[1]=> array(1) { ["text_mfsud1jlsyn"]=> string(8) "Standard" }
-		// 	[2]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(2) "10" }
-		// 	[3]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(3) "100" }
-		// 	[4]=> array(1) { ["text_mfsud1jlsyn"]=> string(5) "Media" }
-		// 	[5]=> array(1) { ["text_mfsud1jlsyn"]=> string(5) "Media" }
-		// 	[6]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(2) "20" }
-		// 	[7]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(3) "200" }
+		// $temp_2 = array(16) { ----------- Array 8x1
+		// 	[0]=> array(1) { ["title"]=> string(8) "Standard" }
+		// 	[1]=> array(1) { ["title"]=> string(8) "Standard" }
+		// 	[2]=> array(1) { ["price"]=> string(2) "10" }
+		// 	[3]=> array(1) { ["price"]=> string(3) "100" }
+		// 	[4]=> array(1) { ["title"]=> string(5) "Media" }
+		// 	[5]=> array(1) { ["title"]=> string(5) "Media" }
+		// 	[6]=> array(1) { ["ptice"]=> string(2) "20" }
+		// 	[7]=> array(1) { ["price"]=> string(3) "200" }
+
 		// 	[8]=> array(1) { ["text_mfsud1jlsyn"]=> string(0) "" }
 		// 	[9]=> array(1) { ["text_mfsud1jlsyn"]=> string(7) "Premium" }
 		// 	[10]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(0) "" }
@@ -1170,16 +1191,29 @@ class RapidAddon {
 		// 	[15]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(2) "40" }
 		// }
 
-		// ["group_uereee9bj6d"]=> array(8) {
-		// 	[0]=> array(1) { ["text_mfsud1jlsyn"]=> string(8) "Standard" }
-		// 	[1]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(2) "10" }
-		// 	[2]=> array(1) { ["text_mfsud1jlsyn"]=> string(5) "Media" }
-		// 	[3]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(2) "20" }
-		// 	[4]=> array(1) { ["text_mfsud1jlsyn"]=> string(0) "" }
-		// 	[5]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(0) "" }
-		// 	[6]=> array(1) { ["text_mfsud1jlsyn"]=> string(0) "" }
-		// 	[7]=> array(1) { ["text_mfsud1jlsyn_vpd6i9813dd"]=> string(0) "" }
+		//  array(8) { ----------- Đổi chỗ các phần tử trong array, xếp các fields con thuộc 1 post ở cạnh nhau
+		// 	[0]=> array(1) { ["title"]=> string(8) "Standard" }
+		// 	[1]=> array(1) { ["price"]=> string(2) "10" }
+		// 	[2]=> array(1) { ["title"]=> string(5) "Media" }
+		// 	[3]=> array(1) { ["price"]=> string(2) "20" }
+		// 	[4]=> array(1) { ["title"]=> string(0) "Standard" }
+		// 	[5]=> array(1) { ["price"]=> string(0) "100" }
+		// 	[6]=> array(1) { ["title"]=> string(0) "Media" }
+		// 	[7]=> array(1) { ["price"]=> string(0) "200" }
 		// }
+
+		/**
+		 * array(2) { --------- Gộp 2 phần phần tử cạnh nhau ở bước trên thành 1 mảng => Array 4x2
+		 * 	[0] => array(2) { ["title"]=>Standard ["price"]=>10 }     // group 1
+		 *  [1] => array(2) { ["title"]=>Media ["price"]=>20 }	      // group 2
+		 *  [2] => array(2) { ["title"]=>Standard ["price"]=>100 }	  // group 3
+		 *  [3] => array(2) { ["title"]=>Media ["price"]=>200 }	      // group 4
+		 * }
+		 */
+
+		// từ mảng trên, lấy số phần tử chia cho số lần lặp => số post
+		// 4 / 2 = 2 (posts)
+		// gộp tiếp mỗi 2 phần tử thành 1 mảng thì ra kết quả mong muốn
 	}
 	// a:4:{i:0;a:4:{
 	//	i:0;s:8:"Standard";
