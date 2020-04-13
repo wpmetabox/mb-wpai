@@ -73,13 +73,16 @@ function generate_fields( $mbs, $obj ) {
     // var_dump( get_post_types(array('_builtin' => false, 'show_ui' => true), 'objects') );
 
     foreach( $fields as $field ) {
-        generate_normal_fields( $field, $obj );
-        generate_group_fields( $field, $obj );
+        generate_text_field( $field, $obj );
+        generate_image_field( $field, $obj );
+        generate_group_field( $field, $obj );
     }
 }
 
-function generate_group_fields( $field, $obj ) {
+function generate_group_field( $field, $obj ) {
     global $field_group;
+    global $field_text;
+    global $field_image;
 
     if ( ! in_array( $field['type'], $field_group ) ) {
         return;
@@ -90,8 +93,10 @@ function generate_group_fields( $field, $obj ) {
     $child_fields = [];
 
     foreach( $field['fields'] as $child_field ) {
-        if ( ! in_array( $child_field['type'], $field_group ) ) {
+        if ( in_array( $child_field['type'], $field_text ) ) {
             array_push( $child_fields, $obj->add_field( $child_field['id'], $child_field['name'], 'textarea', null, 'Enter each value in a new line' ) );
+        } elseif ( in_array( $child_field['type'], $field_image ) ) {
+            array_push( $child_fields, $obj->add_field( $child_field['id'], $child_field['name'], 'image' ) );
         }
     }
 
@@ -109,15 +114,24 @@ function generate_group_fields( $field, $obj ) {
     }
 }
 
-function generate_normal_fields( $field, $obj ) {
+function generate_text_field( $field, $obj ) {
     global $field_text;
-    global $field_image;
 
-    if ( ! in_array( $field['type'], $field_text ) && ! in_array( $field['type'], $field_image ) ) {
+    if ( ! in_array( $field['type'], $field_text ) ) {
         return;
     }
 
     $obj->add_field( $field['id'], $field['name'], 'textarea', null, 'Enter each value in a new line' );
+}
+
+function generate_image_field( $field, $obj ) {
+    global $field_image;
+
+    if ( ! in_array( $field['type'], $field_image ) ) {
+        return;
+    }
+    
+    $obj->import_images( $field['id'], $field['name'] );
 }
 
 function execute( $mbs ) {
