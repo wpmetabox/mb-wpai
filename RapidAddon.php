@@ -1063,6 +1063,7 @@ class RapidAddon {
 				 */
 				$values[] = $group_value;
 			}
+			return MBWPAI\Transformer::transform_cloneable_group( $values, $child_num );
 		}
 		/**
 		 * Group not clone
@@ -1080,9 +1081,9 @@ class RapidAddon {
 			}
 
 			$values[] = $group_value;
-		}
 
-		return MBWPAI\Transformer::transform_cloneable_group( $values, $child_num );
+			return $values;
+		}
 	}
 
 	/**
