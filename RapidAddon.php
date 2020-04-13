@@ -1035,6 +1035,9 @@ class RapidAddon {
 
 		$values = [];
 
+		/**
+		 * Group clone
+		 */
 		if ( $ele_num !== 0 ) {
 			for ( $x = 1; $x <= $ele_num; $x++ ) {
 				$group_value = [];
@@ -1060,6 +1063,23 @@ class RapidAddon {
 				 */
 				$values[] = $group_value;
 			}
+		}
+		/**
+		 * Group not clone
+		 */
+		else {
+			$group_value = [];
+			foreach ( $field['fields'] as $field_child ) {
+				if ( empty( $import_slug[ $field_child['id'] ] ) ) {
+					continue;
+				}
+				$string_data = (string) $import_slug[ $field_child['id'] ];
+
+				// Parse child field.
+				$group_value[ $field_child['id'] ] = XmlImportParser::factory( $xml, $cxpath, $string_data, $file )->parse();
+			}
+
+			$values[] = $group_value;
 		}
 
 		return MBWPAI\Transformer::transform_cloneable_group( $values, $child_num );
