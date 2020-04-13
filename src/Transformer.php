@@ -38,7 +38,7 @@ class Transformer {
 	 * @param array $input Input group data.
 	 * @return array
 	 */
-	public static function transform_cloneable_group( $input ) {
+	public static function transform_cloneable_group( $input, $child_num ) {
 		/**
 		 *  Tách array 8x2 => 1x16
 		 */
@@ -81,7 +81,7 @@ class Transformer {
 
 			$output[] = $child;
 		}
-
+		l( $output );
 		return $output;
 	}
 }
