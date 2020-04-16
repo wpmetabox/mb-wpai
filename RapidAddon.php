@@ -940,10 +940,9 @@ class RapidAddon {
 
 		foreach ($options[$this->slug] as $option_name => $option_value) {
 			if ( $import->options[$this->slug][$option_name] ) {
-
+				// l($import->options[$this->slug][$option_name]);
 				$data[$option_name] = $this->parse_xpath( $xml, $cxpath, $import->options[$this->slug], $data, $option_name, $file );
 				$data[$option_name] = $this->parse_metabox( $xml, $cxpath, $import->options[$this->slug], $data, $option_name, $file );
-				// var_dump( $option_name );
 
 				// $data[$option_name] = XmlImportParser::factory($xml, $cxpath, (string) $import->options[$this->slug][$option_name], $file)->parse();
 				$tmp_files[] = $file;
@@ -959,7 +958,7 @@ class RapidAddon {
 
 		// var_dump( $data );
 		// print("<pre>".print_r($data,true)."</pre>");
-		l($data);
+		// l($data);
 		return $data;
 	}
 
@@ -1149,7 +1148,7 @@ class RapidAddon {
 	function parse_checkbox_list( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file ) {
 		$string_data = (string) $import_slug[$option_name];
 		$lines = explode( "\r\n", $string_data );
-
+		// l( $lines );
 		$lines_num = (int) $lines[0];
 
 		$temp = [];
@@ -1157,9 +1156,11 @@ class RapidAddon {
 		$temp_2 = [];
 
 		if ( $field['clone'] ) {
-			for ( $y = 1; $x <= count( $lines ); $y++ ) {
+			// l( $lines );
+			for ( $y = 1; $y < count( $lines ); $y++ ) {
 				for ( $x = 1; $x <= $lines_num; $x++ ) {
 					$l = str_replace( '_i_', $x, $lines[$y]);
+					// l( $l );
 					$temp[] = XmlImportParser::factory($xml, $cxpath, $l, $file)->parse();
 				}
 			}
@@ -1178,11 +1179,25 @@ class RapidAddon {
 
 		$temp_2_chunk = array_chunk( $temp_2, ceil( count( $temp_2 ) / $lines_num ) );
 
+		if ( $field['clone'] ) {
+			foreach ( $temp_2_chunk as $k => $v ) {
+				$temp_2_chunk[$k] = array_chunk( $v, $lines_num );
+
+				foreach ( $temp_2_chunk[$k] as $k2 => $v2 ) {
+					$temp_2_chunk[$k][$k2] = array_filter( $temp_2_chunk[$k][$k2] );
+		
+					if ( ! $temp_2_chunk[$k][$k2] ) unset( $temp_2_chunk[$k][$k2] );
+				}
+			}
+			
+		}
+
 		foreach ( $temp_2_chunk as $k => $v ) {
 			$temp_2_chunk[$k] = array_filter( $temp_2_chunk[$k] );
 
 			if ( ! $temp_2_chunk[$k] ) unset( $temp_2_chunk[$k] );
 		}
+		// l( $temp_2_chunk );
 
 		return $temp_2_chunk;
 	}
