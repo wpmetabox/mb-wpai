@@ -27,16 +27,12 @@ $fields = [];
 $mb_objects = [];
 
 $field_text = [ 'text', 'textarea', 'date', 'map', 'radio', 'checkbox', 'autocomplete', 'number' ];
+$field_list = [ 'checkbox_list' ];
 $field_image = [ 'image', 'single_image', 'image_select', 'image_upload', 'file', 'file_upload' ];
 $field_multi_images = [ 'image_advanced', 'file_advanced' ];
 $field_group = [ 'group' ];
 
 add_action( 'init', 'get_mb_fields', 99);
-add_action( 'init', 'enqueue_scripts', 99);
-
-function enqueue_scripts() {
-    wp_enqueue_script( 'mb-wpai', plugin_dir_url( __FILE__ ) . 'assets/scripts.js', ['jquery'], '1.0.0', true );
-}
 
 function get_mb_fields( $custom_type ) {
     global $mb_objects;
@@ -74,15 +70,27 @@ function generate_fields( $mbs, $obj ) {
 
     foreach( $fields as $field ) {
         generate_text_field( $field, $obj );
+        generate_multiple_value_field( $field, $obj );
         generate_image_field( $field, $obj );
         generate_group_field( $field, $obj );
     }
+}
+
+function generate_multiple_value_field( $field, $obj ) {
+    global $field_list;
+
+    if ( ! in_array( $field['type'], $field_list ) ) {
+        return;
+    }
+
+    $obj->add_field( $field['id'], $field['name'], 'textarea', null, 'Enter each value in a new line' );
 }
 
 function generate_group_field( $field, $obj ) {
     global $field_group;
     global $field_text;
     global $field_image;
+    global $field_list;
 
     if ( ! in_array( $field['type'], $field_group ) ) {
         return;
@@ -97,6 +105,8 @@ function generate_group_field( $field, $obj ) {
             array_push( $child_fields, $obj->add_field( $child_field['id'], $child_field['name'], 'textarea', null, 'Enter each value in a new line' ) );
         } elseif ( in_array( $child_field['type'], $field_image ) ) {
             array_push( $child_fields, $obj->add_field( $child_field['id'], $child_field['name'], 'image' ) );
+        } elseif ( in_array( $child_field['type'], $field_list ) ) {
+            array_push( $child_fields, $obj->add_field( $child_field['id'], $child_field['name'], 'textarea', null, 'Enter each value in a new line' ) );
         }
     }
 
@@ -156,8 +166,36 @@ function mb_wpai_import( $post_id, $data, $import_options ) {
 
         mb_import_image( $post_id, $data[ $field['id'] ], $field, $table );
 
-        mb_import_group( $post_id, $data[ $field['id'] ], $field, $table );
+        mb_import_multiple_value( $post_id, $data[ $field['id'] ], $field, $table );
 
+        mb_import_group( $post_id, $data[ $field['id'] ], $field, $table );
+    }
+}
+
+// import checkbox_list
+function mb_import_multiple_value( $post_id, $data, $field, $table ) {
+    global $wpdb;
+    global $field_list;
+
+    if ( ! in_array( $field['type'], $field_list ) ) {
+        return;
+    }
+
+    if ( $field['clone'] ) {
+        $wpdb->insert( $table, [
+            'post_id'    => $post_id,
+            'meta_key'   => $field['id'],
+            'meta_value' => serialize( $data )
+        ] );
+    }
+    else {
+        foreach( $data as $k => $v ) {
+            $wpdb->insert( $table, [
+                'post_id'    => $post_id,
+                'meta_key'   => $field['id'],
+                'meta_value' => $v,
+            ] );
+        }
     }
 }
 

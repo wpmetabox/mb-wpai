@@ -5,6 +5,11 @@
 			<ticket price="10" title="Standard"/>
 			<ticket price="20" title="Media"/>
 		</tickets>
+		<transports>
+			<transport type="Bike" type_2="Car" color="Green" color_2="Red" />
+			<transport type="Plane" type_2="Boat" color="Black" color_2="Green" />
+			<transport type="Car" type_2="Bike" color="Red" color_2="Black" />	
+		</transports>
 		<location>Hanoi, Vietnam</location>
 		<date>2020-03-16</date>
 		<description>This is the test event 1</description>
@@ -17,6 +22,12 @@
 			<ticket price="30" title="Premium"/>
 			<ticket price="40" title="Advance"/>
 		</tickets>
+		<transports>
+			<transport type="Bike" type_2="Car" color="Green" color_2="Red" />
+			<transport type="Plane" type_2="Boat" color="Black" color_2="Red" />
+			<transport type="Car" type_2="Bike" color="Green" color_2="Black" />	
+			<transport type="Boat" type_2="Plane" color="Red" color_2="Black" />	
+		</transports>
 		<location>HCMC, Vietnam</location>
 		<date>2020-09-16</date>
 		<description>This is the test event 1</description>

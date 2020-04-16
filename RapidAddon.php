@@ -958,7 +958,8 @@ class RapidAddon {
 		}
 
 		// var_dump( $data );
-		print("<pre>".print_r($data,true)."</pre>");
+		// print("<pre>".print_r($data,true)."</pre>");
+		l($data);
 		return $data;
 	}
 
@@ -1008,9 +1009,14 @@ class RapidAddon {
 
 		if ( "group" === $f['type'] ) {
 			return $this->parse_cloneable_group( $f, $xml, $cxpath, $import_slug, $data, $option_name, $file );
-		} elseif ( $f['clone'] ) {
+		}
+		elseif ( "checkbox_list" === $f['type'] ) {
+			return $this->parse_checkbox_list( $f, $xml, $cxpath, $import_slug, $data, $option_name, $file );
+		}
+		elseif ( $f['clone'] ) {
 			return $this->parse_cloneable_field( $f, $xml, $cxpath, $import_slug, $data, $option_name, $file );
-		} else {
+		}
+		else {
 			return $this->parse_non_cloneable_field( $f, $xml, $cxpath, $import_slug, $option_name, $file );
 		}
 
@@ -1110,8 +1116,10 @@ class RapidAddon {
 		$temp_2 = [];
 
 		for ( $x = 1; $x <= $lines_num; $x++ ) {
-			$l = str_replace( '_i_', $x, $lines[1]);
-			$temp[] = XmlImportParser::factory($xml, $cxpath, $l, $file)->parse();
+			for ( $y = 1; $y <= count( $lines ); $y++ ) {
+				$l = str_replace( '_i_', $x, $lines[$y]);
+				$temp[] = XmlImportParser::factory($xml, $cxpath, $l, $file)->parse();
+			}
 		}
 
 		// [ field_clone1_post1, field_clone1_post2, field_clone1_post3, ... ]
@@ -1127,6 +1135,8 @@ class RapidAddon {
 
 		foreach ( $temp_2_chunk as $k => $v ) {
 			$temp_2_chunk[$k] = array_filter( $temp_2_chunk[$k] );
+
+			if ( ! $temp_2_chunk[$k] ) unset( $temp_2_chunk[$k] );
 		}
 
 		return $temp_2_chunk;
@@ -1134,6 +1144,47 @@ class RapidAddon {
 
 	function parse_non_cloneable_field( $field, $xml, $cxpath, $import_slug, $option_name, $file ) {
 		return XmlImportParser::factory($xml, $cxpath, (string) $import_slug[$option_name], $file)->parse();
+	}
+
+	function parse_checkbox_list( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file ) {
+		$string_data = (string) $import_slug[$option_name];
+		$lines = explode( "\r\n", $string_data );
+
+		$lines_num = (int) $lines[0];
+
+		$temp = [];
+
+		$temp_2 = [];
+
+		if ( $field['clone'] ) {
+			for ( $y = 1; $x <= count( $lines ); $y++ ) {
+				for ( $x = 1; $x <= $lines_num; $x++ ) {
+					$l = str_replace( '_i_', $x, $lines[$y]);
+					$temp[] = XmlImportParser::factory($xml, $cxpath, $l, $file)->parse();
+				}
+			}
+		} else {
+			for ( $x = 1; $x <= $lines_num; $x++ ) {
+				$l = str_replace( '_i_', $x, $lines[1]);
+				$temp[] = XmlImportParser::factory($xml, $cxpath, $l, $file)->parse();
+			}
+		}
+		
+		for ( $x = 0; $x < $lines_num; $x++ ) {
+			foreach ( $temp as $k => $v ) {
+				$temp_2[] = $v[ $x ];
+			}
+		}
+
+		$temp_2_chunk = array_chunk( $temp_2, ceil( count( $temp_2 ) / $lines_num ) );
+
+		foreach ( $temp_2_chunk as $k => $v ) {
+			$temp_2_chunk[$k] = array_filter( $temp_2_chunk[$k] );
+
+			if ( ! $temp_2_chunk[$k] ) unset( $temp_2_chunk[$k] );
+		}
+
+		return $temp_2_chunk;
 	}
 
 	function can_update_meta($meta_key, $import_options) {

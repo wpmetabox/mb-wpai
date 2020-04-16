@@ -81,7 +81,7 @@ class Transformer {
 
 			$output[] = $child;
 		}
-		l( $output );
+		// l( $output );
 		return $output;
 	}
 }
