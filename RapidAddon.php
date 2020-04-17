@@ -1005,9 +1005,9 @@ class RapidAddon {
 				break;
 			}
 		}
-
+		
 		if ( "group" === $f['type'] ) {
-			return $this->parse_cloneable_group( $f, $xml, $cxpath, $import_slug, $data, $option_name, $file );
+			return $this->parse_group( $f, $xml, $cxpath, $import_slug, $data, $option_name, $file );
 		}
 		elseif ( "checkbox_list" === $f['type'] ) {
 			return $this->parse_checkbox_list( $f, $xml, $cxpath, $import_slug, $data, $option_name, $file );
@@ -1034,7 +1034,7 @@ class RapidAddon {
 	 * @param  [type] $file        [description]
 	 * @return array
 	 */
-	function parse_cloneable_group( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file ) {
+	function parse_group( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file ) {
 		$ele_num = $option_name === $field['id'] ? (int) $import_slug[$option_name] : 0;
 		$child_num = count( $field['fields'] );
 
@@ -1050,13 +1050,18 @@ class RapidAddon {
 					if ( empty( $import_slug[ $field_child['id'] ] ) ) {
 						continue;
 					}
+
 					$string_data = (string) $import_slug[ $field_child['id'] ];
-					$l = str_replace( '_i_', $x, $string_data );
+					// $l = str_replace( '_i_', $x, $string_data );
 
 					// Parse child field.
-					$group_value[ $field_child['id'] ] = XmlImportParser::factory( $xml, $cxpath, $l, $file )->parse();
+					// $group_value[ $field_child['id'] ] = XmlImportParser::factory( $xml, $cxpath, $l, $file )->parse();
 
 					// $group_value[ $field_child['id'] ] = $this->parse_field( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file );
+					// if ( "checkbox_list" === $field_child['type'] ) {
+						
+						$group_value[ $field_child['id'] ] = $this->parse_checkbox_list( $field_child, $xml, $cxpath, $import_slug, $data, $field_child['id'], $file );
+					// }
 				}
 
 				/**
@@ -1066,9 +1071,13 @@ class RapidAddon {
 				 *     field2 => [value_post1, value_post2],
 				 * ];
 				 */
+
 				$values[] = $group_value;
 			}
-			return MBWPAI\Transformer::transform_cloneable_group( $values, $child_num );
+			// return MBWPAI\Transformer::transform_cloneable_group( $values, $child_num );
+			// return MBWPAI\Transformer::transform_checkbox_list( $values, $child_num );
+			l( $values );
+			return $values;
 		}
 		/**
 		 * Group not clone
@@ -1079,16 +1088,22 @@ class RapidAddon {
 				if ( empty( $import_slug[ $field_child['id'] ] ) ) {
 					continue;
 				}
+				l( $field_child );
 				$string_data = (string) $import_slug[ $field_child['id'] ];
 
 				// Parse child field.
-				$group_value[ $field_child['id'] ] = XmlImportParser::factory( $xml, $cxpath, $string_data, $file )->parse();
+				// $group_value[ $field_child['id'] ] = XmlImportParser::factory( $xml, $cxpath, $string_data, $file )->parse();
+
+				$group_value[ $field_child['id'] ] = $this->parse_checkbox_list( $field_child, $xml, $cxpath, $import_slug, $data, $field_child['id'], $file );
 			}
 
 			$values[] = $group_value;
 
+			
 			return $values;
 		}
+
+		return;
 	}
 
 	/**

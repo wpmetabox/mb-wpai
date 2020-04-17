@@ -84,4 +84,21 @@ class Transformer {
 		// l( $output );
 		return $output;
 	}
+
+	public static function transform_checkbox_list( $field_id, $input, $child_num ) {
+		$output = [];
+
+		foreach ( $input as $k => $v ) {
+			$temp = [];
+
+			$temp[$field_id] = $input[$k];
+
+			$output[] = $temp[$field_id];
+		}
+
+		l( $field_id );
+		
+		// l( $output );
+		return $output;
+	}
 }
