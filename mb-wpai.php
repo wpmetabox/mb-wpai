@@ -34,11 +34,11 @@ $field_group = [ 'group' ];
 
 add_action( 'init', 'get_mb_fields', 99);
 
-function get_mb_fields( $custom_type ) {
+function get_mb_fields( $post_type ) {
     global $mb_objects;
     global $fields;
 
-    $custom_type = 'event';
+    $post_type = 'event';
 
     $meta_box_registry = rwmb_get_registry( 'meta_box' );
 
@@ -50,12 +50,12 @@ function get_mb_fields( $custom_type ) {
         'object_type' => 'post',
     ];
 
-    $metabox_fields = $meta_box_registry->get_by( $args );
+    $meta_boxes = $meta_box_registry->get_by( $args );
 
-    foreach( $metabox_fields as $mb ) {
-        if ( $custom_type === $mb->meta_box['post_types'][0] ) {
-            array_push( $mb_objects, $mb->meta_box );
-            $fields = array_merge( $mb->meta_box['fields'], $fields );
+    foreach( $meta_boxes as $meta_box ) {
+        if ( in_array( $post_type, $meta_box->post_types ) ) {
+            $mb_objects[] = $meta_box->meta_box;
+            $fields = array_merge( $meta_box->fields, $fields );
         }
     }
 
@@ -140,7 +140,7 @@ function generate_image_field( $field, $obj ) {
     if ( ! in_array( $field['type'], $field_image ) ) {
         return;
     }
-    
+
     $obj->import_images( $field['id'], $field['name'] );
 }
 
