@@ -35,293 +35,293 @@ $field_group = [ 'group' ];
 add_action( 'init', 'get_mb_fields', 99);
 
 function get_mb_fields( $post_type ) {
-    global $mb_objects;
-    global $fields;
+	global $mb_objects;
+	global $fields;
 
-    $post_type = 'event';
+	$post_type = 'event';
 
-    $meta_box_registry = rwmb_get_registry( 'meta_box' );
+	$meta_box_registry = rwmb_get_registry( 'meta_box' );
 
-    if ( ! $meta_box_registry ) {
-        return;
-    }
+	if ( ! $meta_box_registry ) {
+		return;
+	}
 
-    $args = [
-        'object_type' => 'post',
-    ];
+	$args = [
+		'object_type' => 'post',
+	];
 
-    $meta_boxes = $meta_box_registry->get_by( $args );
+	$meta_boxes = $meta_box_registry->get_by( $args );
 
-    foreach( $meta_boxes as $meta_box ) {
-        if ( in_array( $post_type, $meta_box->post_types ) ) {
-            $mb_objects[] = $meta_box->meta_box;
-            $fields = array_merge( $meta_box->fields, $fields );
-        }
-    }
+	foreach( $meta_boxes as $meta_box ) {
+		if ( in_array( $post_type, $meta_box->post_types ) ) {
+			$mb_objects[] = $meta_box->meta_box;
+			$fields = array_merge( $meta_box->fields, $fields );
+		}
+	}
 
-    execute( $mb_objects );
+	execute( $mb_objects );
 }
 
 function generate_fields( $mbs, $obj ) {
-    global $fields;
-    // print("<pre>".print_r($fields,true)."</pre>");
+	global $fields;
+	// print("<pre>".print_r($fields,true)."</pre>");
 
-    // var_dump( get_post_types(array('_builtin' => false, 'show_ui' => true), 'objects') );
+	// var_dump( get_post_types(array('_builtin' => false, 'show_ui' => true), 'objects') );
 
-    foreach( $fields as $field ) {
-        generate_text_field( $field, $obj );
-        generate_multiple_value_field( $field, $obj );
-        generate_image_field( $field, $obj );
-        generate_group_field( $field, $obj );
-    }
+	foreach( $fields as $field ) {
+		generate_text_field( $field, $obj );
+		generate_multiple_value_field( $field, $obj );
+		generate_image_field( $field, $obj );
+		generate_group_field( $field, $obj );
+	}
 }
 
 function generate_multiple_value_field( $field, $obj ) {
-    global $field_list;
+	global $field_list;
 
-    if ( ! in_array( $field['type'], $field_list ) ) {
-        return;
-    }
+	if ( ! in_array( $field['type'], $field_list ) ) {
+		return;
+	}
 
-    $obj->add_field( $field['id'], $field['name'], 'textarea', null, 'Enter each value in a new line' );
+	$obj->add_field( $field['id'], $field['name'], 'textarea', null, 'Enter each value in a new line' );
 }
 
 function generate_group_field( $field, $obj ) {
-    global $field_group;
-    global $field_text;
-    global $field_image;
-    global $field_list;
+	global $field_group;
+	global $field_text;
+	global $field_image;
+	global $field_list;
 
-    if ( ! in_array( $field['type'], $field_group ) ) {
-        return;
-    }
+	if ( ! in_array( $field['type'], $field_group ) ) {
+		return;
+	}
 
-    // print("<pre>".print_r($field,true)."</pre>");
+	// print("<pre>".print_r($field,true)."</pre>");
 
-    $child_fields = [];
+	$child_fields = [];
 
-    foreach( $field['fields'] as $child_field ) {
-        if ( in_array( $child_field['type'], $field_text ) ) {
-            array_push( $child_fields, $obj->add_field( $child_field['id'], $child_field['name'], 'textarea', null, 'Enter each value in a new line' ) );
-        } elseif ( in_array( $child_field['type'], $field_image ) ) {
-            array_push( $child_fields, $obj->add_field( $child_field['id'], $child_field['name'], 'image' ) );
-        } elseif ( in_array( $child_field['type'], $field_list ) ) {
-            array_push( $child_fields, $obj->add_field( $child_field['id'], $child_field['name'], 'textarea', null, 'Enter each value in a new line' ) );
-        }
-    }
+	foreach( $field['fields'] as $child_field ) {
+		if ( in_array( $child_field['type'], $field_text ) ) {
+			array_push( $child_fields, $obj->add_field( $child_field['id'], $child_field['name'], 'textarea', null, 'Enter each value in a new line' ) );
+		} elseif ( in_array( $child_field['type'], $field_image ) ) {
+			array_push( $child_fields, $obj->add_field( $child_field['id'], $child_field['name'], 'image' ) );
+		} elseif ( in_array( $child_field['type'], $field_list ) ) {
+			array_push( $child_fields, $obj->add_field( $child_field['id'], $child_field['name'], 'textarea', null, 'Enter each value in a new line' ) );
+		}
+	}
 
-    $obj->add_options(
-        $obj->add_field( $field['id'], $field['name'], 'text' ),
-        '( Open )',
-        $child_fields
-    );
+	$obj->add_options(
+		$obj->add_field( $field['id'], $field['name'], 'text' ),
+		'( Open )',
+		$child_fields
+	);
 
-    foreach( $field['fields'] as $child_field ) {
-        if ( in_array( $child_field['type'], $field_group ) ) {
-            // print("<pre>".print_r($child_field,true)."</pre>");
-            generate_group_fields( $child_field, $obj );
-        }
-    }
+	foreach( $field['fields'] as $child_field ) {
+		if ( in_array( $child_field['type'], $field_group ) ) {
+			// print("<pre>".print_r($child_field,true)."</pre>");
+			generate_group_fields( $child_field, $obj );
+		}
+	}
 }
 
 function generate_text_field( $field, $obj ) {
-    global $field_text;
+	global $field_text;
 
-    if ( ! in_array( $field['type'], $field_text ) ) {
-        return;
-    }
+	if ( ! in_array( $field['type'], $field_text ) ) {
+		return;
+	}
 
-    $obj->add_field( $field['id'], $field['name'], 'textarea', null, 'Enter each value in a new line' );
+	$obj->add_field( $field['id'], $field['name'], 'textarea', null, 'Enter each value in a new line' );
 }
 
 function generate_image_field( $field, $obj ) {
-    global $field_image;
+	global $field_image;
 
-    if ( ! in_array( $field['type'], $field_image ) ) {
-        return;
-    }
+	if ( ! in_array( $field['type'], $field_image ) ) {
+		return;
+	}
 
-    $obj->import_images( $field['id'], $field['name'] );
+	$obj->import_images( $field['id'], $field['name'] );
 }
 
 function execute( $mbs ) {
-    global $mb_wpai;
+	global $mb_wpai;
 
-    generate_fields( $mbs, $mb_wpai );
+	generate_fields( $mbs, $mb_wpai );
 
-    $mb_wpai->set_import_function( 'mb_wpai_import' );
+	$mb_wpai->set_import_function( 'mb_wpai_import' );
 
-    $mb_wpai->run();
+	$mb_wpai->run();
 }
 
 function mb_wpai_import( $post_id, $data, $import_options ) {
-    global $mb_wpai;
-    global $fields;
-    global $wpdb;
+	global $mb_wpai;
+	global $fields;
+	global $wpdb;
 
-    $table = $wpdb->prefix . 'postmeta';
+	$table = $wpdb->prefix . 'postmeta';
 
-    foreach( $fields as $field ) {
-        mb_import_text( $post_id, $data[ $field['id'] ], $field, $table );
+	foreach( $fields as $field ) {
+		mb_import_text( $post_id, $data[ $field['id'] ], $field, $table );
 
-        mb_import_image( $post_id, $data[ $field['id'] ], $field, $table );
+		mb_import_image( $post_id, $data[ $field['id'] ], $field, $table );
 
-        mb_import_multiple_value( $post_id, $data[ $field['id'] ], $field, $table );
+		mb_import_multiple_value( $post_id, $data[ $field['id'] ], $field, $table );
 
-        mb_import_group( $post_id, $data[ $field['id'] ], $field, $table );
-    }
+		mb_import_group( $post_id, $data[ $field['id'] ], $field, $table );
+	}
 }
 
 // import checkbox_list
 function mb_import_multiple_value( $post_id, $data, $field, $table ) {
-    global $wpdb;
-    global $field_list;
+	global $wpdb;
+	global $field_list;
 
-    if ( ! in_array( $field['type'], $field_list ) ) {
-        return;
-    }
+	if ( ! in_array( $field['type'], $field_list ) ) {
+		return;
+	}
 
-    if ( $field['clone'] ) {
-        $wpdb->insert( $table, [
-            'post_id'    => $post_id,
-            'meta_key'   => $field['id'],
-            'meta_value' => serialize( $data )
-        ] );
-    }
-    else {
-        foreach( $data as $k => $v ) {
-            $wpdb->insert( $table, [
-                'post_id'    => $post_id,
-                'meta_key'   => $field['id'],
-                'meta_value' => $v,
-            ] );
-        }
-    }
+	if ( $field['clone'] ) {
+		$wpdb->insert( $table, [
+			'post_id'    => $post_id,
+			'meta_key'   => $field['id'],
+			'meta_value' => serialize( $data )
+		] );
+	}
+	else {
+		foreach( $data as $k => $v ) {
+			$wpdb->insert( $table, [
+				'post_id'    => $post_id,
+				'meta_key'   => $field['id'],
+				'meta_value' => $v,
+			] );
+		}
+	}
 }
 
 // import image
 function mb_import_image( $post_id, $data, $field, $table ) {
-    global $wpdb;
-    global $field_image;
-    global $field_multi_images;
+	global $wpdb;
+	global $field_image;
+	global $field_multi_images;
 
-    if ( ! in_array( $field['type'], $field_image ) && ! in_array( $field['type'], $field_multi_images ) ) {
-        return;
-    }
+	if ( ! in_array( $field['type'], $field_image ) && ! in_array( $field['type'], $field_multi_images ) ) {
+		return;
+	}
 
-    if ( $field['clone'] ) {
-        foreach ( $data as $d ) {
-            $content_data[] = attachment_url_to_postid( $d );
-        }
+	if ( $field['clone'] ) {
+		foreach ( $data as $d ) {
+			$content_data[] = attachment_url_to_postid( $d );
+		}
 
-        $wpdb->insert( $table, [
-            'post_id'    => $post_id,
-            'meta_key'   => $field['id'],
-            'meta_value' => serialize( $content_data ),
-        ] );
-    }
-    else {
-        $wpdb->insert( $table, [
-            'post_id'    => $post_id,
-            'meta_key'   => $field['id'],
-            'meta_value' => attachment_url_to_postid( $data ),
-        ] );
-    }
+		$wpdb->insert( $table, [
+			'post_id'    => $post_id,
+			'meta_key'   => $field['id'],
+			'meta_value' => serialize( $content_data ),
+		] );
+	}
+	else {
+		$wpdb->insert( $table, [
+			'post_id'    => $post_id,
+			'meta_key'   => $field['id'],
+			'meta_value' => attachment_url_to_postid( $data ),
+		] );
+	}
 }
 
 // import text
 function mb_import_text( $post_id, $data, $field, $table ) {
-    global $wpdb;
-    global $field_text;
+	global $wpdb;
+	global $field_text;
 
-    if ( ! in_array( $field['type'], $field_text ) ) {
-        return;
-    }
+	if ( ! in_array( $field['type'], $field_text ) ) {
+		return;
+	}
 
-    if ( $field['clone'] ) {
-        $wpdb->insert( $table, [
-            'post_id'    => $post_id,
-            'meta_key'   => $field['id'],
-            'meta_value' => serialize( $data ),
-        ] );
-        // a:1:{s:16:"text_9z0sebegmsd";a:2:{i:0;s:8:"Standard";i:1;s:8:"Standard";}}
-        // a:2:{i:0;s:8:"Standard";i:1;s:5:"Media";}
-    }
-    else {
-        $wpdb->insert( $table, [
-            'post_id'    => $post_id,
-            'meta_key'   => $field['id'],
-            'meta_value' => $data,
-        ] );
-    }
+	if ( $field['clone'] ) {
+		$wpdb->insert( $table, [
+			'post_id'    => $post_id,
+			'meta_key'   => $field['id'],
+			'meta_value' => serialize( $data ),
+		] );
+		// a:1:{s:16:"text_9z0sebegmsd";a:2:{i:0;s:8:"Standard";i:1;s:8:"Standard";}}
+		// a:2:{i:0;s:8:"Standard";i:1;s:5:"Media";}
+	}
+	else {
+		$wpdb->insert( $table, [
+			'post_id'    => $post_id,
+			'meta_key'   => $field['id'],
+			'meta_value' => $data,
+		] );
+	}
 }
 
 // import group
 function mb_import_group( $post_id, $data, $field, $table ) {
-    global $wpdb;
-    global $field_group;
+	global $wpdb;
+	global $field_group;
 
-    if ( ! in_array( $field['type'], $field_group ) ) {
-        return;
-    }
+	if ( ! in_array( $field['type'], $field_group ) ) {
+		return;
+	}
 
-    // $content_data[] = mb_get_group_data( $field['fields'], $data );
+	// $content_data[] = mb_get_group_data( $field['fields'], $data );
 
-    $wpdb->insert( $table, [
-        'post_id'    => $post_id,
-        'meta_key'   => $field['id'],
-        'meta_value' => serialize( $data )
-    ] );
+	$wpdb->insert( $table, [
+		'post_id'    => $post_id,
+		'meta_key'   => $field['id'],
+		'meta_value' => serialize( $data )
+	] );
 }
 
 function mb_get_group_data( $field, $data ) {
-    global $field_group;
+	global $field_group;
 
-    $content_data = [];
+	$content_data = [];
 
-    foreach ( $field as $field_child ) {
-        $content_data[$field_child['id']] = process_group( $field_child, $data );
-        $content_data[$field_child['id']] = process_image( $field_child, $data );
-        $content_data[$field_child['id']] = process_text( $field_child, $data );
-    }
+	foreach ( $field as $field_child ) {
+		$content_data[$field_child['id']] = process_group( $field_child, $data );
+		$content_data[$field_child['id']] = process_image( $field_child, $data );
+		$content_data[$field_child['id']] = process_text( $field_child, $data );
+	}
 
-    return $content_data;
+	return $content_data;
 }
 
 function process_text( $field, $data ) {
-    global $field_text;
+	global $field_text;
 
-    if ( ! in_array( $field['type'], $field_text ) ) {
-        return '';
-    }
+	if ( ! in_array( $field['type'], $field_text ) ) {
+		return '';
+	}
 
-    $content_data = $data[ $field['id'] ];
+	$content_data = $data[ $field['id'] ];
 
-    return $content_data;
+	return $content_data;
 }
 
 function process_image( $field, $data ) {
-    global $field_image;
+	global $field_image;
 
-    if ( ! in_array( $field['type'], $field_image ) ) {
-        return '';
-    }
+	if ( ! in_array( $field['type'], $field_image ) ) {
+		return '';
+	}
 
-    $content_data = attachment_url_to_postid( $data[ $field['id'] ] );
+	$content_data = attachment_url_to_postid( $data[ $field['id'] ] );
 
-    return $content_data;
+	return $content_data;
 }
 
 function process_group( $field, $data ) {
-    global $field_group;
+	global $field_group;
 
-    if ( ! in_array( $field['type'], $field_group ) ) {
-        return '';
-    }
+	if ( ! in_array( $field['type'], $field_group ) ) {
+		return '';
+	}
 
-    $content_data[$field['id']] = mb_get_group_data( $field['fields'], $data  );
+	$content_data[$field['id']] = mb_get_group_data( $field['fields'], $data  );
 
-    return $content_data;
+	return $content_data;
 }
 
 

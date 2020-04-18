@@ -1005,7 +1005,7 @@ class RapidAddon {
 				break;
 			}
 		}
-		
+
 		if ( "group" === $f['type'] ) {
 			return $this->parse_group( $f, $xml, $cxpath, $import_slug, $data, $option_name, $file );
 		}
@@ -1059,7 +1059,7 @@ class RapidAddon {
 
 					// $group_value[ $field_child['id'] ] = $this->parse_field( $field, $xml, $cxpath, $import_slug, $data, $option_name, $file );
 					// if ( "checkbox_list" === $field_child['type'] ) {
-						
+
 						$group_value[ $field_child['id'] ] = $this->parse_checkbox_list( $field_child, $xml, $cxpath, $import_slug, $data, $field_child['id'], $file );
 					// }
 				}
@@ -1099,7 +1099,7 @@ class RapidAddon {
 
 			$values[] = $group_value;
 
-			
+
 			return $values;
 		}
 
@@ -1185,7 +1185,7 @@ class RapidAddon {
 				$temp[] = XmlImportParser::factory($xml, $cxpath, $l, $file)->parse();
 			}
 		}
-		
+
 		for ( $x = 0; $x < $lines_num; $x++ ) {
 			foreach ( $temp as $k => $v ) {
 				$temp_2[] = $v[ $x ];
@@ -1200,11 +1200,11 @@ class RapidAddon {
 
 				foreach ( $temp_2_chunk[$k] as $k2 => $v2 ) {
 					$temp_2_chunk[$k][$k2] = array_filter( $temp_2_chunk[$k][$k2] );
-		
+
 					if ( ! $temp_2_chunk[$k][$k2] ) unset( $temp_2_chunk[$k][$k2] );
 				}
 			}
-			
+
 		}
 
 		foreach ( $temp_2_chunk as $k => $v ) {
