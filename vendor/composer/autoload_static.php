@@ -7,7 +7,6 @@ namespace Composer\Autoload;
 class ComposerStaticInit8e29b5b01d5df8d5c02e8873924fd5ca
 {
     public static $files = array (
-        '236410747104ce7c0715c25be2880bff' => __DIR__ . '/../..' . '/src/helpers/plugins.php',
         '298ddb566546abd64e97f1248489d09f' => __DIR__ . '/../..' . '/src/helpers/functions.php',
         '752cb9ecbf81e12bff48f8630a5cc589' => __DIR__ . '/../..' . '/src/RapidAddon.php',
     );

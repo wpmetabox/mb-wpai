@@ -31,7 +31,6 @@
       "MBWPAI\\": "src/"
     },
     "files": [
-      "src/helpers/plugins.php",
       "src/helpers/functions.php",
       "src/RapidAddon.php"
     ]

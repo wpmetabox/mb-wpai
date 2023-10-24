@@ -6,7 +6,6 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    '236410747104ce7c0715c25be2880bff' => $baseDir . '/src/helpers/plugins.php',
     '298ddb566546abd64e97f1248489d09f' => $baseDir . '/src/helpers/functions.php',
     '752cb9ecbf81e12bff48f8630a5cc589' => $baseDir . '/src/RapidAddon.php',
 );
