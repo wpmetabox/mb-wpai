@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin Name: WPAI Addon for MetaBox
- * Description: A complete add-on for importing Meta Box data.
+ * Plugin Name: MB WP All Import
+ * Description: MB WP All Import
  * Author:      Metabox.io
- * Author URI:  
- * Plugin URI:  
- * Version:     1.0.0
+ * Author URI:  https://metabox.io
+ * Plugin URI:  https://metabox.io/plugins/mb-wpai/
+ * Version:     0.0.1
  * Text Domain: mb-wpai
  * Domain Path: languages
  *
@@ -20,7 +20,7 @@ final class MetaboxAddon {
 	private $mb_objects = [];
 
 	public function __construct() {
-		$this->mb_wpai = new MBWPAI\RapidAddon('Meta Box Add-on', 'mb_wpai');
+		$this->mb_wpai = new RapidAddon('Meta Box Add-on', 'mb_wpai');
 
 		add_action( 'init', [ $this, 'mb_wpai_check_php_version' ] );
 		add_action( 'init', [ $this, 'get_mb_fields' ], 30);
