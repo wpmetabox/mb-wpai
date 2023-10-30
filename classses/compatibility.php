@@ -1,6 +1,6 @@
 <?php
 
-class PMAI_Compatibility{
+class MBAI_Compatibility{
 
     /**
      * @param $file

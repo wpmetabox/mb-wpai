@@ -59,7 +59,7 @@ final class MBAI_Plugin
 
     /**
      * Get path to plagin dir relative to wordpress root
-     * @param bool[optional] $noForwardSlash Whether path should be returned withot forwarding slash
+     * @param mixed[optional] $noForwardSlash Whether path should be returned withot forwarding slash
      * @return string
      */
     public function getRelativePath($noForwardSlash = false)
@@ -70,7 +70,7 @@ final class MBAI_Plugin
 
     /**
      * Check whether plugin is activated as network one
-     * @return bool
+     * @return mixed
      */
     public function isNetwork()
     {
@@ -86,7 +86,7 @@ final class MBAI_Plugin
 
     /**
      * Check whether permalinks is enabled
-     * @return bool
+     * @return mixed
      */
     public function isPermalinks()
     {
@@ -316,11 +316,10 @@ final class MBAI_Plugin
      * When class has prefix it's source is looked in `models`, `controllers`, `shortcodes` folders, otherwise it looked in `core` or `library` folder
      *
      * @param string $className
-     * @return bool
+     * @return mixed
      */
     public function autoload($className)
     {
-
         if (!preg_match('/PMAI/m', $className)) {
             return false;
         }
