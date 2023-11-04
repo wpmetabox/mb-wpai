@@ -6,5 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'MBWPAI\\' => array($baseDir . '/src'),
+    'wpai_meta_box_add_on\\' => array($baseDir . '/src'),
 );

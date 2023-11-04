@@ -1,3 +1,3 @@
-<?php foreach ($errors as $msg): ?>
-	<div class="error"><p><?php echo $msg ?></p></div>
+<?php foreach ($errors as $message): ?>
+	<div class="error"><p><?= $message ?></p></div>
 <?php endforeach ?>

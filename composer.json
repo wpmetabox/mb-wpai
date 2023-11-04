@@ -1,38 +1,7 @@
 {
-  "type": "wordpress-plugin",
-  "name": "wpmetabox/mb-all-import",
-  "description": "WP All Import integration for Meta Box",
-  "keywords": [
-    "wordpress",
-    "plugin",
-    "metabox",
-    "mb",
-    "mb all import",
-    "wp all import"
-  ],
-  "homepage": "https://metabox.io/plugins/mb-all-import/",
-  "license": "GPL-2.0-or-later",
-  "authors": [
-    {
-      "name": "Tan Nguyen",
-      "email": "hi@tan.ng"
-    }
-  ],
-  "repositories": [
-    
-  ],
-  "require": {
-    "php": ">=7.4"
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true,
   "autoload": {
     "psr-4": {
-      "MBWPAI\\": "src/"
-    },
-    "files": [
-      "src/helpers/functions.php",
-      "src/RapidAddon.php"
-    ]
+      "wpai_meta_box_add_on\\": "src"
+    }
   }
 }
