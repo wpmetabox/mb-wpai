@@ -259,7 +259,7 @@ abstract class Field implements FieldInterface {
 		$parsedData = $this->getParsedData();
 
 		// If update is not allowed
-		if ( ! empty( $this->importData['articleData']['id'] ) && ! \mbai_is_acf_update_allowed( $this->importData['container_name'] . $field['name'], $this->parsingData['import']->options, $this->parsingData['import']->id ) ) {
+		if ( ! empty( $this->importData['articleData']['id'] ) && ! \pmai_is_acf_update_allowed( $this->importData['container_name'] . $field['name'], $this->parsingData['import']->options, $this->parsingData['import']->id ) ) {
 			$this->parsingData['logger'] && call_user_func( $this->parsingData['logger'], sprintf( __( '- Field `%s` is skipped attempted to import options', 'mbai' ), $this->getFieldName() ) );
 			return FALSE;
 		}

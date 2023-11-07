@@ -1563,17 +1563,17 @@ div.error a.acf-button {
 	margin: 15px 0px;
 }
 
-.meta_boxes .mbai_preloader{
+.meta_boxes .pmai_preloader{
 	background: url("../img/preloader.png");
 	width: 80px;
 	height: 10px;
 	margin: 20px auto;	
 }
-.mbai_foreach{
+.pmai_foreach{
 	width: 50% !important;
 	margin: 10px !important;
 }
-.mbai_variable_separator{
+.pmai_variable_separator{
 	width: 50px !important;
 	margin: 10px !important;
 	text-align: center;
@@ -1819,11 +1819,11 @@ div.error a.acf-button {
 .w95{
 	width: 95% !important;
 }
-.mbai_taxonomy{
+.pmai_taxonomy{
 	width:100%; 
 	clear:both;
 }
-/*.mbai_taxonomy .drag-element .widefat{
+/*.pmai_taxonomy .drag-element .widefat{
 	width: 80% !important;
 }*/
 

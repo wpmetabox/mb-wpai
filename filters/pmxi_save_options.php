@@ -3,7 +3,7 @@
  * @param $post
  * @return mixed
  */
-function mbai_pmxi_save_options($post)
+function pmai_pmxi_save_options($post)
 {
 	if (PMXI_Plugin::getInstance()->getAdminCurrentScreen()->action == 'options')
 	{

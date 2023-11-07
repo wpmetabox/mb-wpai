@@ -1,11 +1,11 @@
 <?php
 
-if ( ! function_exists( 'mbai_get_join_attr' ) ) {
+if ( ! function_exists( 'pmai_get_join_attr' ) ) {
 	/**
 	 * @param mixed $attributes
 	 * @return string
 	 */
-	function mbai_get_join_attr( $attributes = false ) {
+	function pmai_get_join_attr( $attributes = false ) {
 		// validate
 		if ( empty( $attributes ) ) {
 			return '';
@@ -21,18 +21,18 @@ if ( ! function_exists( 'mbai_get_join_attr' ) ) {
 	}
 }
 
-if ( ! function_exists( 'mbai_join_attr' ) ) {
+if ( ! function_exists( 'pmai_join_attr' ) ) {
 	/**
 	 * @param mixed $attributes
 	 */
-	function mbai_join_attr( $attributes = false ) {
-		echo mbai_get_join_attr( $attributes );
+	function pmai_join_attr( $attributes = false ) {
+		echo pmai_get_join_attr( $attributes );
 	}
 }
 
-if ( ! function_exists( 'mbai_get_acf_group_by_slug' ) ) {
+if ( ! function_exists( 'pmai_get_acf_group_by_slug' ) ) {
 
-	function mbai_get_acf_group_by_slug( $slug ) {
+	function pmai_get_acf_group_by_slug( $slug ) {
 
 		$local_groups = acf_get_local_field_groups();
 		if ( ! empty( $local_groups[ $slug ] ) ) {

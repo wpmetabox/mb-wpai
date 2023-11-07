@@ -27,7 +27,7 @@
             <div class="input sub_input">
                 <div class="input">
                     <p>
-                        <?php printf(__("For each %s do ..."), '<input type="text" name="fields' . $field_name . '[' . $field["key"] . '][foreach]" value="'. esc_html($current_field["foreach"]) .'" class="mbai_foreach widefat rad4"/>'); ?>
+                        <?php printf(__("For each %s do ..."), '<input type="text" name="fields' . $field_name . '[' . $field["key"] . '][foreach]" value="'. esc_html($current_field["foreach"]) .'" class="pmai_foreach widefat rad4"/>'); ?>
                         <a href="http://www.wpallimport.com/documentation/advanced-custom-fields/repeater-fields/" target="_blank"><?php _e('(documentation)', 'mbai'); ?></a>
                     </p>
                 </div>
@@ -37,7 +37,7 @@
             <div class="input sub_input">
                 <div class="input">
                     <p>
-                        <?php printf(__("Separator Character %s"), '<input type="text" name="fields' . $field_name . '[' . $field["key"] . '][separator]" value="'. ( (empty($current_field["separator"])) ? '|' : $current_field["separator"] ) .'" class="mbai_variable_separator widefat rad4"/>'); ?>
+                        <?php printf(__("Separator Character %s"), '<input type="text" name="fields' . $field_name . '[' . $field["key"] . '][separator]" value="'. ( (empty($current_field["separator"])) ? '|' : $current_field["separator"] ) .'" class="pmai_variable_separator widefat rad4"/>'); ?>
                         <a href="#help" class="wpallimport-help" style="top:0;" title="<?php _e('Use this option when importing a CSV file with a column or columns that contains the repeating data, separated by separators. For example, if you had a repeater with two fields - image URL and caption, and your CSV file had two columns, image URL and caption, with values like \'url1,url2,url3\' and \'caption1,caption2,caption3\', use this option and specify a comma as the separator.', 'mbai') ?>">?</a>
                     </p>
                 </div>

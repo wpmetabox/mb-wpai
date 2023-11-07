@@ -116,7 +116,7 @@
                                         // layout: Row
 
                                         if( $layout['display'] == 'row' ): ?>
-                                            <tr <?php mbai_join_attr( $attributes ); ?>>
+                                            <tr <?php pmai_join_attr( $attributes ); ?>>
                                             <td class="label">
                                                 <label>
                                                     <?php echo $sub_field['label']; ?>
@@ -128,7 +128,7 @@
                                             </td>
                                         <?php endif; ?>
 
-                                        <td <?php if( $layout['display'] != 'row' ){ mbai_join_attr( $attributes ); } ?>>
+                                        <td <?php if( $layout['display'] != 'row' ){ pmai_join_attr( $attributes ); } ?>>
                                             <div class="inner">
                                                 <?php
                                                 \wpai_meta_box_add_on\fields\FieldFactory::create($sub_field, $post, $field_name . "[" . $field['key'] . "][layouts][ROWNUMBER]")->view();
@@ -283,7 +283,7 @@
                                         // layout: Row
 
                                         if( $current_layout['display'] == 'row' ): ?>
-                                            <tr <?php mbai_join_attr( $attributes ); ?>>
+                                            <tr <?php pmai_join_attr( $attributes ); ?>>
                                             <td class="label">
                                                 <label>
                                                     <?php echo $sub_field['label']; ?>
@@ -295,7 +295,7 @@
                                             </td>
                                         <?php endif; ?>
 
-                                        <td <?php if( empty($field['layouts'][$key - 1]['display']) or $field['layouts'][$key - 1]['display'] != 'row' ){ mbai_join_attr( $attributes ); } ?>>
+                                        <td <?php if( empty($field['layouts'][$key - 1]['display']) or $field['layouts'][$key - 1]['display'] != 'row' ){ pmai_join_attr( $attributes ); } ?>>
                                             <div class="inner">
                                                 <?php
                                                 \wpai_meta_box_add_on\fields\FieldFactory::create($sub_field, $post, $field_name . "[" . $field['key'] . "][layouts][".$key."]")->view();

@@ -3,7 +3,7 @@
  * @param $entry
  * @param $post
  */
-function mbai_pmxi_reimport($entry, $post){
+function pmai_pmxi_reimport($entry, $post){
 	global $acf;
 	if ($acf and version_compare($acf->settings['version'], '5.0.0') >= 0) {
 		$groups = acf_get_field_groups();

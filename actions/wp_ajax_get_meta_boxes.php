@@ -4,7 +4,7 @@ use wpai_meta_box_add_on\meta_boxes\MetaboxFactory;
 /**
  *  Render ACF group
  */
-function mbai_wp_ajax_get_meta_boxes() {
+function pmai_wp_ajax_get_meta_boxes() {
 
     if (!check_ajax_referer('wp_all_import_secure', 'security', FALSE)) {
         wp_send_json(['message' => __('Security check', 'mbai')]);

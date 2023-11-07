@@ -47,7 +47,7 @@ function pmai_admin_notices() {
 		
 	}
 	$input = new PMAI_Input();
-	$messages = $input->get('mbai_nt', array());
+	$messages = $input->get('pmai_nt', array());
 	if ($messages) {
 		is_array($messages) or $messages = array($messages);
 		foreach ($messages as $type => $m) {

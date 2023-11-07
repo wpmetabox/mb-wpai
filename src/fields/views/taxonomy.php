@@ -81,7 +81,7 @@
     <div class="switcher-target-is_multiple_field_value_<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>_no">
         <div class="input sub_input">
             <div class="input">
-                <table class="mbai_taxonomy post_taxonomy">
+                <table class="pmai_taxonomy post_taxonomy">
                     <tr>
                         <td>
                             <div class="col2" style="clear: both;">

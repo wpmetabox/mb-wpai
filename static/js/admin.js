@@ -5,7 +5,7 @@
 		
 	if ( ! $('body.wpallimport-plugin').length) return; // do not execute any code if we are not on plugin page
 
-	let mbai_repeater_clone = function($parent){
+	let pmai_repeater_clone = function($parent){
 
 		let $clone = $parent.find('tbody:first').children('.row-clone:first').clone();
 		let $number = parseInt($parent.find('tbody:first').children().length);
@@ -41,7 +41,7 @@
 			}
 		});
 
-		mbai_init($parent);
+		pmai_init($parent);
 	};
 
 	$(document).on('click', '.add_layout_button', function(){
@@ -72,7 +72,7 @@
 			if (name != undefined) $(this).attr({'name':$(this).attr('name').replace('ROWNUMBER', $number)});
 		});
 
-		mbai_init($clone);
+		pmai_init($clone);
 
 		$parent.children('div.values:first').append($clone);
 
@@ -88,7 +88,7 @@
 		$parent.find('tbody:first').children('.row:last').remove();
 	});
 
-	let mbai_get_meta_box = function(ths){
+	let pmai_get_meta_box = function(ths){
 
 		let request = {
 			action:'get_meta_boxes',
@@ -98,21 +98,21 @@
 
 	    if (typeof import_id != "undefined") request.id = import_id;
 
-		let $ths = ths.parents('.mbai_options:first');
+		let $ths = ths.parents('.pmai_options:first');
 
-	    $ths.find('.meta_boxes').prepend('<div class="mbai_preloader"></div>');
+	    $ths.find('.meta_boxes').prepend('<div class="pmai_preloader"></div>');
 
-	    $('.mbai_meta_boxes').attr('disabled', 'disabled');
+	    $('.pmai_meta_boxes').attr('disabled', 'disabled');
 
 		$.ajax({
 			type: 'GET',
 			url: ajaxurl,
 			data: request,
 			success: function(response) {
-				$('.mbai_meta_boxes').removeAttr('disabled');
-				$ths.find('.mbai_preloader').remove();						
+				$('.pmai_meta_boxes').removeAttr('disabled');
+				$ths.find('.pmai_preloader').remove();						
 				$ths.find('.meta_boxes').prepend(response.html);
-				mbai_init($ths.find('.single_meta_box:first'));
+				pmai_init($ths.find('.single_meta_box:first'));
 				// swither show/hide logic
 				$ths.find('.meta_boxes').find('input.switcher').change();
 				$ths.find('.meta_boxes').find('input, textarea').bind('focus', function() {
@@ -124,44 +124,44 @@
 				} );
 			},
 			error: function(jqXHR, textStatus){
-				$('.mbai_meta_boxes').removeAttr('disabled');
-				$ths.find('.mbai_preloader').remove();
+				$('.pmai_meta_boxes').removeAttr('disabled');
+				$ths.find('.pmai_preloader').remove();
 				alert('Something went wrong. ' + textStatus );
 			},
 			dataType: "json"
 		});
 	}
 
-	let mbai_reset_meta_boxes = function(){
-		$('.mbai_options').find('.single_meta_box').remove();
-		$('.mbai_options:visible').find('.mbai_meta_boxes:checked').each(function(){
-			mbai_get_meta_box($(this));
+	let pmai_reset_meta_boxes = function(){
+		$('.pmai_options').find('.single_meta_box').remove();
+		$('.pmai_options:visible').find('.pmai_meta_boxes:checked').each(function(){
+			pmai_get_meta_box($(this));
 		});
 	}
 
-	mbai_reset_meta_boxes();
+	pmai_reset_meta_boxes();
 
 	$('.pmxi_plugin').find('.nav-tab').click(function(){
-		mbai_reset_meta_boxes();
+		pmai_reset_meta_boxes();
 	});
 
-	$('.mbai_meta_boxes').on('change', function(){
+	$('.pmai_meta_boxes').on('change', function(){
 		let acf = $(this).attr('rel');
 		if ($(this).is(':checked')){
 			// if requsted ACF group doesn't exists
-			if ( ! $(this).parents('.mbai_options:first').find('.single_meta_box[rel=' + acf + ']').length){
-				mbai_get_meta_box($(this));
+			if ( ! $(this).parents('.pmai_options:first').find('.single_meta_box[rel=' + acf + ']').length){
+				pmai_get_meta_box($(this));
 			}	
 		} else {
 			if (confirm("Confirm removal?")) {
-				$(this).parents('.mbai_options:first').find('.single_meta_box[rel=' + acf + ']').remove();
+				$(this).parents('.pmai_options:first').find('.single_meta_box[rel=' + acf + ']').remove();
 			} else {
 				$(this).attr('checked','checked');
 			}
 		}
 	});	
 
-	function mbai_init(ths){
+	function pmai_init(ths){
 
 		ths.find('input.datetimepicker').datetimepicker({
 			dateFormat: 'dd-mm-yy',
@@ -189,7 +189,7 @@
 
 		ths.find('.repeater').find('.add-row-end').on('click', function(){
 			let $parent = $(this).parents('.repeater:first');
-			mbai_repeater_clone($parent);
+			pmai_repeater_clone($parent);
 		});
 
 		ths.find('input.switcher').on("change", function (e) {
@@ -227,7 +227,7 @@
 		if ($(this).is(':checked') && ($(this).val() == 'yes' || $(this).val() == 'csv')){
 			var $parent = $(this).parents('.repeater:first');
 			$parent.find('tbody:first').children('.row:not(:first)').remove();
-			if ( ! $parent.find('tbody:first').children('.row').length) mbai_repeater_clone($parent);
+			if ( ! $parent.find('tbody:first').children('.row').length) pmai_repeater_clone($parent);
 		}
 	});
 

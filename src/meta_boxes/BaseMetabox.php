@@ -33,6 +33,7 @@ abstract class BaseMetabox implements MetaboxInterface {
 	 */
 	public function __construct( $meta_box, $post ) {
 		$this->meta_box = $meta_box;
+
 		$this->post = $post;
 		$this->initFields();
 	}
@@ -51,6 +52,7 @@ abstract class BaseMetabox implements MetaboxInterface {
 	 * @return array
 	 */
 	public function getFieldsData() {
+
 		return $this->fieldsData;
 	}
 
@@ -102,7 +104,7 @@ abstract class BaseMetabox implements MetaboxInterface {
 	}
 
 	public function import( $importData, $args = [] ) {
-		dd('import running');
+		kk('import running');
 		foreach ( $this->getFields() as $field ) {
 			$field->import( $importData, $args );
 		}

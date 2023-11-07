@@ -1,4 +1,4 @@
-<div class="wpallimport-collapsed closed mbai_options">
+<div class="wpallimport-collapsed closed pmai_options">
 	<div class="wpallimport-content-section">
 		<div class="wpallimport-collapsed-header">
 			<h3><?php _e('Meta Box Add-On','mbai');?></h3>
@@ -21,7 +21,7 @@
                                         <li>
                                             <input type="hidden" name="meta_box[<?= $id;?>]" value="<?= $is_show_meta_box_group ? '0' : '1'?>"/>
 											<?php if ($is_show_meta_box_group): ?>
-                                                <input id="meta_box_<?= $post_type . '_' . $id;?>" type="checkbox" name="meta_box[<?= $name;?>]" <?php if ( ! empty($post['meta_box'][ $id ]) || isset( $name ) && !empty($post['meta_box'][ $name ])): ?>checked="checked"<?php endif; ?> value="1" rel="<?= $id;?>" class="mbai_meta_boxes"/>
+                                                <input id="meta_box_<?= $post_type . '_' . $id;?>" type="checkbox" name="meta_box[<?= $name;?>]" <?php if ( ! empty($post['meta_box'][ $id ]) || isset( $name ) && !empty($post['meta_box'][ $name ])): ?>checked="checked"<?php endif; ?> value="1" rel="<?= $id;?>" class="pmai_meta_boxes"/>
                                                 <label for="meta_box_<?= $post_type . '_' . $id; ?>"><?= $meta_box['title']; ?></label>
 											<?php endif; ?>
                                         </li>

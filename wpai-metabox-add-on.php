@@ -210,12 +210,12 @@ final class PMAI_Plugin {
 			if ( ! is_null( $buffer ) ) {
 				echo '<div class="wrap">';
 				echo $buffer;
-				do_action( 'mbai_action_after' );
+				do_action( 'pmai_action_after' );
 				echo '</div>';
 			} elseif ( ! is_null( $buffer_callback ) ) {
 				echo '<div class="wrap">';
 				call_user_func( $buffer_callback );
-				do_action( 'mbai_action_after' );
+				do_action( 'pmai_action_after' );
 				echo '</div>';
 			} else {
 				throw new Exception( 'There is no previousely buffered content to display.' );
@@ -249,7 +249,7 @@ final class PMAI_Plugin {
 					
 					if ( $this->_admin_current_screen->is_ajax ) { // ajax request
 						$controller->$action();
-						do_action( 'mbai_action_after' );
+						do_action( 'pmai_action_after' );
 						die(); // stop processing since we want to output only what controller is randered, nothing in addition
 					} elseif ( ! $controller->isInline ) {
 						ob_start();

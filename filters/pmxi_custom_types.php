@@ -3,7 +3,7 @@
  * @param $custom_types
  * @return mixed
  */
-function mbai_pmxi_custom_types( $custom_types ) {
+function pmai_pmxi_custom_types( $custom_types ) {
 	if ( ! empty( $custom_types['mb'] ) ) {
 		unset( $custom_types['mb'] );
 	}
