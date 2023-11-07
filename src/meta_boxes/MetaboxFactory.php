@@ -10,7 +10,6 @@ final class MetaboxFactory {
      * @return Metabox
      */
     public static function create($meta_box, $post = []): Metabox {
-        
         return new Metabox($meta_box, $post);
     }
 }
