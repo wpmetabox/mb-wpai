@@ -4,7 +4,7 @@
  *
  * @author Maksym Tsypliakov <maksym.tsypliakov@gmail.com>
  */
-class MBAI_Model_List extends MBAI_Model {
+class PMAI_Model_List extends PMAI_Model {
 	
 	/**
 	 * Total number of records in database which correspond last getBy rule without paging
@@ -27,7 +27,7 @@ class MBAI_Model_List extends MBAI_Model {
 	 * @param string $table Table to join
 	 * @param string $on Condition to join
 	 * @param string $type Join type (INNER, OUTER, etc)
-	 * @return MBAI_Model_List
+	 * @return PMAI_Model_List
 	 */
 	public function join($table, $on, $type = 'INNER') {
 		$this->joined[] = ( ! is_null($type) ? $type . ' ' : '') . 'JOIN ' . $table . ' ON ' . $on;
@@ -37,7 +37,7 @@ class MBAI_Model_List extends MBAI_Model {
 	/**
 	 * Set columns to be selected from database
 	 * @param array $columns
-	 * @return MBAI_Model_List
+	 * @return PMAI_Model_List
 	 */
 	public function setColumns($columns) {
 		is_array($columns) or $columns = func_get_args();
@@ -55,7 +55,7 @@ class MBAI_Model_List extends MBAI_Model {
 	 * @param string[optional] $orderBy Ordering rule
 	 * @param int[optional] $page Paging paramter used to limit number of records returned
 	 * @param int[optional] $perPage Page size when paging parameter is used (20 by default) 
-	 * @return MBAI_Model_List
+	 * @return PMAI_Model_List
 	 */
 	public function getBy($field = NULL, $value = NULL, $orderBy = NULL, $page = NULL, $perPage = NULL, $groupBy = NULL) {
 		if (is_array($field) or is_null($field)) { // when associative array is submitted, do not expect second paramter to be $value, but act as if there is no $value parameter at all
@@ -128,12 +128,12 @@ class MBAI_Model_List extends MBAI_Model {
 	 * Converts elements to instances of specifield class. If includeFields are provided only fields listed are included
 	 * @param string[optoinal] $elementClass
 	 * @param array[optional] $includeFields
-	 * @return MBAI_Model_List
+	 * @return PMAI_Model_List
 	 */
 	public function convertRecords($elementClass = NULL, $includeFields = NULL) {
 		! is_null($elementClass) or $elementClass = preg_replace('%List$%', 'Record', get_class($this));
-		if ( ! is_subclass_of($elementClass, MBAI_Plugin::PREFIX . 'Model_Record')) {
-			throw new Exception("Provideded class name $elementClass must be a subclass of " . MBAI_Plugin::PREFIX . 'Model_Record');
+		if ( ! is_subclass_of($elementClass, PMAI_Plugin::PREFIX . 'Model_Record')) {
+			throw new Exception("Provideded class name $elementClass must be a subclass of " . PMAI_Plugin::PREFIX . 'Model_Record');
 		}
 		$records = $this->exchangeArray(array());
 		foreach ($records as $r) {

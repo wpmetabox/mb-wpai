@@ -1,5 +1,5 @@
 <?php 
-class MBAI_Input {
+class PMAI_Input {
 	protected $filters = array('stripslashes');
 	
 	public function read($inputArray, $paramName, $default = NULL) {

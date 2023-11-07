@@ -4,7 +4,7 @@
  *
  * @author Maksym Tsypliakov <maksym.tsypliakov@gmail.com>
  */
-class MBAI_Config implements IteratorAggregate {
+class PMAI_Config implements IteratorAggregate {
 	/**
 	 * Config variables stored
 	 * @var array

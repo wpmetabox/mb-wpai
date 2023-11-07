@@ -1,8 +1,8 @@
 <?php
 
-if( ! class_exists('MBAI_Updater') ) {
+if( ! class_exists('PMAI_Updater') ) {
 
-    class MBAI_Updater {
+    class PMAI_Updater {
         private $api_url  = '';
         private $api_data = array();
         private $name     = '';

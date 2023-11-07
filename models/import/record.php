@@ -4,9 +4,9 @@ use wpai_meta_box_add_on\meta_boxes\Group;
 use wpai_meta_box_add_on\meta_boxes\MetaboxFactory;
 
 /**
- * Class MBAI_Import_Record
+ * Class PMAI_Import_Record
  */
-class MBAI_Import_Record extends MBAI_Model_Record {
+class PMAI_Import_Record extends PMAI_Model_Record {
 
     /**
      * @var Group[]

@@ -4,7 +4,7 @@
  *
  * @author Maksym Tsypliakov <maksym.tsypliakov@gmail.com>
  */
-class MBAI_Model_Record extends MBAI_Model {
+class PMAI_Model_Record extends PMAI_Model {
 	/**
 	 * Initialize model
 	 * @param array[optional] $data Array of record data to initialize object with
@@ -18,8 +18,8 @@ class MBAI_Model_Record extends MBAI_Model {
 	}
 	
 	/**
-	 * @see MBAI_Model::getBy()
-	 * @return MBAI_Model_Record
+	 * @see PMAI_Model::getBy()
+	 * @return PMAI_Model_Record
 	 */
 	public function getBy($field = NULL, $value = NULL) {
 		if (is_null($field)) {
@@ -44,13 +44,13 @@ class MBAI_Model_Record extends MBAI_Model {
 	 * Ger records related to current one
 	 * @param string $model Class name of model of related records
 	 * @param array[optoinal] $keyAssoc
-	 * @return MBAI_Model_List
+	 * @return PMAI_Model_List
 	 */
 	public function getRelated($model, $keyAssoc = NULL) {
 		$related = new $model();
 		if ( ! empty($this->id)) {
 			if (is_null($keyAssoc)) {
-				$defaultPrefix = strtolower(preg_replace('%^' . strtoupper(MBAI_Plugin::PREFIX) . '|_Record$%', '', get_class($this)));
+				$defaultPrefix = strtolower(preg_replace('%^' . strtoupper(PMAI_Plugin::PREFIX) . '|_Record$%', '', get_class($this)));
 				$keyAssoc = array();
 				foreach ($this->primary as $key) {
 					$keyAssoc = array($defaultPrefix . '_' . $key => $key);
@@ -61,12 +61,12 @@ class MBAI_Model_Record extends MBAI_Model {
 			}
 			$related->getBy($keyAssoc);
 		}
-		return $related instanceof MBAI_Model_List ? $related->convertRecords() : $related;
+		return $related instanceof PMAI_Model_List ? $related->convertRecords() : $related;
 	}
 	
 	/**
 	 * Saves currently set object data as database record
-	 * @return MBAI_Model_Record
+	 * @return PMAI_Model_Record
 	 */
 	public function insert() {
 		if ($this->wpdb->insert($this->table, $this->toArray(TRUE))) {
@@ -80,7 +80,7 @@ class MBAI_Model_Record extends MBAI_Model {
 	}
 	/**
 	 * Update record in database
-	 * @return MBAI_Model_Record
+	 * @return PMAI_Model_Record
 	 */
 	public function update() {
 		$record = $this->toArray(TRUE);
@@ -93,7 +93,7 @@ class MBAI_Model_Record extends MBAI_Model {
 	
 	/**
 	 * Delete record form database
-	 * @return MBAI_Model_Record
+	 * @return PMAI_Model_Record
 	 */
 	public function delete() {
 		if ($this->wpdb->query("DELETE FROM $this->table WHERE " . $this->buildWhere(array_intersect_key($this->toArray(TRUE), array_flip($this->primary))))) {
@@ -105,7 +105,7 @@ class MBAI_Model_Record extends MBAI_Model {
 	/**
 	 * Insert or Update the record
 	 * WARNING: function doesn't check actual record presents in database, it simply tries to insert if no primary key specified and update otherwise
-	 * @return MBAI_Model_Record
+	 * @return PMAI_Model_Record
 	 */
 	public function save() {
 		if (array_intersect_key($this->toArray(TRUE), array_flip($this->primary))) {
@@ -123,7 +123,7 @@ class MBAI_Model_Record extends MBAI_Model {
 	 * 
 	 * @param string|array $field
 	 * @param mixed[optional] $value
-	 * @return MBAI_Model_Record
+	 * @return PMAI_Model_Record
 	 */
 	public function set($field, $value = NULL) {
 		if (is_array($field) and ( ! is_null($value) or 0 == count($field))) {

@@ -4,6 +4,6 @@
  * @param $post
  */
 function mbai_pmxi_extend_options_custom_fields( $post_type, $post ) {
-	$controller = new MBAI_Admin_Import();
+	$controller = new PMAI_Admin_Import();
 	$controller->index( $post_type, $post );
 }

@@ -4,7 +4,7 @@ namespace wpai_meta_box_add_on\fields;
 
 use wpai_meta_box_add_on\MetaboxService;
 
-define( 'MBAI_FIELDS_ROOT_DIR', str_replace( '\\', '/', dirname( __FILE__ ) ) );
+define( 'PMAI_FIELDS_ROOT_DIR', str_replace( '\\', '/', dirname( __FILE__ ) ) );
 
 /**
  * Class Field
@@ -309,7 +309,7 @@ abstract class Field implements FieldInterface {
 		switch ( $this->supportedVersion ) {
 			case 'v4':
 			case 'v5':
-				$fieldDir = MBAI_FIELDS_ROOT_DIR . '/views/' . $this->type;
+				$fieldDir = PMAI_FIELDS_ROOT_DIR . '/views/' . $this->type;
 				$fieldDir = apply_filters( 'wp_all_import_acf_field_view_dir', $fieldDir, $this );
 				$fieldDir = apply_filters( 'wp_all_import_acf_field_view_dir_' . $this->type, $fieldDir, $this );
 				$filePath = $fieldDir . DIRECTORY_SEPARATOR . $this->type . '-' . $this->supportedVersion . '.php';

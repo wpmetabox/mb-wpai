@@ -4,7 +4,7 @@
  *
  * @author Maksym Tsypliakov <maksym.tsypliakov@gmail.com>
  */
-class MBAI_Helper {
+class PMAI_Helper {
 	const GLOB_MARK = 1;
 	const GLOB_NOSORT = 2;
 	const GLOB_ONLYDIR = 4;

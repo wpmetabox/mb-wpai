@@ -4,7 +4,7 @@
  *
  * @author Maksym Tsypliakov <maksym.tsypliakov@gmail.com>
  */
-abstract class MBAI_Model extends ArrayObject {
+abstract class PMAI_Model extends ArrayObject {
 	/**
 	 * WPDB instance 
 	 * @var wpdb
@@ -47,7 +47,7 @@ abstract class MBAI_Model extends ArrayObject {
 	 * 
 	 * @param string|array $field
 	 * @param mixed[optional] $value 
-	 * @return MBAI_Model
+	 * @return PMAI_Model
 	 */
 	abstract public function getBy($field = NULL, $value = NULL);
 	
@@ -55,7 +55,7 @@ abstract class MBAI_Model extends ArrayObject {
 	 * Magic function to automatically resolve calls like $obj->getBy%FIELD_NAME%
 	 * @param string $method
 	 * @param array $args
-	 * @return MBAI_Model
+	 * @return PMAI_Model
 	 */
 	public function __call($method, $args) {
 		if (preg_match('%^get_?by_?(.+)%i', $method, $mtch)) {
@@ -69,7 +69,7 @@ abstract class MBAI_Model extends ArrayObject {
 	/**
 	 * Bind model to database table
 	 * @param string $tableName
-	 * @return MBAI_Model
+	 * @return PMAI_Model
 	 */
 	public function setTable($tableName) {
 		if ( ! is_null($this->table)) {
@@ -177,7 +177,7 @@ abstract class MBAI_Model extends ArrayObject {
 	
 	/**
 	 * Empty object data
-	 * @return MBAI_Model
+	 * @return PMAI_Model
 	 */
 	public function clear() {
 		$this->exchangeArray(array());
@@ -186,7 +186,7 @@ abstract class MBAI_Model extends ArrayObject {
 	
 	/**
 	 * Delete all content from model's table
-	 * @return MBAI_Model
+	 * @return PMAI_Model
 	 */
 	public function truncateTable() {
 		if (FALSE !== $this->wpdb->query("TRUNCATE $this->table")) {

@@ -11,32 +11,32 @@
  * Plugin root dir with forward slashes as directory separator regardless of actual DIRECTORY_SEPARATOR value
  * @var string
  */
-define( 'MBAI_ROOT_DIR', str_replace( '\\', '/', dirname( __FILE__ ) ) );
+define( 'PMAI_ROOT_DIR', str_replace( '\\', '/', dirname( __FILE__ ) ) );
 /**
  * Plugin root url for referencing static content
  * @var string
  */
-define( 'MBAI_ROOT_URL', rtrim( plugin_dir_url( __FILE__ ), '/' ) );
+define( 'PMAI_ROOT_URL', rtrim( plugin_dir_url( __FILE__ ), '/' ) );
 
-define( 'MBAI_PREFIX', 'mbai_' );
+define( 'PMAI_PREFIX', 'pmai_' );
 
-define( 'MBAI_VERSION', '0.0.0' );
+define( 'PMAI_VERSION', '5.5.5' );
 
-define( 'MBAI_EDITION', 'paid' );
+define( 'PMAI_EDITION', 'paid' );
 
-require MBAI_ROOT_DIR . '/vendor/autoload.php';
+require PMAI_ROOT_DIR . '/vendor/autoload.php';
 
-final class MBAI_Plugin {
+final class PMAI_Plugin {
 
 	protected static $instance;
 
 	public static $all_acf_fields = array();
 
-	const ROOT_DIR = MBAI_ROOT_DIR;
+	const ROOT_DIR = PMAI_ROOT_DIR;
 
-	const ROOT_URL = MBAI_ROOT_URL;
+	const ROOT_URL = PMAI_ROOT_URL;
 
-	const PREFIX = MBAI_PREFIX;
+	const PREFIX = PMAI_PREFIX;
 
 	const FILE = __FILE__;
 
@@ -113,7 +113,7 @@ final class MBAI_Plugin {
 
 		// register helpers
 		if ( is_dir( self::ROOT_DIR . '/helpers' ) )
-			foreach ( MBAI_Helper::safe_glob( self::ROOT_DIR . '/helpers/*.php', MBAI_Helper::GLOB_RECURSE | MBAI_Helper::GLOB_PATH ) as $filePath ) {
+			foreach ( PMAI_Helper::safe_glob( self::ROOT_DIR . '/helpers/*.php', PMAI_Helper::GLOB_RECURSE | PMAI_Helper::GLOB_PATH ) as $filePath ) {
 				require_once $filePath;
 			}
 
@@ -121,7 +121,7 @@ final class MBAI_Plugin {
 
 		// register action handlers
 		if ( is_dir( self::ROOT_DIR . '/actions' ) ) if ( is_dir( self::ROOT_DIR . '/actions' ) )
-			foreach ( MBAI_Helper::safe_glob( self::ROOT_DIR . '/actions/*.php', MBAI_Helper::GLOB_RECURSE | MBAI_Helper::GLOB_PATH ) as $filePath ) {
+			foreach ( PMAI_Helper::safe_glob( self::ROOT_DIR . '/actions/*.php', PMAI_Helper::GLOB_RECURSE | PMAI_Helper::GLOB_PATH ) as $filePath ) {
 				require_once $filePath;
 				$function = $actionName = basename( $filePath, '.php' );
 				if ( preg_match( '%^(.+?)[_-](\d+)$%', $actionName, $m ) ) {
@@ -135,7 +135,7 @@ final class MBAI_Plugin {
 
 		// register filter handlers
 		if ( is_dir( self::ROOT_DIR . '/filters' ) )
-			foreach ( MBAI_Helper::safe_glob( self::ROOT_DIR . '/filters/*.php', MBAI_Helper::GLOB_RECURSE | MBAI_Helper::GLOB_PATH ) as $filePath ) {
+			foreach ( PMAI_Helper::safe_glob( self::ROOT_DIR . '/filters/*.php', PMAI_Helper::GLOB_RECURSE | PMAI_Helper::GLOB_PATH ) as $filePath ) {
 				require_once $filePath;
 				$function = $actionName = basename( $filePath, '.php' );
 				if ( preg_match( '%^(.+?)[_-](\d+)$%', $actionName, $m ) ) {
@@ -149,7 +149,7 @@ final class MBAI_Plugin {
 
 		// register shortcodes handlers
 		if ( is_dir( self::ROOT_DIR . '/shortcodes' ) )
-			foreach ( MBAI_Helper::safe_glob( self::ROOT_DIR . '/shortcodes/*.php', MBAI_Helper::GLOB_RECURSE | MBAI_Helper::GLOB_PATH ) as $filePath ) {
+			foreach ( PMAI_Helper::safe_glob( self::ROOT_DIR . '/shortcodes/*.php', PMAI_Helper::GLOB_RECURSE | PMAI_Helper::GLOB_PATH ) as $filePath ) {
 				$tag = strtolower( str_replace( '/', '_', preg_replace( '%^' . preg_quote( self::ROOT_DIR . '/shortcodes/', '%' ) . '|\.php$%', '', $filePath ) ) );
 				add_shortcode( $tag, array( $this, 'shortcodeDispatcher' ) );
 			}
@@ -180,7 +180,7 @@ final class MBAI_Plugin {
 	 * pre-dispatching logic for admin page controllers
 	 */
 	public function adminInit() {
-		$input = new MBAI_Input();
+		$input = new PMAI_Input();
 		$page = strtolower( $input->getpost( 'page', '' ) );
 
 		if ( preg_match( '%^' . preg_quote( str_replace( '_', '-', self::PREFIX ), '%' ) . '([\w-]+)$%', $page ) ) {
@@ -194,7 +194,7 @@ final class MBAI_Plugin {
 		$controllerName = self::PREFIX . preg_replace_callback( '%(^|_).%', array( $this, "replace_callback" ), $tag ); // capitalize first letters of class name parts and add prefix
 		$controller = new $controllerName();
 		
-		if ( ! $controller instanceof MBAI_Controller ) {
+		if ( ! $controller instanceof PMAI_Controller ) {
 			throw new Exception( "Shortcode `$tag` matches to a wrong controller type." );
 		}
 		ob_start();
@@ -243,7 +243,7 @@ final class MBAI_Plugin {
 					add_filter( 'current_screen', array( $this, 'getAdminCurrentScreen' ) );
 
 					$controller = new $controllerName();
-					if ( ! $controller instanceof MBAI_Controller_Admin ) {
+					if ( ! $controller instanceof PMAI_Controller_Admin ) {
 						throw new Exception( "Administration page `$page` matches to a wrong controller type." );
 					}
 					
@@ -287,10 +287,10 @@ final class MBAI_Plugin {
 	 * @return mixed
 	 */
 	public function autoload( $className ) {
-
-		if ( ! preg_match( '/MBAI/m', $className ) ) {
-			return false;
-		}
+		
+		// if ( ! preg_match( '/MBAI/m', $className ) ) {
+		// 	return false;
+		// }
 
 		$is_prefix = false;
 		$filePath = str_replace( '_', '/', preg_replace( '%^' . preg_quote( self::PREFIX, '%' ) . '%', '', strtolower( $className ), 1, $is_prefix ) ) . '.php';
@@ -350,4 +350,4 @@ final class MBAI_Plugin {
 }
 
 
-MBAI_Plugin::getInstance();
+PMAI_Plugin::getInstance();

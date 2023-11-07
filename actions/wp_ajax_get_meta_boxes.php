@@ -33,7 +33,7 @@ function mbai_wp_ajax_get_meta_boxes() {
     $is_loaded_template = (!empty(PMXI_Plugin::$session->is_loaded_template)) ? PMXI_Plugin::$session->is_loaded_template : FALSE;
 
     if ($is_loaded_template) {
-        $default = MBAI_Plugin::get_default_import_options();
+        $default = PMAI_Plugin::get_default_import_options();
         $template = new PMXI_Template_Record();
         if (!$template->getById($is_loaded_template)->isEmpty()) {
             $options = (!empty($template->options) ? $template->options : array()) + $default;

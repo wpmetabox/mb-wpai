@@ -1,5 +1,5 @@
 <?php
-class MBAI_Admin_Import extends MBAI_Controller_Admin {
+class PMAI_Admin_Import extends PMAI_Controller_Admin {
 
 	/**
 	 * @param string $post_type

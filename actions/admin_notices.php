@@ -3,7 +3,7 @@
 /**
  * Render admin notices if ACF or WP All Import plugins are activated
  */
-function mbai_admin_notices() {
+function pmai_admin_notices() {
 	
 	// notify user if history folder is not writable		
 	if ( ! class_exists( 'PMXI_Plugin' ) ) {
@@ -11,12 +11,12 @@ function mbai_admin_notices() {
 		<div class="error"><p>
 			<?php printf(
 					__('<b>%s Plugin</b>: WP All Import must be installed. Free edition of WP All Import at <a href="http://wordpress.org/plugins/wp-all-import/" target="_blank">http://wordpress.org/plugins/wp-all-import/</a> and the paid edition at <a href="http://www.wpallimport.com/">http://www.wpallimport.com/</a>', 'mbai'),
-					MBAI_Plugin::getInstance()->getName()
+					PMAI_Plugin::getInstance()->getName()
 			) ?>
 		</p></div>
 		<?php
 		
-		deactivate_plugins( MBAI_ROOT_DIR . '/wpai-acf-add-on.php');
+		deactivate_plugins( PMAI_ROOT_DIR . '/wpai-acf-add-on.php');
 		
 	}
 
@@ -25,12 +25,12 @@ function mbai_admin_notices() {
 		<div class="error"><p>
 			<?php printf(
 					__('<b>%s Plugin</b>: Please update your WP All Import to the latest version', 'mbai'),
-					MBAI_Plugin::getInstance()->getName()
+					PMAI_Plugin::getInstance()->getName()
 			) ?>
 		</p></div>
 		<?php
 		
-		deactivate_plugins( MBAI_ROOT_DIR . '/wpai-acf-add-on.php');
+		deactivate_plugins( PMAI_ROOT_DIR . '/wpai-acf-add-on.php');
 	}
 
 	if ( ! class_exists( 'acf' ) ) {
@@ -38,15 +38,15 @@ function mbai_admin_notices() {
 		<div class="error"><p>
 			<?php printf(
 					__('<b>%s Plugin</b>: <a target="_blank" href="http://wordpress.org/plugins/advanced-custom-fields/">Advanced Custom Fields</a> must be installed', 'mbai'),
-					MBAI_Plugin::getInstance()->getName()
+					PMAI_Plugin::getInstance()->getName()
 			) ?>
 		</p></div>
 		<?php
 		
-		deactivate_plugins( MBAI_ROOT_DIR . '/wpai-acf-add-on.php');
+		deactivate_plugins( PMAI_ROOT_DIR . '/wpai-acf-add-on.php');
 		
 	}
-	$input = new MBAI_Input();
+	$input = new PMAI_Input();
 	$messages = $input->get('mbai_nt', array());
 	if ($messages) {
 		is_array($messages) or $messages = array($messages);

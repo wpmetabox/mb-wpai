@@ -4,10 +4,10 @@
  *
  * @author Maksym Tsypliakov <maksym.tsypliakov@gmail.com>
  */
-abstract class MBAI_Controller {
+abstract class PMAI_Controller {
 	/**
 	 * Input class instance to retrieve parameters submitted during page request
-	 * @var MBAI_Input
+	 * @var PMAI_Input
 	 */
 	protected $input;
 	/**
@@ -24,7 +24,7 @@ abstract class MBAI_Controller {
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->input = new MBAI_Input();
+		$this->input = new PMAI_Input();
 		$this->input->addFilter('trim');
 		
 		$this->errors = new WP_Error();
@@ -59,13 +59,13 @@ abstract class MBAI_Controller {
 		// assume template file name depending on calling function
 		if (is_null($viewPath)) {
 			$trace = debug_backtrace();
-			$viewPath = str_replace('_', '/', preg_replace('%^' . preg_quote(MBAI_Plugin::PREFIX, '%') . '%', '', strtolower($trace[1]['class']))) . '/' . $trace[1]['function'];
+			$viewPath = str_replace('_', '/', preg_replace('%^' . preg_quote(PMAI_Plugin::PREFIX, '%') . '%', '', strtolower($trace[1]['class']))) . '/' . $trace[1]['function'];
 		}
 		// append file extension if not specified
 		if ( ! preg_match('%\.php$%', $viewPath)) {
 			$viewPath .= '.php';
 		}
-		$filePath = MBAI_Plugin::ROOT_DIR . '/views/' . $viewPath;
+		$filePath = PMAI_Plugin::ROOT_DIR . '/views/' . $viewPath;
 		if (is_file($filePath)) {
 			extract($this->data);
 			include $filePath;
@@ -91,8 +91,8 @@ abstract class MBAI_Controller {
 		}
 		$this->data['errors'] = $msgs;
 		
-		$viewPathRel = str_replace('_', '/', preg_replace('%^' . preg_quote(MBAI_Plugin::PREFIX, '%') . '%', '', strtolower(get_class($this)))) . '/error.php';
-		if (is_file(MBAI_Plugin::ROOT_DIR . '/views/' . $viewPathRel)) { // if calling controller class has specific error view
+		$viewPathRel = str_replace('_', '/', preg_replace('%^' . preg_quote(PMAI_Plugin::PREFIX, '%') . '%', '', strtolower(get_class($this)))) . '/error.php';
+		if (is_file(PMAI_Plugin::ROOT_DIR . '/views/' . $viewPathRel)) { // if calling controller class has specific error view
 			$this->render($viewPathRel);
 		} else { // render default error view
 			$this->render('controller/error.php');
