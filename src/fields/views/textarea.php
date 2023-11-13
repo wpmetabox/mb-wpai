@@ -1,3 +1,4 @@
 <textarea
-    name="fields<?php echo $field_name;?>[<?php echo $field['key'];?>]"
-    class="widefat rad4"><?php echo esc_attr( $current_field );?></textarea>
+    name="fields<?= $field_name;?>[<?= $field['key'];?>]"
+    rows="3"
+    class="widefat rad4"><?= esc_attr( $current_field );?></textarea>

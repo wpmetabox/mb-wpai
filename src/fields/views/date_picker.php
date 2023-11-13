@@ -1,8 +1,8 @@
 <input
     type="text"
     placeholder=""
-    value="<?php echo esc_attr( $current_field );?>"
-    name="fields<?php echo $field_name; ?>[<?php echo $field['key'];?>]"
+    value="<?= esc_attr( $current_field );?>"
+    name="fields<?= $field_name; ?>[<?= $field['key'];?>]"
     class="text datepicker widefat rad4"
     style="width:200px;"/>
 
