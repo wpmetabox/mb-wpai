@@ -102,10 +102,10 @@ abstract class Field implements FieldInterface {
 						// check if 'parent_layout' is empty
 						if ( empty( $flex_fields[ $fk ]['parent_layout'] ) ) {
 							// parent_layout did not save for this field, default it to first layout
-							$flex_fields[ $fk ]['parent_layout'] = $layout['key'];
+							$flex_fields[ $fk ]['parent_layout'] = $layout['id'];
 						}
 						// append sub field to layout,
-						if ( $flex_fields[ $fk ]['parent_layout'] == $layout['key'] ) {
+						if ( $flex_fields[ $fk ]['parent_layout'] == $layout['id'] ) {
 							$layout['sub_fields'][] = acf_extract_var( $flex_fields, $fk );
 						}
 					}
@@ -134,7 +134,7 @@ abstract class Field implements FieldInterface {
 				$field[ $key ] = false;
 		}
 
-		if ( array_key_exists( 'key', $field ) ) {
+		if ( array_key_exists( 'id', $field ) ) {
 			$data['current_field'] = empty( $post['fields'][ $field['id'] ] ) ? false : $post['fields'][ $field['id'] ];
 		} else {
 			$data['current_field'] = false;
@@ -278,17 +278,7 @@ abstract class Field implements FieldInterface {
 			}
 		}
 
-		switch ( $this->getImportType() ) {
-			case 'import_users':
-				update_user_meta( $this->getPostID(), "_" . $this->getFieldName(), $this->getFieldKey() );
-				break;
-			case 'taxonomies':
-				update_term_meta( $this->getPostID(), "_" . $this->getFieldName(), $this->getFieldKey() );
-				break;
-			default:
-				update_post_meta( $this->getPostID(), "_" . $this->getFieldName(), $this->getFieldKey() );
-				break;
-		}
+		MetaboxService::update_post_meta($this, $this->getPostID(), $this->getFieldName(), $this->getFieldValue());
 
 		return TRUE;
 	}
@@ -305,6 +295,7 @@ abstract class Field implements FieldInterface {
 	public function view() {
 		$this->renderHeader();
 		extract( $this->data );
+
 		$fields = $this->getSubFields();
 		switch ( $this->supportedVersion ) {
 			case 'v4':
@@ -698,7 +689,7 @@ abstract class Field implements FieldInterface {
 		}
 		if ( ! empty( $fields ) ) {
 			foreach ( $fields as $sub_field ) {
-				if ( $sub_field['key'] == $fieldKey ) {
+				if ( $sub_field['id'] == $fieldKey ) {
 					$fieldData = $sub_field;
 					$fieldData['id'] = $fieldData['id'] = uniqid();
 					break;
@@ -728,7 +719,7 @@ abstract class Field implements FieldInterface {
 			$fieldData = empty( $subFieldData->post_content ) ? array() : unserialize( $subFieldData->post_content );
 			$fieldData['id'] = $fieldData['id'] = $subFieldData->ID;
 			$fieldData['label'] = $subFieldData->post_title;
-			$fieldData['key'] = $subFieldData->post_name;
+			$fieldData['id'] = $subFieldData->post_name;
 			$fieldData['name'] = $subFieldData->post_excerpt;
 		}
 
@@ -736,13 +727,13 @@ abstract class Field implements FieldInterface {
 		$parent = $this->getParent();
 		if ( $parent ) {
 			do {
-				if ( $parent->getFieldKey() == $fieldData['key'] ) {
+				if ( $parent->getFieldKey() == $fieldData['id'] ) {
 					return FALSE;
 				}
 				$parent = $parent->getParent();
 			} while ( $parent );
 		}
-		if ( $this->getFieldKey() == $fieldData['key'] ) {
+		if ( $this->getFieldKey() == $fieldData['id'] ) {
 			return FALSE;
 		}
 

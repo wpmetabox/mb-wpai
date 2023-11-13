@@ -25,4 +25,5 @@ There are two things that we need to handle: rendering views and handling post d
 
 ### Handling Post Data
 1. When submitting data, `WP All Import` plugin will call all of their "addons". In our case, it will call `PMAI_Plugin` class. Please note that we can't rename it because it only call classes in their list.
-2. The `PMAI_Import_Record::import()` will be called from the WP All Import. Once again, we can't rename it.
+1. The `PMAI_Import_Record::parse()` will be called from the WP All Import.
+1. The `PMAI_Import_Record::import()` will be called from the WP All Import.
