@@ -242,7 +242,7 @@ abstract class Field implements FieldInterface {
 	 * @param array $args
 	 * @return mixed
 	 */
-	public function import( $importData, $args = array() ) {
+	public function import( $importData, array $args = [] ) {
 		$defaults = array(
 			'container_name' => '',
 			'parent_repeater' => '',

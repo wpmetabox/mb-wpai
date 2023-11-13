@@ -35,11 +35,13 @@ class FieldText extends Field {
      * @param array $args
      * @return mixed
      */
-    public function import($importData, $args = array()) {
+    public function import($importData, array $args = []) {
         $isUpdated = parent::import($importData, $args);
+        
         if (!$isUpdated){
             return FALSE;
         }
+
         MetaboxService::update_post_meta($this, $this->getPostID(), $this->getFieldName(), $this->getFieldValue());
     }
 }

@@ -75,7 +75,7 @@ class PMAI_Import_Record extends PMAI_Model_Record {
 	 */
 	public function import( $importData ) {
 		$importData['logger'] and call_user_func( $importData['logger'], __( '<strong>ACF ADD-ON:</strong>', 'mbai' ) );
-		
+
 		foreach ( $this->metaboxes as $group ) {
 			$group->import( $importData );
 		}

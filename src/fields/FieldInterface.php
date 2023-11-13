@@ -14,14 +14,14 @@ interface FieldInterface{
      * @param array $args
      * @return mixed
      */
-    public function parse($xpath, $parsingData, $args = array());
+    public function parse($xpath, $parsingData, array $args = []);
 
     /**
      * @param $importData
      * @param array $args
      * @return mixed
      */
-    public function import($importData, $args = array());
+    public function import($importData, array $args = []);
 
     /**
      * @param $importData

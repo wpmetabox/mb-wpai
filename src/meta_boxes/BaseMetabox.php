@@ -109,6 +109,9 @@ abstract class BaseMetabox implements MetaboxInterface {
 		}
 	}
 
+	/**
+	 * @todo: check when this method is called
+	 */
 	public function saved_post( $importData ) {
 		foreach ( $this->getFields() as $field ) {
 			$field->saved_post( $importData );

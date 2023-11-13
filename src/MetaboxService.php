@@ -30,32 +30,16 @@ final class MetaboxService{
      * @param $value
      */
     public static function update_post_meta(Field $field, $pid, $name, $value) {
-
-        // Prepare field data for acf/update_value filter.
-        $fieldData = [
-            'key' => $field->getFieldKey(),
-            'name' => $field->getFieldName(),
-            'type' => $field->getType(),
-            'save_custom' => 0,
-            'save_other_choice'	=> 0,
-            'allow_null' 		=> 0,
-            'return_format'		=> 'value',
-            'save_terms' => 0
-        ];
-        // Apply filters to field value.
-        $value = apply_filters( "acf/update_value", $value, $pid, $fieldData, $value );
-        $cf_value = apply_filters('pmxi_acf_custom_field', $value, $pid, $name);
-
         switch ($field->getImportType()) {
             case 'import_users':
             case 'shop_customer':
-                update_user_meta($pid, $name, $cf_value);
+                update_user_meta($pid, $name, $value);
                 break;
             case 'taxonomies':
-                update_term_meta($pid, $name, $cf_value);
+                update_term_meta($pid, $name, $value);
                 break;
             default:
-                update_post_meta($pid, $name, $cf_value);
+                rwmb_set_meta($pid, $name, $value);
                 break;
         }
     }
