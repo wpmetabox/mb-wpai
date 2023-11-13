@@ -1,8 +1,8 @@
 # WP All Import - Meta Box Integration (WIP)
 
-This plugin integrate WP All Import with Meta Box, using official structure from WP All Import.
+This plugin integrates WP All Import with Meta Box which ported from ACF Integration.
 
-**Work in progress, please do not use for production site**
+**Warning: Work in progress, please do not use this for production site.**
 
 ## To do
 - [x] Import from basic and html fields

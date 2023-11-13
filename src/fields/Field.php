@@ -503,10 +503,10 @@ abstract class Field implements FieldInterface {
 	 */
 	public function getFieldValue() {
 		$values = $this->options['values'];
+		
 		if ( isset( $this->options['is_multiple_field'] ) && $this->options['is_multiple_field'] == 'yes' ) {
 			$value = array_shift( $values );
 		} else {
-			
 			$value = isset( $values[ $this->getPostIndex()] ) ? $values[ $this->getPostIndex()] : '';
 			$parents = $this->getParents();
 
@@ -557,6 +557,7 @@ abstract class Field implements FieldInterface {
 	 */
 	public function getImportType() {
 		$importData = $this->getImportData();
+
 		return $importData['import']->options['custom_type'];
 	}
 
@@ -565,6 +566,7 @@ abstract class Field implements FieldInterface {
 	 */
 	public function getTaxonomyType() {
 		$importData = $this->getImportData();
+
 		return $importData['import']->options['taxonomy_type'];
 	}
 
@@ -586,7 +588,7 @@ abstract class Field implements FieldInterface {
 	 * @return mixed
 	 */
 	public function isLocalFieldStorage() {
-		return ! is_numeric( $this->getFieldOption( 'ID' ) ) || $this->getFieldOption( 'ID' ) == 0;
+		return ! is_numeric( $this->getFieldOption( 'id' ) ) || $this->getFieldOption( 'id' ) == 0;
 	}
 
 	/**
@@ -754,7 +756,7 @@ abstract class Field implements FieldInterface {
 			$parents = [ $parents[ $parentIndex ] ];
 		}
 		$value = $this->getOriginalFieldValueAsString();
-		if ( ! empty( $parents ) && ! $this->isEmptyValue( $value ) && ! is_array( $value ) ) {
+		if ( ! empty( $parents ) && ! empty( $value ) && ! is_array( $value ) ) {
 			$parentIndex = false;
 			foreach ( $parents as $key => $parent ) {
 				if ( $parentIndex !== false ) {
@@ -769,18 +771,7 @@ abstract class Field implements FieldInterface {
 				}
 			}
 		}
-		return is_array( $value ) ? count( $value ) : ! $this->isEmptyValue( $value );
-	}
-
-	/**
-	 *
-	 * Helper function to detect is provided field is empty or not
-	 *
-	 * @param $value
-	 * @return mixed
-	 */
-	protected function isEmptyValue( $value ) {
-		return ( is_null( $value ) || $value === false || $value === "" );
+		return is_array( $value ) ? count( $value ) : ! empty( $value );
 	}
 
 	/**
@@ -788,7 +779,8 @@ abstract class Field implements FieldInterface {
 	 */
 	public function getOriginalFieldValueAsString() {
 		$values = $this->options['values'];
-		return isset( $values[ $this->getPostIndex()] ) ? $values[ $this->getPostIndex()] : '';
+		
+		return $values[ $this->getPostIndex()] ?? '';
 	}
 
 	/**
