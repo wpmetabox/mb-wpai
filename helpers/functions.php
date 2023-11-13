@@ -35,5 +35,5 @@ function pmai_get_meta_box_by_slug(string $slug)
 	$meta_box_registry = rwmb_get_registry( 'meta_box' );
 	$meta_box = $meta_box_registry->get($slug);
 
-	return $meta_box->meta_box;
+	return $meta_box;
 }

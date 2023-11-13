@@ -46,7 +46,8 @@ function pmai_wp_ajax_get_meta_boxes() {
         $options = PMXI_Plugin::$session->options;
     }
 
-    $meta_box = MetaboxFactory::create($selected_meta_box->meta_box, $options);
+    $meta_box = MetaboxFactory::create($selected_meta_box, $options);
+    
     $meta_box->view();
 
     wp_send_json(['html' => ob_get_clean()]);

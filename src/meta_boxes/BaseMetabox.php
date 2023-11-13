@@ -36,12 +36,36 @@ abstract class BaseMetabox implements MetaboxInterface {
 
 		$this->post = $post;
 		$this->initFields();
+
+		add_filter('rwmb_html', array($this, 'filterHtml'), 10, 2);
+	}
+
+	/**
+	 * @param $html
+	 * @param $field
+	 * @return string
+	 */
+	public function filterHtml($html, $field) {
+		// Replace name attribute
+		$pattern = '/name="([^"]+)"/';
+		$replacement = 'name="fields[' . $field['id'] . ']"';
+		
+		$html = preg_replace($pattern, $replacement, $html);
+
+		// Replace type attribute, use type="text" only
+		$pattern = '/type="([^"]+)"/';
+		$replacement = 'type="text"';
+
+		$html = preg_replace($pattern, $replacement, $html);
+		
+		return $html;
 	}
 
 	/**
 	 *  Create field instances
 	 */
 	public function initFields() {
+
 		foreach ( $this->getFieldsData() as $fieldData ) {
 			$field = FieldFactory::create( $fieldData, $this->getPost() );
 			$this->fields[] = $field;
@@ -52,7 +76,6 @@ abstract class BaseMetabox implements MetaboxInterface {
 	 * @return array
 	 */
 	public function getFieldsData() {
-
 		return $this->fieldsData;
 	}
 
@@ -75,16 +98,17 @@ abstract class BaseMetabox implements MetaboxInterface {
 	 */
 	public function view() {
 		$this->renderHeader();
-		foreach ( $this->getFields() as $field ) {
-			$field->view();
-		}
+		
+		// Render whole meta box and fields
+		$this->meta_box->show();
+
 		$this->renderFooter();
 	}
 
 	protected function renderHeader() {
 		$filePath = __DIR__ . '/templates/header.php';
 		if ( is_file( $filePath ) ) {
-			extract( $this->meta_box );
+			extract( $this->meta_box->meta_box );
 			include $filePath;
 		}
 	}

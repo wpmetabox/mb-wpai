@@ -24,7 +24,7 @@
 .meta_box .inside,
 #poststuff .meta_box .inside {
 	margin: 0;
-	padding: 0;
+	padding: 16px;
 }
 
 .meta_box.no_box {

@@ -295,7 +295,6 @@ abstract class Field implements FieldInterface {
 	public function view() {
 		$this->renderHeader();
 		extract( $this->data );
-
 		$fields = $this->getSubFields();
 		switch ( $this->supportedVersion ) {
 			case 'v4':
