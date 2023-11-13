@@ -334,7 +334,7 @@ final class PMAI_Plugin {
 
 	public static function get_default_import_options() {
 		return [ 
-			'acf' => [],
+			'meta_box' => [],
 			'fields' => [],
 			'is_multiple_field_value' => [],
 			'multiple_value' => [],

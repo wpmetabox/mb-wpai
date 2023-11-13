@@ -36,24 +36,28 @@ class PMAI_Import_Record extends PMAI_Model_Record {
 		kses_init(); // do not perform special filtering for imported content
 
 		$parsingData['chunk'] == 1 and $parsingData['logger'] and call_user_func( $parsingData['logger'], __( 'Composing advanced custom fields...', 'mbai' ) );
-
-		if ( ! empty( $parsingData['import']->options['acf'] ) ) {
-			$acfGroups = $parsingData['import']->options['acf'];
-			if ( ! empty( $acfGroups ) ) {
-				foreach ( $acfGroups as $acfGroupID => $status ) {
-					if ( ! $status ) {
+		
+		if ( ! empty( $parsingData['import']->options['meta_box'] ) ) {
+			$metaboxGroups = $parsingData['import']->options['meta_box'];
+			if ( ! empty( $metaboxGroups ) ) {
+				foreach ( $metaboxGroups as $groupId => $enabled ) {
+					
+					if ( ! $enabled ) {
 						continue;
 					}
-					if ( ! is_numeric( $acfGroupID ) ) {
-						$group = pmai_get_acf_group_by_slug( $acfGroupID );
+					
+					if ( ! is_numeric( $groupId ) ) {
+						$group = pmai_get_meta_box_by_slug( $groupId );
+						
 						if ( ! empty( $group ) ) {
-							$this->metaboxes[] = MetaboxFactory::create( array( 'ID' => $group->ID ), $parsingData['import']->options );
+							$this->metaboxes[] = MetaboxFactory::create($group, $parsingData['import']->options );
 						}
 					} else {
-						$this->metaboxes[] = MetaboxFactory::create( array( 'ID' => $acfGroupID ), $parsingData['import']->options );
+						$this->metaboxes[] = MetaboxFactory::create($groupId, $parsingData['import']->options );
 					}
 				}
 			}
+
 			foreach ( $this->metaboxes as $group ) {
 				$group->parse( $parsingData );
 			}

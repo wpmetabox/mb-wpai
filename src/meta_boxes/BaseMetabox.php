@@ -104,7 +104,6 @@ abstract class BaseMetabox implements MetaboxInterface {
 	}
 
 	public function import( $importData, $args = [] ) {
-		kk('import running');
 		foreach ( $this->getFields() as $field ) {
 			$field->import( $importData, $args );
 		}
