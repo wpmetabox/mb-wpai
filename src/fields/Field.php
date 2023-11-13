@@ -135,14 +135,14 @@ abstract class Field implements FieldInterface {
 		}
 
 		if ( array_key_exists( 'key', $field ) ) {
-			$data['current_field'] = empty( $post['fields'][ $field['key'] ] ) ? false : $post['fields'][ $field['key'] ];
+			$data['current_field'] = empty( $post['fields'][ $field['id'] ] ) ? false : $post['fields'][ $field['id'] ];
 		} else {
 			$data['current_field'] = false;
 		}
 
 		$options = array( 'is_multiple_field_value', 'multiple_value' );
 		foreach ( $options as $option ) {
-			$data[ 'current_' . $option ] = isset( $field['key'] ) && isset( $post[ $option ][ $field['key'] ] ) ? $post[ $option ][ $field['key'] ] : false;
+			$data[ 'current_' . $option ] = isset( $field['id'] ) && isset( $post[ $option ][ $field['id'] ] ) ? $post[ $option ][ $field['id'] ] : false;
 		}
 
 		// If parent field exists, parse field name
@@ -167,10 +167,10 @@ abstract class Field implements FieldInterface {
 				}
 			}
 
-			$data['current_field'] = empty( $data['current_field'][ $field['key'] ] ) ? false : $data['current_field'][ $field['key'] ];
+			$data['current_field'] = empty( $data['current_field'][ $field['id'] ] ) ? false : $data['current_field'][ $field['id'] ];
 
 			foreach ( $options as $option ) {
-				$data[ 'current_' . $option ] = isset( $data[ 'current_' . $option ][ $field['key'] ] ) ? $data[ 'current_' . $option ][ $field['key'] ] : false;
+				$data[ 'current_' . $option ] = isset( $data[ 'current_' . $option ][ $field['id'] ] ) ? $data[ 'current_' . $option ][ $field['id'] ] : false;
 			}
 		}
 		return $data;
@@ -184,7 +184,7 @@ abstract class Field implements FieldInterface {
 	 */
 	public function parse( $xpath, $parsingData, $args = array() ) {
 		$this->parsingData = $parsingData;
-
+		
 		$defaults = array(
 			'field_path' => '',
 			'xpath_suffix' => '',
@@ -196,8 +196,8 @@ abstract class Field implements FieldInterface {
 
 		$field = $this->getData( 'field' );
 
-		$isMultipleField = ( isset( $parsingData['import']->options['is_multiple_field_value'][ $field['key'] ] ) ) ? $parsingData['import']->options['is_multiple_field_value'][ $field['key'] ] : FALSE;
-		$multipleValue = ( isset( $parsingData['import']->options['multiple_value'][ $field['key'] ] ) ) ? $parsingData['import']->options['multiple_value'][ $field['key'] ] : FALSE;
+		$isMultipleField = ( isset( $parsingData['import']->options['is_multiple_field_value'][ $field['id'] ] ) ) ? $parsingData['import']->options['is_multiple_field_value'][ $field['id'] ] : FALSE;
+		$multipleValue = ( isset( $parsingData['import']->options['multiple_value'][ $field['id'] ] ) ) ? $parsingData['import']->options['multiple_value'][ $field['id'] ] : FALSE;
 
 		if ( "" != $args['field_path'] ) {
 
@@ -223,9 +223,9 @@ abstract class Field implements FieldInterface {
 				}
 			}
 
-			$xpath = empty( $xpath[ $field['key'] ] ) ? false : $xpath[ $field['key'] ];
-			$isMultipleField = isset( $isMultipleField[ $field['key'] ] ) ? $isMultipleField[ $field['key'] ] : false;
-			$multipleValue = isset( $multipleValue[ $field['key'] ] ) ? $multipleValue[ $field['key'] ] : false;
+			$xpath = empty( $xpath[ $field['id'] ] ) ? false : $xpath[ $field['id'] ];
+			$isMultipleField = isset( $isMultipleField[ $field['id'] ] ) ? $isMultipleField[ $field['id'] ] : false;
+			$multipleValue = isset( $multipleValue[ $field['id'] ] ) ? $multipleValue[ $field['id'] ] : false;
 		}
 
 		$this->setOption( 'base_xpath', $parsingData['xpath_prefix'] . $parsingData['import']->xpath . $args['xpath_suffix'] );
@@ -497,7 +497,7 @@ abstract class Field implements FieldInterface {
 	 * @return string
 	 */
 	public function getFieldKey() {
-		return $this->data['field']['key'];
+		return $this->data['field']['id'];
 	}
 
 	/**
