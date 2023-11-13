@@ -53,7 +53,7 @@ function pmai_admin_notices() {
 		foreach ($messages as $type => $m) {
 			in_array((string)$type, array('updated', 'error')) or $type = 'updated';
 			?>
-			<div class="<?php echo $type ?>"><p><?php echo $m ?></p></div>
+			<div class="<?= $type ?>"><p><?= $m ?></p></div>
 			<?php 
 		}
 	}

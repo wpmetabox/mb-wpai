@@ -329,7 +329,7 @@ final class PMAI_Plugin {
 	 *  Init all available ACF fields.
 	 */
 	public static function get_available_acf_fields() {
-		return ['name', 'email', 'phone'];
+		return ['name', 'email', 'phone', 'address1', 'address2'];
 	}
 
 	public static function get_default_import_options() {
@@ -339,7 +339,6 @@ final class PMAI_Plugin {
 			'is_multiple_field_value' => [],
 			'multiple_value' => [],
 			'fields_delimiter' => [],
-
 			'is_update_acf' => 1,
 			'update_acf_logic' => 'full_update',
 			'acf_list' => [],

@@ -1,10 +1,10 @@
 <div class="input">
     <div class="main_choise">
-        <input type="radio" id="is_multiple_field_value_<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>_yes" class="switcher" name="is_multiple_field_value<?php echo $field_name; ?>[<?php echo $field['key'];?>]" value="yes" <?php echo 'no' != $current_is_multiple_field_value ? 'checked="checked"': '' ?>/>
-        <label for="is_multiple_field_value_<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>_yes" class="chooser_label"><?php _e("Select value for all records"); ?></label>
+        <input type="radio" id="is_multiple_field_value_<?= str_replace(array('[',']'), '', $field_name);?>_<?= $field['id'];?>_yes" class="switcher" name="is_multiple_field_value<?= $field_name; ?>[<?= $field['id'];?>]" value="yes" <?= 'no' != $current_is_multiple_field_value ? 'checked="checked"': '' ?>/>
+        <label for="is_multiple_field_value_<?= str_replace(array('[',']'), '', $field_name);?>_<?= $field['id'];?>_yes" class="chooser_label"><?php _e("Select value for all records"); ?></label>
     </div>
     <div class="wpallimport-clear"></div>
-    <div class="switcher-target-is_multiple_field_value_<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>_yes">
+    <div class="switcher-target-is_multiple_field_value_<?= str_replace(array('[',']'), '', $field_name);?>_<?= $field['id'];?>_yes">
         <div class="input sub_input">
             <div class="input">
                 <?php
@@ -13,8 +13,8 @@
 
                     $field_class = 'acf_field_' . $field['type'];
 
-                    $tmp_key = $field['key'];
-                    $field['key'] = 'multiple_value'. $field_name .'[' . $field['key'] . ']';
+                    $tmp_key = $field['id'];
+                    $field['id'] = 'multiple_value'. $field_name .'[' . $field['id'] . ']';
                     $field['value'] = $current_multiple_value;
                     $field['prefix'] = '';
 
@@ -52,7 +52,7 @@
 
                     acf_render_field( $field );
 
-                    $field['key'] = $tmp_key;
+                    $field['id'] = $tmp_key;
 
                 } else{
 
@@ -60,7 +60,7 @@
                     $new_field = new $field_class();
 
                     $field['other_choice'] = false;
-                    $field['name'] = 'multiple_value'. $field_name .'[' . $field['key'] . ']';
+                    $field['name'] = 'multiple_value'. $field_name .'[' . $field['id'] . ']';
                     $field['value'] = $current_multiple_value;
 
                     $new_field->create_field( $field );
@@ -74,11 +74,11 @@
 <div class="clear"></div>
 <div class="input" style="overflow:hidden;">
     <div class="main_choise">
-        <input type="radio" id="is_multiple_field_value_<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>_no" class="switcher" name="is_multiple_field_value<?php echo $field_name; ?>[<?php echo $field['key'];?>]" value="no" <?php echo 'no' == $current_is_multiple_field_value ? 'checked="checked"': '' ?>/>
-        <label for="is_multiple_field_value_<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>_no" class="chooser_label"><?php _e('Set with XPath', 'mbai' )?></label>
+        <input type="radio" id="is_multiple_field_value_<?= str_replace(array('[',']'), '', $field_name);?>_<?= $field['id'];?>_no" class="switcher" name="is_multiple_field_value<?= $field_name; ?>[<?= $field['id'];?>]" value="no" <?= 'no' == $current_is_multiple_field_value ? 'checked="checked"': '' ?>/>
+        <label for="is_multiple_field_value_<?= str_replace(array('[',']'), '', $field_name);?>_<?= $field['id'];?>_no" class="chooser_label"><?php _e('Set with XPath', 'mbai' )?></label>
     </div>
     <div class="wpallimport-clear"></div>
-    <div class="switcher-target-is_multiple_field_value_<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>_no">
+    <div class="switcher-target-is_multiple_field_value_<?= str_replace(array('[',']'), '', $field_name);?>_<?= $field['id'];?>_no">
         <div class="input sub_input">
             <div class="input">
                 <table class="pmai_taxonomy post_taxonomy">
@@ -100,13 +100,13 @@
                                             if ( is_null($cat->parent_id) or empty($cat->parent_id) )
                                             {
                                                 ?>
-                                                <li id="item_<?php echo $i; ?>" class="dragging">
+                                                <li id="item_<?= $i; ?>" class="dragging">
                                                     <div class="drag-element">
-                                                        <input type="text" class="widefat xpath_field rad4" value="<?php echo esc_attr($cat->xpath); ?>"/>
+                                                        <input type="text" class="widefat xpath_field rad4" value="<?= esc_attr($cat->xpath); ?>"/>
                                                     </div>
                                                     <?php if ( $i > 1 ): ?><a href="javascript:void(0);" class="icon-item remove-ico"></a><?php endif; ?>
 
-                                                    <?php echo reverse_taxonomies_html($taxonomies_hierarchy, $cat->item_id, $i); ?>
+                                                    <?= reverse_taxonomies_html($taxonomies_hierarchy, $cat->item_id, $i); ?>
                                                 </li>
                                                 <?php
                                             }
@@ -133,14 +133,14 @@
                                         </div>
                                     </li>
                                 </ol>
-                                <input type="hidden" class="hierarhy-output" name="fields<?php echo $field_name; ?>[<?php echo $field['key'];?>][value]" value="<?php echo esc_attr($current_field['value']); ?>"/>
+                                <input type="hidden" class="hierarhy-output" name="fields<?= $field_name; ?>[<?= $field['id'];?>][value]" value="<?= esc_attr($current_field['value']); ?>"/>
                                 <div class="input">
                                     <label for=""><?php _e('Separated by'); ?></label>
                                     <input
                                         type="text"
                                         style="width:5%; text-align:center; padding-left: 25px;"
-                                        value="<?php echo (!empty($current_field['delim'])) ? esc_attr( $current_field['delim'] ) : ',';?>"
-                                        name="fields<?php echo $field_name;?>[<?php echo $field['key'];?>][delim]"
+                                        value="<?= (!empty($current_field['delim'])) ? esc_attr( $current_field['delim'] ) : ',';?>"
+                                        name="fields<?= $field_name;?>[<?= $field['id'];?>][delim]"
                                         class="small rad4">
                                 </div>
                                 <div class="delim">

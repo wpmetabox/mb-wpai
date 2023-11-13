@@ -7,14 +7,14 @@
             $order = is_numeric($i) ? ($i + 1) : 0;
 
             ?>
-            <div class="layout" data-layout="<?php echo sanitize_title($layout['name']); ?>">
+            <div class="layout" data-layout="<?= sanitize_title($layout['name']); ?>">
 
                 <div style="display:none">
-                    <input type="hidden" name="fields<?php echo $field_name; ?>[<?php echo $field['key'];?>][layouts][ROWNUMBER][acf_fc_layout]" value="<?php echo $layout['name']; ?>" />
+                    <input type="hidden" name="fields<?= $field_name; ?>[<?= $field['id'];?>][layouts][ROWNUMBER][acf_fc_layout]" value="<?= $layout['name']; ?>" />
                 </div>
 
                 <div class="acf-fc-layout-handle">
-                    <span class="fc-layout-order"><?php echo $order; ?></span>. <?php echo $layout['label']; ?>
+                    <span class="fc-layout-order"><?= $order; ?></span>. <?= $layout['label']; ?>
                 </div>
 
                 <table class="widefat acf-input-table <?php if( $layout['display'] == 'row' ): ?>row_layout<?php endif; ?>">
@@ -43,10 +43,10 @@
                                 }
 
                                 ?>
-                            <td class="acf-th-<?php echo $sub_field['name']; ?> field_key-<?php echo $sub_field['key']; ?>" <?php echo $attr; ?>>
-                                <span><?php echo $sub_field['label'] . $required_label; ?></span>
+                            <td class="acf-th-<?= $sub_field['name']; ?> field_key-<?= $sub_field['key']; ?>" <?= $attr; ?>>
+                                <span><?= $sub_field['label'] . $required_label; ?></span>
                                 <?php if( isset($sub_field['instructions']) ): ?>
-                                <span class="sub-field-instructions"><?php echo $sub_field['instructions']; ?></span>
+                                <span class="sub-field-instructions"><?= $sub_field['instructions']; ?></span>
                             <?php endif; ?>
                                 </td><?php
                             endforeach;
@@ -119,11 +119,11 @@
                                             <tr <?php pmai_join_attr( $attributes ); ?>>
                                             <td class="label">
                                                 <label>
-                                                    <?php echo $sub_field['label']; ?>
+                                                    <?= $sub_field['label']; ?>
                                                     <?php if( $sub_field['required'] ): ?><span class="required">*</span><?php endif; ?>
                                                 </label>
                                                 <?php if( isset($sub_field['instructions']) ): ?>
-                                                    <span class="sub-field-instructions"><?php echo $sub_field['instructions']; ?></span>
+                                                    <span class="sub-field-instructions"><?= $sub_field['instructions']; ?></span>
                                                 <?php endif; ?>
                                             </td>
                                         <?php endif; ?>
@@ -131,7 +131,7 @@
                                         <td <?php if( $layout['display'] != 'row' ){ pmai_join_attr( $attributes ); } ?>>
                                             <div class="inner">
                                                 <?php
-                                                \wpai_meta_box_add_on\fields\FieldFactory::create($sub_field, $post, $field_name . "[" . $field['key'] . "][layouts][ROWNUMBER]")->view();
+                                                \wpai_meta_box_add_on\fields\FieldFactory::create($sub_field, $post, $field_name . "[" . $field['id'] . "][layouts][ROWNUMBER]")->view();
                                                 ?>
                                             </div>
                                         </td>
@@ -172,7 +172,7 @@
             <div class="layout" data-layout="<?php if (!empty($field['layouts'][$key]['name'])) echo $field['layouts'][$key]['name']; ?>">
 
                 <div style="display:none">
-                    <input type="hidden" name="fields<?php echo $field_name; ?>[<?php echo $field['key'];?>][layouts][<?php echo $key;?>][acf_fc_layout]" value="<?php echo $layout['acf_fc_layout']; ?>" />
+                    <input type="hidden" name="fields<?= $field_name; ?>[<?= $field['id'];?>][layouts][<?= $key;?>][acf_fc_layout]" value="<?= $layout['acf_fc_layout']; ?>" />
                 </div>
                 <?php
                 $current_layout = false;
@@ -184,7 +184,7 @@
                 }
                 ?>
                 <div class="acf-fc-layout-handle">
-                    <span class="fc-layout-order"><?php echo $key; ?></span>. <?php echo $current_layout['label']; ?>
+                    <span class="fc-layout-order"><?= $key; ?></span>. <?= $current_layout['label']; ?>
                 </div>
 
                 <table class="widefat acf-input-table <?php if( $current_layout['display'] == 'row' ): ?>row_layout<?php endif; ?>">
@@ -210,10 +210,10 @@
                                 }
 
                                 ?>
-                            <td class="acf-th-<?php echo $sub_field['name']; ?> field_key-<?php echo $sub_field['key']; ?>" <?php echo $attr; ?>>
-                                <span><?php echo $sub_field['label'] . $required_label; ?></span>
+                            <td class="acf-th-<?= $sub_field['name']; ?> field_key-<?= $sub_field['key']; ?>" <?= $attr; ?>>
+                                <span><?= $sub_field['label'] . $required_label; ?></span>
                                 <?php if( isset($sub_field['instructions']) ): ?>
-                                <span class="sub-field-instructions"><?php echo $sub_field['instructions']; ?></span>
+                                <span class="sub-field-instructions"><?= $sub_field['instructions']; ?></span>
                             <?php endif; ?>
                                 </td><?php
                             endforeach; ?>
@@ -286,11 +286,11 @@
                                             <tr <?php pmai_join_attr( $attributes ); ?>>
                                             <td class="label">
                                                 <label>
-                                                    <?php echo $sub_field['label']; ?>
+                                                    <?= $sub_field['label']; ?>
                                                     <?php if( $sub_field['required'] ): ?><span class="required">*</span><?php endif; ?>
                                                 </label>
                                                 <?php if( isset($sub_field['instructions']) ): ?>
-                                                    <span class="sub-field-instructions"><?php echo $sub_field['instructions']; ?></span>
+                                                    <span class="sub-field-instructions"><?= $sub_field['instructions']; ?></span>
                                                 <?php endif; ?>
                                             </td>
                                         <?php endif; ?>
@@ -298,7 +298,7 @@
                                         <td <?php if( empty($field['layouts'][$key - 1]['display']) or $field['layouts'][$key - 1]['display'] != 'row' ){ pmai_join_attr( $attributes ); } ?>>
                                             <div class="inner">
                                                 <?php
-                                                \wpai_meta_box_add_on\fields\FieldFactory::create($sub_field, $post, $field_name . "[" . $field['key'] . "][layouts][".$key."]")->view();
+                                                \wpai_meta_box_add_on\fields\FieldFactory::create($sub_field, $post, $field_name . "[" . $field['id'] . "][layouts][".$key."]")->view();
                                                 ?>
                                             </div>
                                         </td>
@@ -336,7 +336,7 @@
             <option selected="selected">Select Layout</option>
             <?php foreach ($field['layouts'] as $key => $layout) {
                 ?>
-                <option value="<?php echo sanitize_title($layout['name']);?>"><?php echo $layout['label'];?></option>
+                <option value="<?= sanitize_title($layout['name']);?>"><?= $layout['label'];?></option>
                 <?php
             }?>
         </select>

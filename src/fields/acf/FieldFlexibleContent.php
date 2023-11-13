@@ -56,9 +56,9 @@ class FieldFlexibleContent extends Field {
 
                 if (!empty($current_field['sub_fields']) and is_array($current_field['sub_fields'])) {
                     foreach ($current_field['sub_fields'] as $n => $sub_field) {
-                        $childField = FieldFactory::create($sub_field, $this->getData('post'), $this->getOption('field_path') . "[" . $field['key'] . "][layouts][" . $key . "]", $this);
+                        $childField = FieldFactory::create($sub_field, $this->getData('post'), $this->getOption('field_path') . "[" . $field['id'] . "][layouts][" . $key . "]", $this);
                         $childField->parse($layout_fields[$sub_field['key']], $this->parsingData, array(
-                          'field_path' => $this->getOption('field_path') . "[" . $field['key'] . "][layouts][" . $key . "]"
+                          'field_path' => $this->getOption('field_path') . "[" . $field['id'] . "][layouts][" . $key . "]"
                         ));
                         $row_array['fields'][$sub_field['key']] = $childField;
                     }

@@ -461,18 +461,18 @@ abstract class Field implements FieldInterface {
 	 */
 	public function getFieldName() {
 		$fieldName = ( isset( $this->data['field']['name'] ) ? $this->data['field']['name'] : '' );
-		if ( empty( $fieldName ) ) {
-			if ( function_exists( 'acf_get_field' ) ) {
-				$field = acf_get_field( $this->data['field']['id'] );
-			} else {
-				$label = sanitize_title( $this->data['field']['label'] );
-				$fieldName = str_replace( '-', '_', $label );
-			}
+		// if ( empty( $fieldName ) ) {
+		// 	if ( function_exists( 'acf_get_field' ) ) {
+		// 		$field = acf_get_field( $this->data['field']['id'] );
+		// 	} else {
+		// 		$label = sanitize_title( $this->data['field']['label'] );
+		// 		$fieldName = str_replace( '-', '_', $label );
+		// 	}
 
-			if ( ! empty( $field ) ) {
-				$fieldName = $this->data['field']['name'] = $field['name'];
-			}
-		}
+		// 	if ( ! empty( $field ) ) {
+		// 		$fieldName = $this->data['field']['name'] = $field['name'];
+		// 	}
+		// }
 		return ! isset( $this->importData['container_name'] ) ? $fieldName : $this->importData['container_name'] . $fieldName;
 	}
 
@@ -506,8 +506,10 @@ abstract class Field implements FieldInterface {
 		if ( isset( $this->options['is_multiple_field'] ) && $this->options['is_multiple_field'] == 'yes' ) {
 			$value = array_shift( $values );
 		} else {
+			
 			$value = isset( $values[ $this->getPostIndex()] ) ? $values[ $this->getPostIndex()] : '';
 			$parents = $this->getParents();
+
 			if ( ! empty( $parents ) ) {
 				foreach ( $parents as $key => $parent ) {
 					if ( $parent['delimiter'] !== FALSE ) {
@@ -517,6 +519,7 @@ abstract class Field implements FieldInterface {
 				}
 			}
 		}
+
 		return $this->trimValue( $value );
 	}
 
@@ -538,21 +541,15 @@ abstract class Field implements FieldInterface {
 		return is_string( $value ) ? trim( $value ) : $value;
 	}
 
-	/**
-	 * @param $option
-	 * @return null|mixed
-	 */
-	public function getFieldOption( $option ) {
-		return isset( $this->data['field'][ $option ] ) ? $this->data['field'][ $option ] : NULL;
+	
+	public function getFieldOption( string $option ) {
+		return $this->data['field'][ $option ] ?? null;
 	}
 
-	/**
-	 * @param $option
-	 * @return null|mixed
-	 */
-	public function getImportOption( $option ) {
+	public function getImportOption( string $option ) {
 		$importData = $this->getImportData();
-		return isset( $importData['import']->options[ $option ] ) ? $importData['import']->options[ $option ] : NULL;
+
+		return $importData['import']->options[ $option ] ?? null;
 	}
 
 	/**
@@ -596,7 +593,7 @@ abstract class Field implements FieldInterface {
 	 * @return array
 	 */
 	public function getDBSubFieldsData() {
-		$fieldID = $this->getFieldOption( 'ID' );
+		$fieldID = $this->getFieldOption( 'id' );
 		if ( empty( $fieldID ) ) {
 			$fieldData = $this->getDBFieldDataByKey( $this->getFieldKey() );
 			if ( ! empty( $fieldData['id'] ) ) {

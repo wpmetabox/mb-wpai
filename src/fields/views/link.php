@@ -3,8 +3,8 @@
     <input
         type="text"
         placeholder=""
-        value="<?php echo esc_attr( $current_field['title'] );?>"
-        name="fields<?php echo $field_name; ?>[<?php echo $field['key'];?>][title]"
+        value="<?= esc_attr( $current_field['title'] );?>"
+        name="fields<?= $field_name; ?>[<?= $field['id'];?>][title]"
         class="text widefat rad4"/>
 </div>
 <div class="input">
@@ -12,8 +12,8 @@
     <input
         type="text"
         placeholder=""
-        value="<?php echo esc_attr( $current_field['url'] );?>"
-        name="fields<?php echo $field_name; ?>[<?php echo $field['key'];?>][url]"
+        value="<?= esc_attr( $current_field['url'] );?>"
+        name="fields<?= $field_name; ?>[<?= $field['id'];?>][url]"
         class="text widefat rad4"/>
 
     <a
@@ -28,7 +28,7 @@
     <input
         type="text"
         placeholder=""
-        value="<?php echo esc_attr( $current_field['target'] );?>"
-        name="fields<?php echo $field_name; ?>[<?php echo $field['key'];?>][target]"
+        value="<?= esc_attr( $current_field['target'] );?>"
+        name="fields<?= $field_name; ?>[<?= $field['id'];?>][target]"
         class="text widefat rad4"/>
 </div>

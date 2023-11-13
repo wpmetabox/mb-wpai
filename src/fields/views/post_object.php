@@ -1,16 +1,16 @@
 <input
     type="text"
     placeholder=""
-    value="<?php echo ( ! is_array($current_field)) ? esc_attr($current_field) : esc_attr( $current_field['value'] );?>"
-    name="fields<?php echo $field_name;?>[<?php echo $field['key'];?>][value]"
+    value="<?= ( ! is_array($current_field)) ? esc_attr($current_field) : esc_attr( $current_field['value'] );?>"
+    name="fields<?= $field_name;?>[<?= $field['id'];?>][value]"
     class="text widefat rad4"
     style="width: 75%;"/>
 
 <input
     type="text"
     style="text-align:center;"
-    value="<?php echo (!empty($current_field['delim'])) ? esc_attr( $current_field['delim'] ) : ',';?>"
-    name="fields<?php echo $field_name;?>[<?php echo $field['key'];?>][delim]"
+    value="<?= (!empty($current_field['delim'])) ? esc_attr( $current_field['delim'] ) : ',';?>"
+    name="fields<?= $field_name;?>[<?= $field['id'];?>][delim]"
     class="small rad4">
 
 <a

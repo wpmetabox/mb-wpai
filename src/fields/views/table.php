@@ -1,12 +1,12 @@
 <div class="repeater">
 	<div class="input">
         <div class="input" style="margin-left: 4px;">
-            <input type="hidden" name="fields<?php echo $field_name; ?>[<?php echo $field['key'];?>][use_headers]" value="0"/>
-            <input type="checkbox" value="1" class="switcher" id="use_headers<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>" name="fields<?php echo $field_name; ?>[<?php echo $field['key'];?>][use_headers]" <?php if ( ! empty($current_field['use_headers'])) echo 'checked="checked';?>/>
-            <label for="use_headers<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>"><?php _e('Import headers', 'mbai'); ?></label>
+            <input type="hidden" name="fields<?= $field_name; ?>[<?= $field['id'];?>][use_headers]" value="0"/>
+            <input type="checkbox" value="1" class="switcher" id="use_headers<?= str_replace(array('[',']'), '', $field_name);?>_<?= $field['id'];?>" name="fields<?= $field_name; ?>[<?= $field['id'];?>][use_headers]" <?php if ( ! empty($current_field['use_headers'])) echo 'checked="checked';?>/>
+            <label for="use_headers<?= str_replace(array('[',']'), '', $field_name);?>_<?= $field['id'];?>"><?php _e('Import headers', 'mbai'); ?></label>
             <a href="#help" class="wpallimport-help" style="top:0;" title="<?php _e('If the value of the element or column in your file is blank, it will be ignored.', 'mbai') ?>">?</a>
             <div class="wpallimport-clear"></div>
-            <div class="switcher-target-use_headers<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>">
+            <div class="switcher-target-use_headers<?= str_replace(array('[',']'), '', $field_name);?>_<?= $field['id'];?>">
                 <div class="input sub_input">
                     <div class="input">
                         <p>
@@ -19,25 +19,25 @@
     </div>
     <div class="input" style="margin-bottom: 10px;">
 		<div class="input">
-			<input type="radio" id="is_variable_<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>_no" class="switcher variable_repeater_mode" name="fields<?php echo $field_name; ?>[<?php echo $field['key'];?>][is_variable]" value="no" <?php echo 'yes' != $current_field['is_variable'] ? 'checked="checked"': '' ?>/>
-			<label for="is_variable_<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>_no" class="chooser_label"><?php _e('Fixed Repeater Mode', 'mbai' )?></label>
+			<input type="radio" id="is_variable_<?= str_replace(array('[',']'), '', $field_name);?>_<?= $field['id'];?>_no" class="switcher variable_repeater_mode" name="fields<?= $field_name; ?>[<?= $field['id'];?>][is_variable]" value="no" <?= 'yes' != $current_field['is_variable'] ? 'checked="checked"': '' ?>/>
+			<label for="is_variable_<?= str_replace(array('[',']'), '', $field_name);?>_<?= $field['id'];?>_no" class="chooser_label"><?php _e('Fixed Repeater Mode', 'mbai' )?></label>
 		</div>
 		<div class="input">
-			<input type="radio" id="is_variable_<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>_yes" class="switcher variable_repeater_mode" name="fields<?php echo $field_name; ?>[<?php echo $field['key'];?>][is_variable]" value="yes" <?php echo 'yes' == $current_field['is_variable'] ? 'checked="checked"': '' ?>/>
-			<label for="is_variable_<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>_yes" class="chooser_label"><?php _e('Variable Repeater Mode (XML)', 'mbai' )?></label>
+			<input type="radio" id="is_variable_<?= str_replace(array('[',']'), '', $field_name);?>_<?= $field['id'];?>_yes" class="switcher variable_repeater_mode" name="fields<?= $field_name; ?>[<?= $field['id'];?>][is_variable]" value="yes" <?= 'yes' == $current_field['is_variable'] ? 'checked="checked"': '' ?>/>
+			<label for="is_variable_<?= str_replace(array('[',']'), '', $field_name);?>_<?= $field['id'];?>_yes" class="chooser_label"><?php _e('Variable Repeater Mode (XML)', 'mbai' )?></label>
 		</div>
 		<div class="input">
-			<input type="radio" id="is_variable_<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>_yes_csv" class="switcher variable_repeater_mode" name="fields<?php echo $field_name; ?>[<?php echo $field['key'];?>][is_variable]" value="csv" <?php echo 'csv' == $current_field['is_variable'] ? 'checked="checked"': '' ?>/>
-			<label for="is_variable_<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>_yes_csv" class="chooser_label"><?php _e('Variable Repeater Mode (CSV)', 'mbai' )?></label>
+			<input type="radio" id="is_variable_<?= str_replace(array('[',']'), '', $field_name);?>_<?= $field['id'];?>_yes_csv" class="switcher variable_repeater_mode" name="fields<?= $field_name; ?>[<?= $field['id'];?>][is_variable]" value="csv" <?= 'csv' == $current_field['is_variable'] ? 'checked="checked"': '' ?>/>
+			<label for="is_variable_<?= str_replace(array('[',']'), '', $field_name);?>_<?= $field['id'];?>_yes_csv" class="chooser_label"><?php _e('Variable Repeater Mode (CSV)', 'mbai' )?></label>
 		</div>
 		<div class="input sub_input">
-			<input type="hidden" name="fields<?php echo $field_name; ?>[<?php echo $field['key'];?>][is_ignore_empties]" value="0"/>
-			<input type="checkbox" value="1" id="is_ignore_empties<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>" name="fields<?php echo $field_name; ?>[<?php echo $field['key'];?>][is_ignore_empties]" <?php if ( ! empty($current_field['is_ignore_empties'])) echo 'checked="checked';?>/>
-			<label for="is_ignore_empties<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>"><?php _e('Ignore empty rows', 'mbai'); ?></label>
+			<input type="hidden" name="fields<?= $field_name; ?>[<?= $field['id'];?>][is_ignore_empties]" value="0"/>
+			<input type="checkbox" value="1" id="is_ignore_empties<?= str_replace(array('[',']'), '', $field_name);?>_<?= $field['id'];?>" name="fields<?= $field_name; ?>[<?= $field['id'];?>][is_ignore_empties]" <?php if ( ! empty($current_field['is_ignore_empties'])) echo 'checked="checked';?>/>
+			<label for="is_ignore_empties<?= str_replace(array('[',']'), '', $field_name);?>_<?= $field['id'];?>"><?php _e('Ignore empty rows', 'mbai'); ?></label>
 			<a href="#help" class="wpallimport-help" style="top:0;" title="<?php _e('If the value of the element or column in your file is blank, it will be ignored. Use this option when some records in your file have a different number of repeating elements than others.', 'mbai') ?>">?</a>
 		</div>
 		<div class="wpallimport-clear"></div>
-		<div class="switcher-target-is_variable_<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>_no">
+		<div class="switcher-target-is_variable_<?= str_replace(array('[',']'), '', $field_name);?>_<?= $field['id'];?>_no">
 			<div class="input sub_input">
 				<div class="input">
 					<p>
@@ -47,7 +47,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="switcher-target-is_variable_<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>_yes">
+		<div class="switcher-target-is_variable_<?= str_replace(array('[',']'), '', $field_name);?>_<?= $field['id'];?>_yes">
 			<div class="input sub_input">
 				<div class="input">
 					<p>
@@ -65,7 +65,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="switcher-target-is_variable_<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>_yes_csv">
+		<div class="switcher-target-is_variable_<?= str_replace(array('[',']'), '', $field_name);?>_<?= $field['id'];?>_yes_csv">
 			<div class="input sub_input">
 				<div class="input">
 					<p>
@@ -90,16 +90,16 @@
 		<?php
 		if (!empty($current_field['rows'])) : foreach ($current_field['rows'] as $key => $row): if ("ROWNUMBER" == $key) continue; ?>
 			<tr class="row">
-				<td class="order" style="padding:8px;"><?php echo $key; ?></td>
+				<td class="order" style="padding:8px;"><?= $key; ?></td>
 				<td class="acf_input-wrap" style="padding:0 !important;">
-					<input type="text" name="fields<?php echo $field_name . "[" . $field['key'] . "][rows][" . $key . "]"; ?>" value="<?php echo $row; ?>"/>
+					<input type="text" name="fields<?= $field_name . "[" . $field['id'] . "][rows][" . $key . "]"; ?>" value="<?= $row; ?>"/>
 				</td>
 			</tr>
 		<?php endforeach; endif; ?>
 		<tr class="row-clone">
 			<td class="order" style="padding:8px;"></td>
 			<td class="acf_input-wrap" style="padding:0 !important;">
-				<input type="text" name="fields<?php echo $field_name . "[" . $field['key'] . "][rows][ROWNUMBER]"; ?>"/>
+				<input type="text" name="fields<?= $field_name . "[" . $field['id'] . "][rows][ROWNUMBER]"; ?>"/>
 			</td>
 		</tr>
 		</tbody>
@@ -107,7 +107,7 @@
 
 
 	<div class="wpallimport-clear"></div>
-	<div class="switcher-target-is_variable_<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>_no">
+	<div class="switcher-target-is_variable_<?= str_replace(array('[',']'), '', $field_name);?>_<?= $field['id'];?>_no">
 		<div class="input sub_input">
 			<ul class="hl clearfix repeater-footer">
 				<li class="right">

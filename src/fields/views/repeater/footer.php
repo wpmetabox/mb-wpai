@@ -1,5 +1,5 @@
     <div class="wpallimport-clear"></div>
-    <div class="switcher-target-is_variable_<?php echo str_replace(array('[',']'), '', $field_name);?>_<?php echo $field['key'];?>_no">
+    <div class="switcher-target-is_variable_<?= str_replace(array('[',']'), '', $field_name);?>_<?= $field['id'];?>_no">
         <div class="input sub_input">
             <ul class="hl clearfix repeater-footer">
                 <li class="right">

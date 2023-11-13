@@ -1,8 +1,8 @@
 <input
     type="text"
     placeholder=""
-    value="<?php echo (!is_array($current_field)) ? esc_attr( $current_field ) : esc_attr( $current_field['url'] );?>"
-    name="fields<?php echo $field_name;?>[<?php echo $field['key'];?>][url]"
+    value="<?= (!is_array($current_field)) ? esc_attr( $current_field ) : esc_attr( $current_field['url'] );?>"
+    name="fields<?= $field_name;?>[<?= $field['id'];?>][url]"
     class="text w95 widefat rad4"/>
 
 <a
@@ -14,15 +14,15 @@
 <div class="input">
     <input
         type="hidden"
-        name="fields<?php echo $field_name;?>[<?php echo $field['key'];?>][search_in_media]"
+        name="fields<?= $field_name;?>[<?= $field['id'];?>][search_in_media]"
         value="0"/>
     <input
         type="checkbox"
-        id="<?php echo $field_name . $field['key'] . '_search_in_media';?>"
-        name="fields<?php echo $field_name;?>[<?php echo $field['key'];?>][search_in_media]"
-        value="1" <?php echo (!empty($current_field['search_in_media'])) ? 'checked="checked"' : '';?>/>
+        id="<?= $field_name . $field['id'] . '_search_in_media';?>"
+        name="fields<?= $field_name;?>[<?= $field['id'];?>][search_in_media]"
+        value="1" <?= (!empty($current_field['search_in_media'])) ? 'checked="checked"' : '';?>/>
     <label
-        for="<?php echo $field_name . $field['key'] . '_search_in_media';?>">
+        for="<?= $field_name . $field['id'] . '_search_in_media';?>">
         <?php _e('Search through the Media Library for existing files before importing new files.', 'mbai'); ?></label>
     <a
         href="#help"
@@ -34,14 +34,14 @@
 <div class="input">
     <input
             type="hidden"
-            name="fields<?php echo $field_name;?>[<?php echo $field['key'];?>][search_in_files]"
+            name="fields<?= $field_name;?>[<?= $field['id'];?>][search_in_files]"
             value="0"/>
     <input
             type="checkbox"
-            id="<?php echo $field_name . $field['key'] . '_search_in_files';?>"
-            name="fields<?php echo $field_name;?>[<?php echo $field['key'];?>][search_in_files]"
-            value="1" <?php echo (!empty($current_field['search_in_files'])) ? 'checked="checked"' : '';?>/>
+            id="<?= $field_name . $field['id'] . '_search_in_files';?>"
+            name="fields<?= $field_name;?>[<?= $field['id'];?>][search_in_files]"
+            value="1" <?= (!empty($current_field['search_in_files'])) ? 'checked="checked"' : '';?>/>
     <label
-            for="<?php echo $field_name . $field['key'] . '_search_in_files';?>">
+            for="<?= $field_name . $field['id'] . '_search_in_files';?>">
         <?php _e('Use files currently uploaded in wp-content/uploads/wpallimport/files/', 'mbai'); ?></label>
 </div>

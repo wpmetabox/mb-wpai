@@ -31,7 +31,7 @@ final class FieldFactory {
         $field = FALSE;
         $class_suffix = str_replace(" ", "", ucwords(str_replace("_", " ", $fieldData['type'])));
         $class = '\\wpai_meta_box_add_on\\fields\\acf\\Field' . $class_suffix;
-
+     
         if (!class_exists($class)) {
             $class = '\\wpai_meta_box_add_on\\fields\\acf\\' . $fieldData['type'] . '\\Field' . $class_suffix;
         }

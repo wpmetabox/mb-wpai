@@ -4,14 +4,14 @@ if (\wpai_meta_box_add_on\MetaboxService::isACFNewerThan('5.0.0')){
 
     if (!empty($field['sub_fields'])){
         foreach ($field['sub_fields'] as $key => $sub_field){ ?>
-            <tr class="field sub_field field_type-<?php echo $sub_field['type'];?> field_key-<?php echo $sub_field['key'];?>">
+            <tr class="field sub_field field_type-<?= $sub_field['type'];?> field_key-<?= $sub_field['key'];?>">
                 <td class="label">
-                    <?php echo $sub_field['label'];?>
+                    <?= $sub_field['label'];?>
                 </td>
                 <td>
                     <div class="inner">
                         <?php
-                        \wpai_meta_box_add_on\fields\FieldFactory::create($sub_field, $post, $field_name . "[" . $field['key'] . "][rows][ROWNUMBER]")->view();
+                        \wpai_meta_box_add_on\fields\FieldFactory::create($sub_field, $post, $field_name . "[" . $field['id'] . "][rows][ROWNUMBER]")->view();
                         ?>
                     </div>
                 </td>
@@ -21,7 +21,7 @@ if (\wpai_meta_box_add_on\MetaboxService::isACFNewerThan('5.0.0')){
     }
     elseif (!empty($field['sub_field'])){
         ?>
-        <tr class="field sub_field field_type-<?php echo $field['sub_field']['type'];?> field_key-<?php echo $field['sub_field']['key'];?>">
+        <tr class="field sub_field field_type-<?= $field['sub_field']['type'];?> field_key-<?= $field['sub_field']['key'];?>">
             <td>
                 <div class="inner">
                     <?php
