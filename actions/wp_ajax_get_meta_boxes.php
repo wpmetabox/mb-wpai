@@ -7,11 +7,11 @@ use wpai_meta_box_add_on\meta_boxes\MetaboxFactory;
 function pmai_wp_ajax_get_meta_boxes() {
 
     if (!check_ajax_referer('wp_all_import_secure', 'security', FALSE)) {
-        wp_send_json(['message' => __('Security check', 'mbai')]);
+        wp_send_json_error(['message' => __('Security check', 'mbai')]);
     }
 
     if (!current_user_can(PMXI_Plugin::$capabilities)) {
-        wp_send_json(['html' => __('Security check', 'mbai')]);
+        wp_send_json_error(['html' => __('Security check', 'mbai')]);
     }
 
     ob_start();
@@ -19,7 +19,7 @@ function pmai_wp_ajax_get_meta_boxes() {
     $meta_boxes = PMXI_Plugin::$session->meta_boxes;
     
     if (!isset($_GET['meta_box']) || !isset($meta_boxes[$_GET['meta_box']])) {
-        wp_send_json(['html' => __('Meta Box does not exist', 'mbai')]);
+        wp_send_json_error(['html' => __('Meta Box does not exist', 'mbai')]);
     }
 
     $selected_meta_box = $meta_boxes[$_GET['meta_box']];

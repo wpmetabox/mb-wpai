@@ -27,33 +27,33 @@ class PMAI_Import_Record extends PMAI_Model_Record {
 	/**
 	 * @param array $parsingData [import, count, xml, logger, chunk, xpath_prefix]
 	 */
-	public function parse( $parsingData ) {
+	public function parse( array $parsingData ) {
 
-		add_filter( 'user_has_cap', array(
+		add_filter( 'user_has_cap', [ 
 			$this,
 			'_filter_has_cap_unfiltered_html',
-		) );
+		] );
 		kses_init(); // do not perform special filtering for imported content
 
-		$parsingData['chunk'] == 1 and $parsingData['logger'] and call_user_func( $parsingData['logger'], __( 'Composing advanced custom fields...', 'mbai' ) );
-		
+		$parsingData['chunk'] == 1 and $parsingData['logger'] and call_user_func( $parsingData['logger'], __( 'Composing meta box...', 'mbai' ) );
+
 		if ( ! empty( $parsingData['import']->options['meta_box'] ) ) {
 			$metaboxGroups = $parsingData['import']->options['meta_box'];
 			if ( ! empty( $metaboxGroups ) ) {
 				foreach ( $metaboxGroups as $groupId => $enabled ) {
-					
+
 					if ( ! $enabled ) {
 						continue;
 					}
-					
+
 					if ( ! is_numeric( $groupId ) ) {
 						$group = pmai_get_meta_box_by_slug( $groupId );
-						
+
 						if ( ! empty( $group ) ) {
-							$this->metaboxes[] = MetaboxFactory::create($group, $parsingData['import']->options );
+							$this->metaboxes[] = MetaboxFactory::create( $group, $parsingData['import']->options );
 						}
 					} else {
-						$this->metaboxes[] = MetaboxFactory::create($groupId, $parsingData['import']->options );
+						$this->metaboxes[] = MetaboxFactory::create( $groupId, $parsingData['import']->options );
 					}
 				}
 			}
@@ -74,10 +74,10 @@ class PMAI_Import_Record extends PMAI_Model_Record {
 	 * @param $importData [pid, i, import, articleData, xml, is_cron, xpath_prefix]
 	 */
 	public function import( $importData ) {
-		$importData['logger'] and call_user_func( $importData['logger'], __( '<strong>ACF ADD-ON:</strong>', 'mbai' ) );
+		$importData['logger'] and call_user_func( $importData['logger'], __( '<strong>Metabox ADD-ON:</strong>', 'mbai' ) );
 
-		foreach ( $this->metaboxes as $group ) {
-			$group->import( $importData );
+		foreach ( $this->metaboxes as $mb ) {
+			$mb->import( $importData );
 		}
 	}
 
@@ -85,8 +85,8 @@ class PMAI_Import_Record extends PMAI_Model_Record {
 	 * @param $importData [pid, import, logger, is_update]
 	 */
 	public function saved_post( $importData ) {
-		foreach ( $this->metaboxes as $group ) {
-			$group->saved_post( $importData );
+		foreach ( $this->metaboxes as $mb ) {
+			$mb->saved_post( $importData );
 		}
 	}
 
@@ -95,7 +95,8 @@ class PMAI_Import_Record extends PMAI_Model_Record {
 	 * @return mixed
 	 */
 	public function _filter_has_cap_unfiltered_html( $caps ) {
-		$caps['unfiltered_html'] = TRUE;
+		$caps['unfiltered_html'] = true;
+
 		return $caps;
 	}
 
@@ -104,6 +105,6 @@ class PMAI_Import_Record extends PMAI_Model_Record {
 	 * @return mixed
 	 */
 	public function filtering( $var ) {
-		return ( "" == $var ) ? FALSE : TRUE;
+		return ! empty( $var );
 	}
 }

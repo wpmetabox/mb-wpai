@@ -30,11 +30,6 @@ interface FieldInterface{
     public function saved_post($importData);
 
     /**
-     * @return mixed
-     */
-    public function view();
-
-    /**
      *
      * Determines is field value empty or not
      *

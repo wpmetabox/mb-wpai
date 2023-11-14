@@ -2,7 +2,6 @@
 
 namespace wpai_meta_box_add_on\fields;
 
-use wpai_meta_box_add_on\MetaboxService;
 use wpai_meta_box_add_on\fields\acf\FieldEmpty;
 use wpai_meta_box_add_on\fields\acf\FieldNotSupported;
 
@@ -28,7 +27,7 @@ final class FieldFactory {
      * @return mixed|FieldEmpty
      */
     public static function create($fieldData, $post, $fieldName = "", $fieldParent = false) {
-        $field = FALSE;
+        $field = false;
         $class_suffix = str_replace(" ", "", ucwords(str_replace("_", " ", $fieldData['type'])));
         $class = '\\wpai_meta_box_add_on\\fields\\acf\\Field' . $class_suffix;
      
