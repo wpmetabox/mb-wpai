@@ -65,7 +65,6 @@ abstract class BaseMetabox implements MetaboxInterface {
 	 *  Create field instances
 	 */
 	public function initFields() {
-
 		foreach ( $this->getFieldsData() as $fieldData ) {
 			$field = FieldFactory::create( $fieldData, $this->getPost() );
 			$this->fields[] = $field;
