@@ -18,11 +18,11 @@ define( 'PMAI_ROOT_DIR', str_replace( '\\', '/', dirname( __FILE__ ) ) );
  */
 define( 'PMAI_ROOT_URL', rtrim( plugin_dir_url( __FILE__ ), '/' ) );
 
-define( 'PMAI_PREFIX', 'pmai_' );
+const PMAI_PREFIX = 'pmai_';
 
-define( 'PMAI_VERSION', '5.5.5' );
+const PMAI_VERSION = '5.5.5';
 
-define( 'PMAI_EDITION', 'paid' );
+const PMAI_EDITION = 'paid';
 
 require PMAI_ROOT_DIR . '/vendor/autoload.php';
 
@@ -109,7 +109,7 @@ final class PMAI_Plugin {
 		// create/update required database tables
 
 		// register autoloading method
-		spl_autoload_register( array( $this, 'autoload' ) );
+		spl_autoload_register( [ $this, 'autoload' ] );
 
 		// register helpers
 		if ( is_dir( self::ROOT_DIR . '/helpers' ) )

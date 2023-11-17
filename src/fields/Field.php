@@ -280,7 +280,7 @@ abstract class Field implements FieldInterface {
 
 		MetaboxService::update_post_meta($this, $this->getPostID(), $this->getFieldName(), $this->getFieldValue());
 
-		return TRUE;
+		return true;
 	}
 
 	/**

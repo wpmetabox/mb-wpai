@@ -47,7 +47,7 @@ abstract class PMAI_Controller {
 			} else {
 				wp_redirect('https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); die();
 			}
-		}		
+		}
 	}
 	
 	/**
