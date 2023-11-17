@@ -48,7 +48,6 @@ function pmai_is_acf_update_allowed($cur_meta_key, $options ){
 					$field_name = trim(array_shift($acf_field_parts), "[]");
 					if ( $cur_meta_key == $field_name or $cur_meta_key == "_" . $field_name or preg_match('%'.$field_name.'_[0-9]{1,}_%', $cur_meta_key) or strpos($cur_meta_key, '_' . $field_name . '_') === 0 or preg_match('%.*_[0-9]{1,}_'.$field_name.'$%', $cur_meta_key)){
 						return apply_filters('pmai_is_acf_update_allowed', false, $cur_meta_key, $options);
-						break;
 					}
 				}
 			}		
@@ -73,7 +72,6 @@ function pmai_is_acf_update_allowed($cur_meta_key, $options ){
 						foreach ($acf_fields as $field) {
 							if ( $cur_meta_key == $field['name'] or $cur_meta_key == "_" . $field['name'] or strpos($cur_meta_key, $field['name'] . '_') === 0 or strpos($cur_meta_key, '_' . $field['name'] . '_') === 0){
 								return apply_filters('pmai_is_acf_update_allowed', true, $cur_meta_key, $options);
-								break;
 							}
 						}				
 					}
@@ -100,12 +98,10 @@ function pmai_is_acf_update_allowed($cur_meta_key, $options ){
 						$sub_field_name = trim($field_parts[1], "[]");
 						if (preg_match('%^_{0,1}'.$field_name.'_[0-9]{1,}_'.$sub_field_name.'$%', $cur_meta_key)){
 							return apply_filters('pmai_is_acf_update_allowed', true, $cur_meta_key, $options);
-							break;
 						}
 					}
 					elseif ( preg_match('%^_{0,1}'.$field_name.'$%', $cur_meta_key) || $cur_meta_key == $field_name || $cur_meta_key == "_" . $field_name){
 						return apply_filters('pmai_is_acf_update_allowed', true, $cur_meta_key, $options);
-						break;
 					}
 				}
 				return apply_filters('pmai_is_acf_update_allowed', false, $cur_meta_key, $options);
@@ -125,12 +121,10 @@ function pmai_is_acf_update_allowed($cur_meta_key, $options ){
 						$sub_field_name = trim($field_parts[1], "[]");
 						if (preg_match('%^_{0,1}'.$field_name.'_[0-9]{1,}_'.$sub_field_name.'$%', $cur_meta_key)){
 							return apply_filters('pmai_is_acf_update_allowed', false, $cur_meta_key, $options);
-							break;
 						}
 					}
 					elseif ( preg_match('%^_{0,1}'.$field_name.'$%', $cur_meta_key) ){
 						return apply_filters('pmai_is_acf_update_allowed', false, $cur_meta_key, $options);
-						break;
 					}
 				}
 			}		
@@ -190,14 +184,12 @@ function pmai_is_acf_update_allowed($cur_meta_key, $options ){
 
 								if ( preg_match('%^_{0,1}'.$field['name'].'$%', $cur_meta_key) ){
 									return apply_filters('pmai_is_acf_update_allowed', true, $cur_meta_key, $options);
-									break;
 								}
 
 								if (!empty($field['sub_fields'])){
 									foreach ($field['sub_fields'] as $sub_field) {
 										if (preg_match('%^_{0,1}'.$field['name'].'_[0-9]{1,}_'.$sub_field['name'].'$%', $cur_meta_key)){
 											return apply_filters('pmai_is_acf_update_allowed', true, $cur_meta_key, $options);
-											break;
 										}
 									}
 								}

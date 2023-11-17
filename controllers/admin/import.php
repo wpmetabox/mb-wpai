@@ -1,11 +1,7 @@
 <?php
 class PMAI_Admin_Import extends PMAI_Controller_Admin {
 
-	/**
-	 * @param string $post_type
-	 * @param $post
-	 */
-	public function index( $post_type, $post ) {
+	public function index(string $post_type, array $post ): void {
 		$this->data['post_type'] = $post_type;
 		$this->data['post'] =& $post;
 
@@ -25,7 +21,7 @@ class PMAI_Admin_Import extends PMAI_Controller_Admin {
 	 * Because the import UI only needs to display either Text or Textarea.
 	 * We will format the fields to only display those two types.
 	 */
-	private function formatMetaBoxes($meta_boxes)
+	private function formatMetaBoxes(array $meta_boxes): array
 	{
 		return array_map(function ($meta_box) {
 			$meta_box->meta_box['fields'] = array_map(function ($field) {
