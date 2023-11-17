@@ -34,7 +34,7 @@ abstract class PMAI_Model extends ArrayObject {
 	
 	/**
 	 * Initialize model
-	 * @param array[optional] $data Array of record data to initialize object with
+	 * @param ?array $data Array of record data to initialize object with
 	 */
 	public function __construct() {
 		$this->wpdb = $GLOBALS['wpdb'];

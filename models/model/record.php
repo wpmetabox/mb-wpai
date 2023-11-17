@@ -7,7 +7,7 @@
 class PMAI_Model_Record extends PMAI_Model {
 	/**
 	 * Initialize model
-	 * @param array[optional] $data Array of record data to initialize object with
+	 * @param ?array $data Array of record data to initialize object with
 	 */
 	public function __construct($data = array()) {
 		parent::__construct();
@@ -43,7 +43,7 @@ class PMAI_Model_Record extends PMAI_Model {
 	/**
 	 * Ger records related to current one
 	 * @param string $model Class name of model of related records
-	 * @param array[optoinal] $keyAssoc
+	 * @param ?array $keyAssoc
 	 * @return PMAI_Model_List
 	 */
 	public function getRelated($model, $keyAssoc = NULL) {

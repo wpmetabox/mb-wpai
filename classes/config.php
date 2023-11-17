@@ -5,35 +5,18 @@
  * @author Maksym Tsypliakov <maksym.tsypliakov@gmail.com>
  */
 class PMAI_Config implements IteratorAggregate {
-	/**
-	 * Config variables stored
-	 * @var array
-	 */
-	protected $config = array();
-	/**
-	 * List of loaded files in order to avoid loading same file several times
-	 * @var array
-	 */
-	protected $loaded = array();
 	
-	/**
-	 * Static method to create config instance from file on disc
-	 * @param string $filePath
-	 * @param string[optional] $section
-	 * @return PMXI_Config
-	 */
-	public static function createFromFile($filePath, $section = NULL) {
+	protected $config = [];
+	
+	protected $loaded = [];
+	
+	public static function createFromFile(string $filePath, string $section = NULL): self {
 		$config = new self();
+
 		return $config->loadFromFile($filePath, $section);
 	}
 	
-	/**
-	 * Load config file
-	 * @param string $filePath
-	 * @param string[optional] $section
-	 * @return PMXI_Config
-	 */
-	public function loadFromFile($filePath, $section = NULL) {
+	public function loadFromFile(string $filePath, string $section = NULL): self {
 		if ( ! is_null($section)) {
 			$this->config[$section] = self::createFromFile($filePath);
 		} else {
@@ -79,7 +62,7 @@ class PMAI_Config implements IteratorAggregate {
 	 * Return all config options as array
 	 * @return array
 	 */
-	public function toArray($section = NULL) {
+	public function toArray($section = null) {
 		return ! is_null($section) ? $this->config[$section]->toArray() : $this->config;
 	}
 	

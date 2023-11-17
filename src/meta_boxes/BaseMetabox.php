@@ -10,21 +10,12 @@ abstract class BaseMetabox implements MetaboxInterface {
 	/**
 	 * @var $post Import options
 	 */
-	public $post;
+	public array $post;
 
-	/**
-	 * @var
-	 */
-	public $meta_box;
+	public \RW_Meta_Box $meta_box;
 
-	/**
-	 * @var array
-	 */
 	public $fields = [];
 
-	/**
-	 * @var array
-	 */
 	public $fieldsData = [];
 
 	/**

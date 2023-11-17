@@ -9,7 +9,7 @@ final class MetaboxFactory {
      * @param $post array import options
      * @return Metabox
      */
-    public static function create($meta_box, $post = []): Metabox {
+    public static function create(\RW_Meta_Box $meta_box, $post = []): Metabox {
         return new Metabox($meta_box, $post);
     }
 }

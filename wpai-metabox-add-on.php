@@ -190,13 +190,13 @@ final class PMAI_Plugin {
 
 
 	public function shortcodeDispatcher( array $args, string $content, string $tag ): string {
-
 		$controllerName = self::PREFIX . preg_replace_callback( '%(^|_).%', array( $this, "replace_callback" ), $tag ); // capitalize first letters of class name parts and add prefix
 		$controller = new $controllerName();
 		
 		if ( ! $controller instanceof PMAI_Controller ) {
-			throw new Exception( "Shortcode `$tag` matches to a wrong controller type." );
+			throw new \Exception( "Shortcode `$tag` matches to a wrong controller type." );
 		}
+
 		ob_start();
 		$controller->index( $args, $content );
 		return ob_get_clean();

@@ -10,5 +10,6 @@ function pmai_pmxi_save_options(array $post): array
 			$post['acf_list'] = explode(",", $post['acf_except_list']); 	
 		}
 	}
+	
 	return $post;
 }

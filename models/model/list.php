@@ -50,7 +50,7 @@ class PMAI_Model_List extends PMAI_Model {
 	 * When 1st parameter is an array, it's expected to be an associative array of field => value pairs to read data by 
 	 * When 2nd parameter is a scalar, it's expected to be a field name and second parameter - it's value
 	 * 
-	 * @param string|array[optional] $field
+	 * @param ?string|array $field
 	 * @param mixed[optional] $value
 	 * @param string[optional] $orderBy Ordering rule
 	 * @param int[optional] $page Paging paramter used to limit number of records returned
@@ -127,7 +127,7 @@ class PMAI_Model_List extends PMAI_Model {
 	/**
 	 * Converts elements to instances of specifield class. If includeFields are provided only fields listed are included
 	 * @param string[optoinal] $elementClass
-	 * @param array[optional] $includeFields
+	 * @param ?array $includeFields
 	 * @return PMAI_Model_List
 	 */
 	public function convertRecords($elementClass = NULL, $includeFields = NULL) {
