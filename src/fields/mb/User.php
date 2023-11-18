@@ -8,35 +8,35 @@ use wpai_meta_box_add_on\fields\Field;
 
 class User extends Field {
 
-    public $type = 'user';
+	public $type = 'user';
 
-    public function parse($xpath, $parsingData, $args = array()) {
-        parent::parse($xpath, $parsingData, $args);
-        $values = $this->getByXPath($xpath);
-        $this->setOption('values', $values);
-    }
+	public function parse( $xpath, $parsingData, $args = array() ) {
+		parent::parse( $xpath, $parsingData, $args );
+		$values = $this->getByXPath( $xpath );
+		$this->setOption( 'values', $values );
+	}
 
-    public function import($importData, $args = array()) {
-        $isUpdated = parent::import($importData, $args);
-        
-        if (!$isUpdated){
-            return false;
-        }
+	public function import( $importData, $args = array() ) {
+		$isUpdated = parent::import( $importData, $args );
 
-        MetaboxService::update_post_meta($this, $this->getPostID(), $this->getFieldName(), $this->getFieldValue());
-    }
+		if ( ! $isUpdated ) {
+			return false;
+		}
 
-    public function getFieldValue(): ?int {
-        $by = ['login', 'slug', 'email', 'id'];
+		MetaboxService::update_post_meta( $this, $this->getPostID(), $this->getFieldName(), $this->getFieldValue() );
+	}
 
-        foreach ($by as $column) {
-            $user = get_user_by($column, parent::getFieldValue());
-            
-            if (!empty($user)) {
-                return $user->ID;
-            }
-        }
+	public function getFieldValue(): ?int {
+		$by = [ 'login', 'slug', 'email', 'id' ];
 
-        return null;
-    }
+		foreach ( $by as $column ) {
+			$user = get_user_by( $column, parent::getFieldValue() );
+
+			if ( ! empty( $user ) ) {
+				return $user->ID;
+			}
+		}
+
+		return null;
+	}
 }
