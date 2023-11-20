@@ -2,7 +2,6 @@
 
 namespace wpai_meta_box_add_on\meta_boxes;
 
-use wpai_meta_box_add_on\fields\Field;
 use wpai_meta_box_add_on\fields\FieldFactory;
 
 abstract class BaseMetabox implements MetaboxInterface {
@@ -20,6 +19,7 @@ abstract class BaseMetabox implements MetaboxInterface {
 
 	/**
 	 * meta_box constructor.
+	 *
 	 * @param $meta_box
 	 */
 	public function __construct( $meta_box, $post ) {
@@ -28,18 +28,18 @@ abstract class BaseMetabox implements MetaboxInterface {
 		$this->post = $post;
 		$this->initFields();
 
-		add_filter( 'rwmb_html', array( $this, 'filterHtml' ), 10, 2 );
+		add_filter( 'rwmb_html', [ $this, 'filterHtml' ], 10, 2 );
 	}
 
 	public function filterHtml( $html, $field ): string {
 		// Replace name attribute
-		$pattern = '/name="([^"]+)"/';
+		$pattern     = '/name="([^"]+)"/';
 		$replacement = 'name="fields[' . $field['id'] . ']"';
 
 		$html = preg_replace( $pattern, $replacement, $html );
 
 		// Replace type attribute, use type="text" only
-		$pattern = '/type="([^"]+)"/';
+		$pattern     = '/type="([^"]+)"/';
 		$replacement = 'type="text"';
 
 		$html = preg_replace( $pattern, $replacement, $html );
@@ -49,7 +49,7 @@ abstract class BaseMetabox implements MetaboxInterface {
 
 	public function initFields() {
 		foreach ( $this->getFieldsData() as $fieldData ) {
-			$field = FieldFactory::create( $fieldData, $this->getPost() );
+			$field          = FieldFactory::create( $fieldData, $this->getPost() );
 			$this->fields[] = $field;
 		}
 	}
@@ -67,9 +67,9 @@ abstract class BaseMetabox implements MetaboxInterface {
 	}
 
 	public function view(): void {
-		$this->render_block('header');
+		$this->render_block( 'header' );
 		$this->meta_box->show();
-		$this->render_block('footer');
+		$this->render_block( 'footer' );
 	}
 
 	protected function render_block( $block = 'header' ): void {
@@ -85,7 +85,7 @@ abstract class BaseMetabox implements MetaboxInterface {
 
 	public function parse( $parsingData ) {
 		foreach ( $this->getFields() as $field ) {
-			$xpath = empty( $parsingData['import']->options['fields'][ $field->getFieldKey()] ) ? "" : $parsingData['import']->options['fields'][ $field->getFieldKey()];
+			$xpath = empty( $parsingData['import']->options['fields'][ $field->getFieldKey() ] ) ? "" : $parsingData['import']->options['fields'][ $field->getFieldKey() ];
 			$field->parse( $xpath, $parsingData );
 		}
 	}

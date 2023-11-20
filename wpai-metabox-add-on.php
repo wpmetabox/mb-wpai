@@ -30,7 +30,7 @@ final class PMAI_Plugin {
 
 	protected static $instance;
 
-	public static $all_acf_fields = array();
+	public static $all_acf_fields = [];
 
 	const ROOT_DIR = PMAI_ROOT_DIR;
 
@@ -41,9 +41,10 @@ final class PMAI_Plugin {
 	const FILE = __FILE__;
 
 	static public function getInstance() {
-		if ( self::$instance == NULL ) {
+		if ( self::$instance == null ) {
 			self::$instance = new self();
 		}
+
 		return self::$instance;
 	}
 
@@ -63,21 +64,26 @@ final class PMAI_Plugin {
 
 	/**
 	 * Get path to plagin dir relative to wordpress root
+	 *
 	 * @param mixed[optional] $noForwardSlash Whether path should be returned withot forwarding slash
+	 *
 	 * @return string
 	 */
 	public function getRelativePath( $noForwardSlash = false ) {
 		$wp_root = str_replace( '\\', '/', ABSPATH );
+
 		return ( $noForwardSlash ? '' : '/' ) . str_replace( $wp_root, '', self::ROOT_DIR );
 	}
 
 	public function isNetwork(): bool {
-		if ( ! is_multisite() )
+		if ( ! is_multisite() ) {
 			return false;
+		}
 
 		$plugins = get_site_option( 'active_sitewide_plugins' );
-		if ( isset( $plugins[ plugin_basename( self::FILE ) ] ) )
+		if ( isset( $plugins[ plugin_basename( self::FILE ) ] ) ) {
 			return true;
+		}
 
 		return false;
 	}
@@ -96,11 +102,13 @@ final class PMAI_Plugin {
 
 	public function getWPPrefix(): string {
 		global $wpdb;
+
 		return ( $this->isNetwork() ? $wpdb->base_prefix : $wpdb->prefix );
 	}
 
 	/**
 	 * Class constructor containing dispatching logic
+	 *
 	 * @param string $rootDir Plugin root dir
 	 * @param string $pluginFilePath Plugin main file
 	 */
@@ -112,51 +120,57 @@ final class PMAI_Plugin {
 		spl_autoload_register( [ $this, 'autoload' ] );
 
 		// register helpers
-		if ( is_dir( self::ROOT_DIR . '/helpers' ) )
+		if ( is_dir( self::ROOT_DIR . '/helpers' ) ) {
 			foreach ( PMAI_Helper::safe_glob( self::ROOT_DIR . '/helpers/*.php', PMAI_Helper::GLOB_RECURSE | PMAI_Helper::GLOB_PATH ) as $filePath ) {
 				require_once $filePath;
 			}
+		}
 
-		register_activation_hook( self::FILE, array( $this, 'activation' ) );
+		register_activation_hook( self::FILE, [ $this, 'activation' ] );
 
 		// register action handlers
-		if ( is_dir( self::ROOT_DIR . '/actions' ) ) if ( is_dir( self::ROOT_DIR . '/actions' ) )
-			foreach ( PMAI_Helper::safe_glob( self::ROOT_DIR . '/actions/*.php', PMAI_Helper::GLOB_RECURSE | PMAI_Helper::GLOB_PATH ) as $filePath ) {
-				require_once $filePath;
-				$function = $actionName = basename( $filePath, '.php' );
-				if ( preg_match( '%^(.+?)[_-](\d+)$%', $actionName, $m ) ) {
-					$actionName = $m[1];
-					$priority = intval( $m[2] );
-				} else {
-					$priority = 10;
+		if ( is_dir( self::ROOT_DIR . '/actions' ) ) {
+			if ( is_dir( self::ROOT_DIR . '/actions' ) ) {
+				foreach ( PMAI_Helper::safe_glob( self::ROOT_DIR . '/actions/*.php', PMAI_Helper::GLOB_RECURSE | PMAI_Helper::GLOB_PATH ) as $filePath ) {
+					require_once $filePath;
+					$function = $actionName = basename( $filePath, '.php' );
+					if ( preg_match( '%^(.+?)[_-](\d+)$%', $actionName, $m ) ) {
+						$actionName = $m[1];
+						$priority   = intval( $m[2] );
+					} else {
+						$priority = 10;
+					}
+					add_action( $actionName, self::PREFIX . str_replace( '-', '_', $function ), $priority, 99 ); // since we don't know at this point how many parameters each plugin expects, we make sure they will be provided with all of them (it's unlikely any developer will specify more than 99 parameters in a function)
 				}
-				add_action( $actionName, self::PREFIX . str_replace( '-', '_', $function ), $priority, 99 ); // since we don't know at this point how many parameters each plugin expects, we make sure they will be provided with all of them (it's unlikely any developer will specify more than 99 parameters in a function)
 			}
+		}
 
 		// register filter handlers
-		if ( is_dir( self::ROOT_DIR . '/filters' ) )
+		if ( is_dir( self::ROOT_DIR . '/filters' ) ) {
 			foreach ( PMAI_Helper::safe_glob( self::ROOT_DIR . '/filters/*.php', PMAI_Helper::GLOB_RECURSE | PMAI_Helper::GLOB_PATH ) as $filePath ) {
 				require_once $filePath;
 				$function = $actionName = basename( $filePath, '.php' );
 				if ( preg_match( '%^(.+?)[_-](\d+)$%', $actionName, $m ) ) {
 					$actionName = $m[1];
-					$priority = intval( $m[2] );
+					$priority   = intval( $m[2] );
 				} else {
 					$priority = 10;
 				}
 				add_filter( $actionName, self::PREFIX . str_replace( '-', '_', $function ), $priority, 99 ); // since we don't know at this point how many parameters each plugin expects, we make sure they will be provided with all of them (it's unlikely any developer will specify more than 99 parameters in a function)
 			}
+		}
 
 		// register shortcodes handlers
-		if ( is_dir( self::ROOT_DIR . '/shortcodes' ) )
+		if ( is_dir( self::ROOT_DIR . '/shortcodes' ) ) {
 			foreach ( PMAI_Helper::safe_glob( self::ROOT_DIR . '/shortcodes/*.php', PMAI_Helper::GLOB_RECURSE | PMAI_Helper::GLOB_PATH ) as $filePath ) {
 				$tag = strtolower( str_replace( '/', '_', preg_replace( '%^' . preg_quote( self::ROOT_DIR . '/shortcodes/', '%' ) . '|\.php$%', '', $filePath ) ) );
-				add_shortcode( $tag, array( $this, 'shortcodeDispatcher' ) );
+				add_shortcode( $tag, [ $this, 'shortcodeDispatcher' ] );
 			}
+		}
 
 		// register admin page pre-dispatcher
-		add_action( 'admin_init', array( $this, 'adminInit' ), 1 );
-		add_action( 'init', array( $this, 'init' ), 10 );
+		add_action( 'admin_init', [ $this, 'adminInit' ], 1 );
+		add_action( 'init', [ $this, 'init' ], 10 );
 	}
 
 	public function init() {
@@ -181,7 +195,7 @@ final class PMAI_Plugin {
 	 */
 	public function adminInit() {
 		$input = new PMAI_Input();
-		$page = strtolower( $input->getpost( 'page', '' ) );
+		$page  = strtolower( $input->getpost( 'page', '' ) );
 
 		if ( preg_match( '%^' . preg_quote( str_replace( '_', '-', self::PREFIX ), '%' ) . '([\w-]+)$%', $page ) ) {
 			$this->adminDispatcher( $page, strtolower( $input->getpost( 'action', 'index' ) ) );
@@ -190,21 +204,25 @@ final class PMAI_Plugin {
 
 
 	public function shortcodeDispatcher( array $args, string $content, string $tag ): string {
-		$controllerName = self::PREFIX . preg_replace_callback( '%(^|_).%', array( $this, "replace_callback" ), $tag ); // capitalize first letters of class name parts and add prefix
-		$controller = new $controllerName();
-		
+		$controllerName = self::PREFIX . preg_replace_callback( '%(^|_).%', [
+				$this,
+				"replace_callback",
+			], $tag ); // capitalize first letters of class name parts and add prefix
+		$controller     = new $controllerName();
+
 		if ( ! $controller instanceof PMAI_Controller ) {
 			throw new \Exception( "Shortcode `$tag` matches to a wrong controller type." );
 		}
 
 		ob_start();
 		$controller->index( $args, $content );
+
 		return ob_get_clean();
 	}
 
 	public function adminDispatcher( $page = '', $action = 'index' ) {
-		static $buffer = NULL;
-		static $buffer_callback = NULL;
+		static $buffer = null;
+		static $buffer_callback = null;
 
 		if ( '' === $page ) {
 			if ( ! is_null( $buffer ) ) {
@@ -223,7 +241,10 @@ final class PMAI_Plugin {
 		} else {
 			$actionName = str_replace( '-', '_', $action );
 			// capitalize prefix and first letters of class name parts
-			$controllerName = preg_replace_callback( '%(^' . preg_quote( self::PREFIX, '%' ) . '|_).%', array( $this, "replace_callback" ), str_replace( '-', '_', $page ) );
+			$controllerName = preg_replace_callback( '%(^' . preg_quote( self::PREFIX, '%' ) . '|_).%', [
+				$this,
+				"replace_callback",
+			], str_replace( '-', '_', $page ) );
 			if ( method_exists( $controllerName, $actionName ) ) {
 
 				if ( ! get_current_user_id() or ! current_user_can( PMXI_Plugin::$capabilities ) ) {
@@ -232,21 +253,21 @@ final class PMAI_Plugin {
 
 				} else {
 
-					$this->_admin_current_screen = (object) array(
-						'id' => $controllerName,
-						'base' => $controllerName,
-						'action' => $actionName,
-						'is_ajax' => isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) and strtolower( $_SERVER['HTTP_X_REQUESTED_WITH'] ) === 'xmlhttprequest',
+					$this->_admin_current_screen = (object) [
+						'id'         => $controllerName,
+						'base'       => $controllerName,
+						'action'     => $actionName,
+						'is_ajax'    => isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) and strtolower( $_SERVER['HTTP_X_REQUESTED_WITH'] ) === 'xmlhttprequest',
 						'is_network' => is_network_admin(),
-						'is_user' => is_user_admin(),
-					);
-					add_filter( 'current_screen', array( $this, 'getAdminCurrentScreen' ) );
+						'is_user'    => is_user_admin(),
+					];
+					add_filter( 'current_screen', [ $this, 'getAdminCurrentScreen' ] );
 
 					$controller = new $controllerName();
 					if ( ! $controller instanceof PMAI_Controller_Admin ) {
 						throw new Exception( "Administration page `$page` matches to a wrong controller type." );
 					}
-					
+
 					if ( $this->_admin_current_screen->is_ajax ) { // ajax request
 						$controller->$action();
 						do_action( 'pmai_action_after' );
@@ -256,7 +277,7 @@ final class PMAI_Plugin {
 						$controller->$action();
 						$buffer = ob_get_clean();
 					} else {
-						$buffer_callback = array( $controller, $action );
+						$buffer_callback = [ $controller, $action ];
 					}
 				}
 
@@ -267,7 +288,8 @@ final class PMAI_Plugin {
 		}
 	}
 
-	protected $_admin_current_screen = NULL;
+	protected $_admin_current_screen = null;
+
 	public function getAdminCurrentScreen() {
 		return $this->_admin_current_screen;
 	}
@@ -284,35 +306,38 @@ final class PMAI_Plugin {
 	 * When class has prefix it's source is looked in `models`, `controllers`, `shortcodes` folders, otherwise it looked in `core` or `library` folder
 	 *
 	 * @param string $className
+	 *
 	 * @return mixed
 	 */
 	public function autoload( $className ) {
-		
+
 		// if ( ! preg_match( '/MBAI/m', $className ) ) {
 		// 	return false;
 		// }
 
 		$is_prefix = false;
-		$filePath = str_replace( '_', '/', preg_replace( '%^' . preg_quote( self::PREFIX, '%' ) . '%', '', strtolower( $className ), 1, $is_prefix ) ) . '.php';
+		$filePath  = str_replace( '_', '/', preg_replace( '%^' . preg_quote( self::PREFIX, '%' ) . '%', '', strtolower( $className ), 1, $is_prefix ) ) . '.php';
 		if ( ! $is_prefix ) { // also check file with original letter case
 			$filePathAlt = $className . '.php';
 		}
-		foreach ( $is_prefix ? array( 'models', 'controllers', 'shortcodes', 'classes' ) : array() as $subdir ) {
+		foreach ( $is_prefix ? [ 'models', 'controllers', 'shortcodes', 'classes' ] : [] as $subdir ) {
 			$path = self::ROOT_DIR . '/' . $subdir . '/' . $filePath;
 			if ( is_file( $path ) ) {
 				require $path;
-				return TRUE;
+
+				return true;
 			}
 			if ( ! $is_prefix ) {
 				$pathAlt = self::ROOT_DIR . '/' . $subdir . '/' . $filePathAlt;
 				if ( is_file( $pathAlt ) ) {
 					require $pathAlt;
-					return TRUE;
+
+					return true;
 				}
 			}
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	/**
@@ -320,7 +345,7 @@ final class PMAI_Plugin {
 	 */
 	public function activation() {
 		// Uncaught exception doesn't prevent plugin from being activated, therefore replace it with fatal error so it does.
-		set_exception_handler( function ($e) {
+		set_exception_handler( function ( $e ) {
 			trigger_error( $e->getMessage(), E_USER_ERROR );
 		} );
 	}
@@ -329,21 +354,21 @@ final class PMAI_Plugin {
 	 *  Init all available ACF fields.
 	 */
 	public static function get_available_acf_fields() {
-		return ['name', 'email', 'phone', 'address1', 'address2'];
+		return [ 'name', 'email', 'phone', 'address1', 'address2' ];
 	}
 
 	public static function get_default_import_options() {
-		return [ 
-			'meta_box' => [],
-			'fields' => [],
+		return [
+			'meta_box'                => [],
+			'fields'                  => [],
 			'is_multiple_field_value' => [],
-			'multiple_value' => [],
-			'fields_delimiter' => [],
-			'is_update_acf' => 1,
-			'update_acf_logic' => 'full_update',
-			'acf_list' => [],
-			'acf_only_list' => [],
-			'acf_except_list' => [],
+			'multiple_value'          => [],
+			'fields_delimiter'        => [],
+			'is_update_acf'           => 1,
+			'update_acf_logic'        => 'full_update',
+			'acf_list'                => [],
+			'acf_only_list'           => [],
+			'acf_except_list'         => [],
 		];
 	}
 }

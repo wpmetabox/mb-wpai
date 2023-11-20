@@ -11,17 +11,18 @@ class PMAI_Import_Record extends PMAI_Model_Record {
 	/**
 	 * @var Metabox[]
 	 */
-	public $metaboxes = [];
+	public array $metaboxes = [];
 
 	/**
 	 * Initialize model instance
+	 *
 	 * @param array [optional] $data Array of record data to initialize object with
 	 */
 	public function __construct( $data = [] ) {
 		parent::__construct( $data );
 
 		$this->setTable( PMXI_Plugin::getInstance()
-			->getTablePrefix() . 'imports' );
+		                            ->getTablePrefix() . 'imports' );
 	}
 
 	/**
@@ -29,7 +30,7 @@ class PMAI_Import_Record extends PMAI_Model_Record {
 	 */
 	public function parse( array $parsingData ) {
 
-		add_filter( 'user_has_cap', [ 
+		add_filter( 'user_has_cap', [
 			$this,
 			'_filter_has_cap_unfiltered_html',
 		] );
@@ -63,10 +64,10 @@ class PMAI_Import_Record extends PMAI_Model_Record {
 			}
 		}
 
-		remove_filter( 'user_has_cap', array(
+		remove_filter( 'user_has_cap', [
 			$this,
 			'_filter_has_cap_unfiltered_html',
-		) );
+		] );
 		kses_init(); // return any filtering rules back if they has been disabled for import procedure
 	}
 
@@ -92,6 +93,7 @@ class PMAI_Import_Record extends PMAI_Model_Record {
 
 	/**
 	 * @param $caps
+	 *
 	 * @return mixed
 	 */
 	public function _filter_has_cap_unfiltered_html( $caps ) {
@@ -102,6 +104,7 @@ class PMAI_Import_Record extends PMAI_Model_Record {
 
 	/**
 	 * @param $var
+	 *
 	 * @return mixed
 	 */
 	public function filtering( $var ) {

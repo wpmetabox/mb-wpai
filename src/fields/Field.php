@@ -4,69 +4,34 @@ namespace wpai_meta_box_add_on\fields;
 
 use wpai_meta_box_add_on\MetaboxService;
 
-define( 'PMAI_FIELDS_ROOT_DIR', str_replace( '\\', '/', dirname( __FILE__ ) ) );
-
-/**
- * Class Field
- * @package wpai_meta_box_add_on\fields
- */
 abstract class Field implements FieldInterface {
 
-	/**
-	 * field type
-	 */
-	public $type;
+	public string $type;
 
-	/**
-	 * @var array
-	 */
-	public $data;
+	public array $data;
 
 	/**
 	 * @var mixed
 	 */
 	public $supportedVersion = false;
 
-	/**
-	 * @var array
-	 */
-	public $parsingData;
+	public array $parsingData;
 
-	/**
-	 * @var array
-	 */
-	public $importData;
+	public array $importData;
 
-	/**
-	 * @var array
-	 */
-	public $options = array();
+	public array $options = [];
 
-	/**
-	 * @var Field
-	 */
-	public $parent;
+	public Field $parent;
 
-	/**
-	 * @var array
-	 */
-	public $subFields = array();
+	public array $subFields = [];
 
-	/**
-	 * Field constructor.
-	 * @param $field
-	 * @param $post
-	 * @param $field_name
-	 * @param $parent_field
-	 */
-	public function __construct( $field, $post, $field_name = "", $parent_field = false ) {
-		$this->data = array(
-			'field' => $field,
-			'post' => $post,
-			'field_name' => $field_name,
-		);
+	public function __construct( Field $field, array $post, $field_name = "", $parent_field = false ) {
 		$this->setParent( $parent_field );
-		$this->data = array_merge( $this->data, $this->getFieldData() );
+		$this->data = array_merge( [
+			'field'      => $field,
+			'post'       => $post,
+			'field_name' => $field_name,
+		], $this->getFieldData() );
 		$this->initSubFields();
 	}
 
@@ -80,7 +45,7 @@ abstract class Field implements FieldInterface {
 
 		if ( $subFieldsData ) {
 			foreach ( $subFieldsData as $subFieldData ) {
-				$field = $this->initDataAndCreateField( $subFieldData );
+				$field             = $this->initDataAndCreateField( $subFieldData );
 				$this->subFields[] = $field;
 			}
 		}
@@ -122,16 +87,17 @@ abstract class Field implements FieldInterface {
 	 */
 	private function getFieldData() {
 
-		$data = array();
+		$data = [];
 
 		$field = $this->getData( 'field' );
-		$post = $this->getData( 'post' );
+		$post  = $this->getData( 'post' );
 
 		// set field default values
-		$reset = array( 'multiple', 'class', 'id' );
+		$reset = [ 'multiple', 'class', 'id' ];
 		foreach ( $reset as $key ) {
-			if ( empty( $field[ $key ] ) )
+			if ( empty( $field[ $key ] ) ) {
 				$field[ $key ] = false;
+			}
 		}
 
 		if ( array_key_exists( 'id', $field ) ) {
@@ -140,7 +106,7 @@ abstract class Field implements FieldInterface {
 			$data['current_field'] = false;
 		}
 
-		$options = array( 'is_multiple_field_value', 'multiple_value' );
+		$options = [ 'is_multiple_field_value', 'multiple_value' ];
 		foreach ( $options as $option ) {
 			$data[ 'current_' . $option ] = isset( $field['id'] ) && isset( $post[ $option ][ $field['id'] ] ) ? $post[ $option ][ $field['id'] ] : false;
 		}
@@ -148,7 +114,7 @@ abstract class Field implements FieldInterface {
 		// If parent field exists, parse field name
 		if ( "" != $this->getData( 'field_name' ) ) {
 
-			$field_keys = str_replace( array( '[', ']' ), array( '' ), str_replace( '][', ':', $this->getData( 'field_name' ) ) );
+			$field_keys = str_replace( [ '[', ']' ], [ '' ], str_replace( '][', ':', $this->getData( 'field_name' ) ) );
 
 			$data['current_field'] = false;
 			foreach ( explode( ":", $field_keys ) as $n => $key ) {
@@ -173,6 +139,7 @@ abstract class Field implements FieldInterface {
 				$data[ 'current_' . $option ] = isset( $data[ 'current_' . $option ][ $field['id'] ] ) ? $data[ 'current_' . $option ][ $field['id'] ] : false;
 			}
 		}
+
 		return $data;
 	}
 
@@ -180,30 +147,31 @@ abstract class Field implements FieldInterface {
 	 * @param $xpath
 	 * @param $parsingData
 	 * @param array $args
+	 *
 	 * @return void
 	 */
-	public function parse( $xpath, $parsingData, $args = array() ) {
+	public function parse( $xpath, $parsingData, $args = [] ) {
 		$this->parsingData = $parsingData;
-		
-		$defaults = array(
-			'field_path' => '',
-			'xpath_suffix' => '',
+
+		$defaults = [
+			'field_path'          => '',
+			'xpath_suffix'        => '',
 			'repeater_count_rows' => 0,
-			'inside_repeater' => false,
-		);
+			'inside_repeater'     => false,
+		];
 
 		$args = array_merge( $defaults, $args );
 
 		$field = $this->getData( 'field' );
 
-		$isMultipleField = ( isset( $parsingData['import']->options['is_multiple_field_value'][ $field['id'] ] ) ) ? $parsingData['import']->options['is_multiple_field_value'][ $field['id'] ] : FALSE;
-		$multipleValue = ( isset( $parsingData['import']->options['multiple_value'][ $field['id'] ] ) ) ? $parsingData['import']->options['multiple_value'][ $field['id'] ] : FALSE;
+		$isMultipleField = ( isset( $parsingData['import']->options['is_multiple_field_value'][ $field['id'] ] ) ) ? $parsingData['import']->options['is_multiple_field_value'][ $field['id'] ] : false;
+		$multipleValue   = ( isset( $parsingData['import']->options['multiple_value'][ $field['id'] ] ) ) ? $parsingData['import']->options['multiple_value'][ $field['id'] ] : false;
 
 		if ( "" != $args['field_path'] ) {
 
-			$fieldKeys = preg_replace( '%[\[\]]%', '', str_replace( '][', ':', $args['field_path'] ) );
+			$fieldKeys               = preg_replace( '%[\[\]]%', '', str_replace( '][', ':', $args['field_path'] ) );
 			$is_multiple_field_value = $parsingData['import']->options['is_multiple_field_value'];
-			$is_multiple_value = $parsingData['import']->options['multiple_value'];
+			$is_multiple_value       = $parsingData['import']->options['multiple_value'];
 
 			foreach ( explode( ":", $fieldKeys ) as $n => $key ) {
 				$xpath = ( ! $n ) ? $parsingData['import']->options['fields'][ $key ] : $xpath[ $key ];
@@ -223,9 +191,9 @@ abstract class Field implements FieldInterface {
 				}
 			}
 
-			$xpath = empty( $xpath[ $field['id'] ] ) ? false : $xpath[ $field['id'] ];
+			$xpath           = empty( $xpath[ $field['id'] ] ) ? false : $xpath[ $field['id'] ];
 			$isMultipleField = isset( $isMultipleField[ $field['id'] ] ) ? $isMultipleField[ $field['id'] ] : false;
-			$multipleValue = isset( $multipleValue[ $field['id'] ] ) ? $multipleValue[ $field['id'] ] : false;
+			$multipleValue   = isset( $multipleValue[ $field['id'] ] ) ? $multipleValue[ $field['id'] ] : false;
 		}
 
 		$this->setOption( 'base_xpath', $parsingData['xpath_prefix'] . $parsingData['import']->xpath . $args['xpath_suffix'] );
@@ -240,13 +208,14 @@ abstract class Field implements FieldInterface {
 	/**
 	 * @param $importData
 	 * @param array $args
+	 *
 	 * @return mixed
 	 */
 	public function import( $importData, array $args = [] ) {
-		$defaults = array(
-			'container_name' => '',
+		$defaults = [
+			'container_name'  => '',
 			'parent_repeater' => '',
-		);
+		];
 
 		$field = $this->getData( 'field' );
 
@@ -261,7 +230,8 @@ abstract class Field implements FieldInterface {
 		// If update is not allowed
 		if ( ! empty( $this->importData['articleData']['id'] ) && ! \pmai_is_acf_update_allowed( $this->importData['container_name'] . $field['name'], $this->parsingData['import']->options, $this->parsingData['import']->id ) ) {
 			$this->parsingData['logger'] && call_user_func( $this->parsingData['logger'], sprintf( __( '- Field `%s` is skipped attempted to import options', 'mbai' ), $this->getFieldName() ) );
-			return FALSE;
+
+			return false;
 		}
 
 		// Do not import empty fields.
@@ -271,14 +241,20 @@ abstract class Field implements FieldInterface {
 			$value = $this->getFieldValue();
 		}
 
-		if ( $value === '' && ! in_array( $this->getType(), [ 'group', 'repeater', 'clone', 'flexible_content', 'button_group' ] ) ) {
+		if ( $value === '' && ! in_array( $this->getType(), [
+				'group',
+				'repeater',
+				'clone',
+				'flexible_content',
+				'button_group',
+			] ) ) {
 			$is_import_empty_acf_fields = apply_filters( "wp_all_import_is_import_empty_acf_fields", true, $this->parsingData['import']->id );
 			if ( empty( $is_import_empty_acf_fields ) ) {
-				return FALSE;
+				return false;
 			}
 		}
 
-		MetaboxService::update_post_meta($this, $this->getPostID(), $this->getFieldName(), $this->getFieldValue());
+		MetaboxService::update_post_meta( $this, $this->getPostID(), $this->getFieldName(), $this->getFieldValue() );
 
 		return true;
 	}
@@ -312,6 +288,7 @@ abstract class Field implements FieldInterface {
 
 	/**
 	 * @param $option
+	 *
 	 * @return mixed|mixed
 	 */
 	public function getData( $option ) {
@@ -328,6 +305,7 @@ abstract class Field implements FieldInterface {
 
 	/**
 	 * @param $option
+	 *
 	 * @return mixed|mixed
 	 */
 	public function getOption( $option ) {
@@ -352,10 +330,11 @@ abstract class Field implements FieldInterface {
 	public function getByXPath( $xpath, $suffix = '' ) {
 		$values = array_fill( 0, $this->getOption( 'count' ), "" );
 		if ( $xpath != "" ) {
-			$file = false;
+			$file   = false;
 			$values = \XmlImportParser::factory( $this->parsingData['xml'], $this->getOption( 'base_xpath' ) . $suffix, $xpath, $file )->parse();
 			@unlink( $file );
 		}
+
 		return $values;
 	}
 
@@ -412,7 +391,7 @@ abstract class Field implements FieldInterface {
 	 */
 	public function setFieldInputName( $fieldName ) {
 		$this->data['field_name'] = $fieldName;
-		$this->data = array_merge( $this->data, $this->getFieldData() );
+		$this->data               = array_merge( $this->data, $this->getFieldData() );
 	}
 
 	/**
@@ -434,16 +413,16 @@ abstract class Field implements FieldInterface {
 	 */
 	public function getFieldValue() {
 		$values = $this->options['values'];
-		
+
 		if ( isset( $this->options['is_multiple_field'] ) && $this->options['is_multiple_field'] == 'yes' ) {
 			$value = array_shift( $values );
 		} else {
-			$value = isset( $values[ $this->getPostIndex()] ) ? $values[ $this->getPostIndex()] : '';
+			$value   = isset( $values[ $this->getPostIndex() ] ) ? $values[ $this->getPostIndex() ] : '';
 			$parents = $this->getParents();
 
 			if ( ! empty( $parents ) ) {
 				foreach ( $parents as $key => $parent ) {
-					if ( $parent['delimiter'] !== FALSE ) {
+					if ( $parent['delimiter'] !== false ) {
 						$value = explode( $parent['delimiter'], $value );
 						$value = isset( $value[ $parent['index'] ] ) ? $value[ $parent['index'] ] : '';
 					}
@@ -458,6 +437,7 @@ abstract class Field implements FieldInterface {
 	 * Trim
 	 *
 	 * @param $value
+	 *
 	 * @return array|string
 	 */
 	public function trimValue( $value ) {
@@ -467,12 +447,14 @@ abstract class Field implements FieldInterface {
 					$value[ $k ] = $this->trimValue( $v );
 				}
 			}
+
 			return $value;
 		}
+
 		return is_string( $value ) ? trim( $value ) : $value;
 	}
 
-	
+
 	public function getFieldOption( string $option ) {
 		return $this->data['field'][ $option ] ?? null;
 	}
@@ -537,6 +519,7 @@ abstract class Field implements FieldInterface {
 		if ( ! empty( $field['sub_fields'] ) ) {
 			return $field['sub_fields'];
 		}
+
 		return [];
 	}
 
@@ -545,7 +528,7 @@ abstract class Field implements FieldInterface {
 	 */
 	public function getLocalSubFieldsData() {
 
-		$subFieldsData = array();
+		$subFieldsData = [];
 
 		$subFields = $this->getFieldOption( 'sub_fields' );
 
@@ -562,9 +545,9 @@ abstract class Field implements FieldInterface {
 				if ( ! empty( $fields ) ) {
 					foreach ( $fields as $field ) {
 						if ( isset( $field['parent'] ) && $field['parent'] == $this->getFieldKey() ) {
-							$subFieldData = $field;
+							$subFieldData       = $field;
 							$subFieldData['id'] = $subFieldData['id'] = uniqid();
-							$subFieldsData[] = $subFieldData;
+							$subFieldsData[]    = $subFieldData;
 						}
 					}
 				}
@@ -574,9 +557,9 @@ abstract class Field implements FieldInterface {
 					foreach ( $acf_register_field_group as $key => $group ) {
 						foreach ( $group['fields'] as $field ) {
 							if ( isset( $field['parent'] ) && $field['parent'] == $this->getFieldKey() ) {
-								$subFieldData = $field;
+								$subFieldData       = $field;
 								$subFieldData['id'] = $subFieldData['id'] = uniqid();
-								$subFieldsData[] = $subFieldData;
+								$subFieldsData[]    = $subFieldData;
 							}
 						}
 					}
@@ -584,16 +567,18 @@ abstract class Field implements FieldInterface {
 			}
 		} else {
 			foreach ( $subFields as $field ) {
-				$subFieldData = $field;
+				$subFieldData       = $field;
 				$subFieldData['id'] = $subFieldData['id'] = uniqid();
-				$subFieldsData[] = $subFieldData;
+				$subFieldsData[]    = $subFieldData;
 			}
 		}
+
 		return $subFieldsData;
 	}
 
 	/**
 	 * @param $fieldKey
+	 *
 	 * @return \wpai_meta_box_add_on\fields\Field|mixed
 	 */
 	public function getFieldByKey( $fieldKey ) {
@@ -606,11 +591,12 @@ abstract class Field implements FieldInterface {
 
 	/**
 	 * @param $fieldKey
+	 *
 	 * @return mixed
 	 */
 	protected function getLocalFieldDataByKey( $fieldKey ) {
 		$fieldData = false;
-		$fields = [];
+		$fields    = [];
 		if ( function_exists( 'acf_local' ) ) {
 			$fields = acf_local()->fields;
 		}
@@ -620,17 +606,19 @@ abstract class Field implements FieldInterface {
 		if ( ! empty( $fields ) ) {
 			foreach ( $fields as $sub_field ) {
 				if ( $sub_field['id'] == $fieldKey ) {
-					$fieldData = $sub_field;
+					$fieldData       = $sub_field;
 					$fieldData['id'] = $fieldData['id'] = uniqid();
 					break;
 				}
 			}
 		}
+
 		return $fieldData;
 	}
 
 	/**
 	 * @param $fieldKey
+	 *
 	 * @return array|mixed|mixed
 	 */
 	protected function getDBFieldDataByKey( $fieldKey ) {
@@ -639,6 +627,7 @@ abstract class Field implements FieldInterface {
 
 	/**
 	 * @param $subFieldData
+	 *
 	 * @return Field|mixed
 	 */
 	public function initDataAndCreateField( $subFieldData ) {
@@ -646,11 +635,11 @@ abstract class Field implements FieldInterface {
 		$fieldData = $subFieldData;
 
 		if ( is_object( $subFieldData ) ) {
-			$fieldData = empty( $subFieldData->post_content ) ? array() : unserialize( $subFieldData->post_content );
-			$fieldData['id'] = $fieldData['id'] = $subFieldData->ID;
+			$fieldData          = empty( $subFieldData->post_content ) ? [] : unserialize( $subFieldData->post_content );
+			$fieldData['id']    = $fieldData['id'] = $subFieldData->ID;
 			$fieldData['label'] = $subFieldData->post_title;
-			$fieldData['id'] = $subFieldData->post_name;
-			$fieldData['name'] = $subFieldData->post_excerpt;
+			$fieldData['id']    = $subFieldData->post_name;
+			$fieldData['name']  = $subFieldData->post_excerpt;
 		}
 
 		// Do not include same field as child to avoid `Maximum function nesting level` exception.
@@ -658,13 +647,13 @@ abstract class Field implements FieldInterface {
 		if ( $parent ) {
 			do {
 				if ( $parent->getFieldKey() == $fieldData['id'] ) {
-					return FALSE;
+					return false;
 				}
 				$parent = $parent->getParent();
 			} while ( $parent );
 		}
 		if ( $this->getFieldKey() == $fieldData['id'] ) {
-			return FALSE;
+			return false;
 		}
 
 		// Create sub field instance
@@ -681,9 +670,9 @@ abstract class Field implements FieldInterface {
 	/**
 	 * @return int
 	 */
-	public function getCountValues( $parentIndex = FALSE ) {
+	public function getCountValues( $parentIndex = false ) {
 		$parents = $this->getParents();
-		if ( $parentIndex !== FALSE && isset( $parents[ $parentIndex ] ) ) {
+		if ( $parentIndex !== false && isset( $parents[ $parentIndex ] ) ) {
 			$parents = [ $parents[ $parentIndex ] ];
 		}
 		$value = $this->getOriginalFieldValueAsString();
@@ -693,7 +682,7 @@ abstract class Field implements FieldInterface {
 				if ( $parentIndex !== false ) {
 					$value = $value[ $parentIndex ];
 				}
-				if ( $parent['delimiter'] !== FALSE ) {
+				if ( $parent['delimiter'] !== false ) {
 					$value = explode( $parent['delimiter'], $value );
 					if ( is_array( $value ) ) {
 						$value = array_filter( $value );
@@ -702,6 +691,7 @@ abstract class Field implements FieldInterface {
 				}
 			}
 		}
+
 		return is_array( $value ) ? count( $value ) : ! empty( $value );
 	}
 
@@ -710,26 +700,26 @@ abstract class Field implements FieldInterface {
 	 */
 	public function getOriginalFieldValueAsString() {
 		$values = $this->options['values'];
-		
-		return $values[ $this->getPostIndex()] ?? '';
+
+		return $values[ $this->getPostIndex() ] ?? '';
 	}
 
 	/**
 	 * @return array
 	 */
 	protected function getParents() {
-		$field = $this;
-		$parents = array();
+		$field   = $this;
+		$parents = [];
 		do {
 			$parent = $field->getParent();
 			if ( $parent ) {
 				switch ( $parent->type ) {
 					case 'repeater':
 						if ( $parent->getMode() == 'fixed' || $parent->getMode() == 'csv' && $parent->getDelimiter() ) {
-							$parents[] = array(
+							$parents[] = [
 								'delimiter' => $parent->getDelimiter(),
-								'index' => $parent->getRowIndex(),
-							);
+								'index'     => $parent->getRowIndex(),
+							];
 						}
 						break;
 					default:
@@ -737,8 +727,7 @@ abstract class Field implements FieldInterface {
 				}
 				$field = $parent;
 			}
-		}
-		while ( $parent );
+		} while ( $parent );
 
 		return array_reverse( $parents );
 	}
@@ -748,18 +737,18 @@ abstract class Field implements FieldInterface {
 	 */
 	public function getParsedData() {
 		$field = $this->getData( 'field' );
-		
-        return [
-			'type' => $field['type'],
-			'post_type' => isset( $field['post_type'] ) ? $field['post_type'] : FALSE,
-			'name' => $field['name'],
-			'multiple' => isset( $field['multiple'] ) ? $field['multiple'] : FALSE,
-			'values' => $this->getOption( 'values' ),
-			'is_multiple' => $this->getOption( 'is_multiple' ),
-			'is_variable' => $this->getOption( 'is_variable' ),
+
+		return [
+			'type'              => $field['type'],
+			'post_type'         => isset( $field['post_type'] ) ? $field['post_type'] : false,
+			'name'              => $field['name'],
+			'multiple'          => isset( $field['multiple'] ) ? $field['multiple'] : false,
+			'values'            => $this->getOption( 'values' ),
+			'is_multiple'       => $this->getOption( 'is_multiple' ),
+			'is_variable'       => $this->getOption( 'is_variable' ),
 			'is_ignore_empties' => $this->getOption( 'is_ignore_empties' ),
-			'xpath' => $this->getOption( 'xpath' ),
-			'id' => empty( $field['id'] ) ? $field['id'] : $field['id']
-        ];
+			'xpath'             => $this->getOption( 'xpath' ),
+			'id'                => empty( $field['id'] ) ? $field['id'] : $field['id'],
+		];
 	}
 }

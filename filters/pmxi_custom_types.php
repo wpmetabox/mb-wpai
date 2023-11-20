@@ -1,6 +1,7 @@
 <?php
 /**
  * @param $custom_types
+ *
  * @return mixed
  */
 function pmai_pmxi_custom_types( $custom_types ) {
