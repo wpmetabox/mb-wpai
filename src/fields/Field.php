@@ -6,8 +6,6 @@ use wpai_meta_box_add_on\MetaboxService;
 
 abstract class Field implements FieldInterface {
 
-	public string $type;
-
 	public array $data;
 
 	/**
@@ -21,11 +19,11 @@ abstract class Field implements FieldInterface {
 
 	public array $options = [];
 
-	public Field $parent;
+	public $parent;
 
 	public array $subFields = [];
 
-	public function __construct( Field $field, array $post, $field_name = "", $parent_field = false ) {
+	public function __construct( array $field, array $post, $field_name = "", $parent_field = false ) {
 		$this->setParent( $parent_field );
 		$this->data = array_merge( [
 			'field'      => $field,
@@ -265,11 +263,10 @@ abstract class Field implements FieldInterface {
 	public function saved_post( $importData ) {
 	}
 
-	/**
-	 * @return mixed
-	 */
+
 	public function getType() {
-		return $this->type;
+		$slug = strtolower( preg_replace( '/([a-z])([A-Z])/', '$1_$2', get_class( $this ) ) );
+		return str_replace( 'wpai_meta_box_add_on\\fields\\', '', $slug );
 	}
 
 	/**

@@ -6,12 +6,6 @@ use wpai_meta_box_add_on\MetaboxService;
 use wpai_meta_box_add_on\fields\Field;
 
 class Text extends Field {
-
-	/**
-	 *  Field type key
-	 */
-	public $type = 'text';
-
 	/**
 	 *
 	 * Parse field data

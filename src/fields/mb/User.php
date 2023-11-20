@@ -5,10 +5,7 @@ namespace wpai_meta_box_add_on\fields\mb;
 use wpai_meta_box_add_on\MetaboxService;
 use wpai_meta_box_add_on\fields\Field;
 
-
 class User extends Field {
-
-	public $type = 'user';
 
 	public function parse( $xpath, $parsingData, $args = array() ) {
 		parent::parse( $xpath, $parsingData, $args );

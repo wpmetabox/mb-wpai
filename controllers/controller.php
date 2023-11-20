@@ -12,7 +12,7 @@ abstract class PMAI_Controller {
 	 */
 	protected $input;
 
-	protected array $errors;
+	protected \WP_Error $errors;
 
 	public array $data = [];
 
