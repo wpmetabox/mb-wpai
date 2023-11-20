@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<movies>
+  <movie>
+    <title>The Matrix</title>
+    <description>A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.</description>
+    <thumbnail>matrix_thumbnail.jpg</thumbnail>
+    <casts>
+      <cast>
+        <name>Keanu Reeves</name>
+        <character>Neo</character>
+        <photo>keanu_reeves.jpg</photo>
+      </cast>
+      <cast>
+        <name>Laurence Fishburne</name>
+        <character>Morpheus</character>
+        <photo>laurence_fishburne.jpg</photo>
+      </cast>
+    </casts>
+  </movie>
+  <movie>
+    <title>Inception</title>
+    <description>A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.</description>
+    <thumbnail>inception_thumbnail.jpg</thumbnail>
+    <casts>
+      <cast>
+        <name>Leonardo DiCaprio</name>
+        <character>Cobb</character>
+        <photo>leonardo_dicaprio.jpg</photo>
+      </cast>
+      <cast>
+        <name>Joseph Gordon-Levitt</name>
+        <character>Arthur</character>
+        <photo>joseph_gordon_levitt.jpg</photo>
+      </cast>
+    </casts>
+  </movie>
+  <movie>
+    <title>Interstellar</title>
+    <description>A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.</description>
+    <thumbnail>interstellar_thumbnail.jpg</thumbnail>
+    <casts>
+      <cast>
+        <name>Matthew McConaughey</name>
+        <character>Cooper</character>
+        <photo>matthew_mcconaughey.jpg</photo>
+      </cast>
+      <cast>
+        <name>Anne Hathaway</name>
+        <character>Brand</character>
+        <photo>anne_hathaway.jpg</photo>
+      </cast>
+    </casts>
+  </movie>
+</movies>
