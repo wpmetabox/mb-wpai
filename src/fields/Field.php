@@ -5,12 +5,8 @@ namespace wpai_meta_box_add_on\fields;
 use wpai_meta_box_add_on\MetaboxService;
 
 abstract class Field implements FieldInterface {
-
 	public array $data;
 
-	/**
-	 * @var mixed
-	 */
 	public $supportedVersion = false;
 
 	public array $parsingData;
@@ -25,11 +21,13 @@ abstract class Field implements FieldInterface {
 
 	public function __construct( array $field, array $post, $field_name = "", $parent_field = false ) {
 		$this->setParent( $parent_field );
+		
 		$this->data = array_merge( [
 			'field'      => $field,
 			'post'       => $post,
 			'field_name' => $field_name,
 		], $this->getFieldData() );
+
 		$this->initSubFields();
 	}
 
@@ -162,8 +160,8 @@ abstract class Field implements FieldInterface {
 
 		$field = $this->getData( 'field' );
 
-		$isMultipleField = ( isset( $parsingData['import']->options['is_multiple_field_value'][ $field['id'] ] ) ) ? $parsingData['import']->options['is_multiple_field_value'][ $field['id'] ] : false;
-		$multipleValue   = ( isset( $parsingData['import']->options['multiple_value'][ $field['id'] ] ) ) ? $parsingData['import']->options['multiple_value'][ $field['id'] ] : false;
+		$isMultipleField = $parsingData['import']->options['is_multiple_field_value'][ $field['id'] ] ?? false;
+		$multipleValue   = $parsingData['import']->options['multiple_value'][ $field['id'] ] ?? false;
 
 		if ( "" != $args['field_path'] ) {
 
@@ -189,9 +187,9 @@ abstract class Field implements FieldInterface {
 				}
 			}
 
-			$xpath           = empty( $xpath[ $field['id'] ] ) ? false : $xpath[ $field['id'] ];
-			$isMultipleField = isset( $isMultipleField[ $field['id'] ] ) ? $isMultipleField[ $field['id'] ] : false;
-			$multipleValue   = isset( $multipleValue[ $field['id'] ] ) ? $multipleValue[ $field['id'] ] : false;
+			$xpath           = $xpath[ $field['id'] ] ?? false;
+			$isMultipleField = $isMultipleField[ $field['id'] ] ?? false;
+			$multipleValue   = $multipleValue[ $field['id'] ] ?? false;
 		}
 
 		$this->setOption( 'base_xpath', $parsingData['xpath_prefix'] . $parsingData['import']->xpath . $args['xpath_suffix'] );
@@ -224,35 +222,15 @@ abstract class Field implements FieldInterface {
 		$this->parsingData['logger'] and call_user_func( $this->parsingData['logger'], sprintf( __( '- Importing field `%s`', 'mbai' ), $this->importData['container_name'] . $field['name'] ) );
 
 		$parsedData = $this->getParsedData();
-
+		
 		// If update is not allowed
 		if ( ! empty( $this->importData['articleData']['id'] ) && ! \pmai_is_acf_update_allowed( $this->importData['container_name'] . $field['name'], $this->parsingData['import']->options, $this->parsingData['import']->id ) ) {
 			$this->parsingData['logger'] && call_user_func( $this->parsingData['logger'], sprintf( __( '- Field `%s` is skipped attempted to import options', 'mbai' ), $this->getFieldName() ) );
 
 			return false;
 		}
-
-		// Do not import empty fields.
-		if ( in_array( $this->getType(), [ 'file', 'image', 'gallery' ] ) ) {
-			$value = ( $this->isNotEmpty() ) ? true : '';
-		} else {
-			$value = $this->getFieldValue();
-		}
-
-		if ( $value === '' && ! in_array( $this->getType(), [
-				'group',
-				'repeater',
-				'clone',
-				'flexible_content',
-				'button_group',
-			] ) ) {
-			$is_import_empty_acf_fields = apply_filters( "wp_all_import_is_import_empty_acf_fields", true, $this->parsingData['import']->id );
-			if ( empty( $is_import_empty_acf_fields ) ) {
-				return false;
-			}
-		}
-
-		MetaboxService::update_post_meta( $this, $this->getPostID(), $this->getFieldName(), $this->getFieldValue() );
+		
+		// MetaboxService::update_post_meta( $this, $this->getPostID(), $this->getFieldName(), $this->getFieldValue() );
 
 		return true;
 	}
@@ -264,9 +242,11 @@ abstract class Field implements FieldInterface {
 	}
 
 
-	public function getType() {
+	public function getType(): string {
 		$slug = strtolower( preg_replace( '/([a-z])([A-Z])/', '$1_$2', get_class( $this ) ) );
-		return str_replace( 'wpai_meta_box_add_on\\fields\\', '', $slug );
+		$type =  str_replace( 'wpai_meta_box_add_on\\fields\\mb\\', '', $slug );
+		
+		return $type;
 	}
 
 	/**
@@ -283,30 +263,17 @@ abstract class Field implements FieldInterface {
 		$this->parent = $parent;
 	}
 
-	/**
-	 * @param $option
-	 *
-	 * @return mixed|mixed
-	 */
 	public function getData( $option ) {
-		return isset( $this->data[ $option ] ) ? $this->data[ $option ] : false;
+		return $this->data[ $option ] ?? false;
 	}
 
-	/**
-	 * @param $option
-	 * @param $value
-	 */
 	public function setData( $option, $value ) {
 		$this->data[ $option ] = $value;
 	}
 
-	/**
-	 * @param $option
-	 *
-	 * @return mixed|mixed
-	 */
+
 	public function getOption( $option ) {
-		return isset( $this->options[ $option ] ) ? $this->options[ $option ] : false;
+		return $this->options[ $option ] ?? false;
 	}
 
 	/**
@@ -367,7 +334,7 @@ abstract class Field implements FieldInterface {
 	 * @return string
 	 */
 	public function getFieldName() {
-		$fieldName = ( isset( $this->data['field']['name'] ) ? $this->data['field']['name'] : '' );
+		$fieldName =  $this->data['field']['name'] ?? '';
 		// if ( empty( $fieldName ) ) {
 		// 	if ( function_exists( 'acf_get_field' ) ) {
 		// 		$field = acf_get_field( $this->data['field']['id'] );
@@ -427,21 +394,21 @@ abstract class Field implements FieldInterface {
 			}
 		}
 
-		return $this->trimValue( $value );
+		return $this->recursiveTrim( $value );
 	}
 
 	/**
-	 * Trim
+	 * Recursively trim value
 	 *
 	 * @param $value
 	 *
 	 * @return array|string
 	 */
-	public function trimValue( $value ) {
+	public function recursiveTrim( $value ) {
 		if ( is_array( $value ) ) {
 			foreach ( $value as $k => $v ) {
 				if ( is_string( $v ) ) {
-					$value[ $k ] = $this->trimValue( $v );
+					$value[ $k ] = $this->recursiveTrim( $v );
 				}
 			}
 
@@ -576,46 +543,6 @@ abstract class Field implements FieldInterface {
 	/**
 	 * @param $fieldKey
 	 *
-	 * @return \wpai_meta_box_add_on\fields\Field|mixed
-	 */
-	public function getFieldByKey( $fieldKey ) {
-
-		// Get field configuration
-		$fieldData = $this->isLocalFieldStorage() ? $this->getLocalFieldDataByKey( $fieldKey ) : $this->getDBFieldDataByKey( $fieldKey );
-
-		return $fieldData ? $this->initDataAndCreateField( $fieldData ) : false;
-	}
-
-	/**
-	 * @param $fieldKey
-	 *
-	 * @return mixed
-	 */
-	protected function getLocalFieldDataByKey( $fieldKey ) {
-		$fieldData = false;
-		$fields    = [];
-		if ( function_exists( 'acf_local' ) ) {
-			$fields = acf_local()->fields;
-		}
-		if ( empty( $fields ) && function_exists( 'acf_get_local_fields' ) ) {
-			$fields = acf_get_local_fields();
-		}
-		if ( ! empty( $fields ) ) {
-			foreach ( $fields as $sub_field ) {
-				if ( $sub_field['id'] == $fieldKey ) {
-					$fieldData       = $sub_field;
-					$fieldData['id'] = $fieldData['id'] = uniqid();
-					break;
-				}
-			}
-		}
-
-		return $fieldData;
-	}
-
-	/**
-	 * @param $fieldKey
-	 *
 	 * @return array|mixed|mixed
 	 */
 	protected function getDBFieldDataByKey( $fieldKey ) {
@@ -737,15 +664,15 @@ abstract class Field implements FieldInterface {
 
 		return [
 			'type'              => $field['type'],
-			'post_type'         => isset( $field['post_type'] ) ? $field['post_type'] : false,
+			'post_type'         => $field['post_type'] ?? false,
 			'name'              => $field['name'],
-			'multiple'          => isset( $field['multiple'] ) ? $field['multiple'] : false,
+			'multiple'          => $field['multiple'] ?? false,
 			'values'            => $this->getOption( 'values' ),
 			'is_multiple'       => $this->getOption( 'is_multiple' ),
 			'is_variable'       => $this->getOption( 'is_variable' ),
 			'is_ignore_empties' => $this->getOption( 'is_ignore_empties' ),
 			'xpath'             => $this->getOption( 'xpath' ),
-			'id'                => empty( $field['id'] ) ? $field['id'] : $field['id'],
+			'id'                => $field['id']
 		];
 	}
 }

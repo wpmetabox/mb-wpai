@@ -6,29 +6,17 @@ use wpai_meta_box_add_on\MetaboxService;
 use wpai_meta_box_add_on\fields\Field;
 
 class Text extends Field {
-	/**
-	 *
-	 * Parse field data
-	 *
-	 * @param $xpath
-	 * @param $parsingData
-	 * @param array $args
-	 */
-	public function parse( $xpath, $parsingData, $args = array() ) {
+
+	public function parse( $xpath, $parsingData, $args = [] ) {
 		parent::parse( $xpath, $parsingData, $args );
 		$values = $this->getByXPath( $xpath );
 		$this->setOption( 'values', $values );
 	}
 
-	/**
-	 * @param $importData
-	 * @param array $args
-	 * @return mixed
-	 */
 	public function import( $importData, array $args = [] ) {
-		$isUpdated = parent::import( $importData, $args );
+		$canUpdate = parent::import( $importData, $args );
 
-		if ( ! $isUpdated ) {
+		if ( ! $canUpdate ) {
 			return false;
 		}
 
