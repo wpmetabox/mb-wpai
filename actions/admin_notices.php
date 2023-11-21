@@ -17,7 +17,6 @@ function pmai_admin_notices() {
 		<?php
 
 		deactivate_plugins( PMAI_ROOT_DIR . '/wpai-acf-add-on.php' );
-
 	}
 
 	if ( class_exists( 'PMXI_Plugin' ) and ( version_compare( PMXI_VERSION, '4.1.1' ) < 0 and PMXI_EDITION == 'paid' or version_compare( PMXI_VERSION, '3.2.3' ) <= 0 and PMXI_EDITION == 'free' ) ) {

@@ -22,9 +22,8 @@ abstract class BaseMetabox implements MetaboxInterface {
 	 *
 	 * @param $meta_box
 	 */
-	public function __construct( $meta_box, $post ) {
+	public function __construct( \RW_Meta_Box $meta_box, array $post ) {
 		$this->meta_box = $meta_box;
-
 		$this->post = $post;
 		$this->initFields();
 
@@ -85,7 +84,7 @@ abstract class BaseMetabox implements MetaboxInterface {
 
 	public function parse( $parsingData ) {
 		foreach ( $this->getFields() as $field ) {
-			$xpath = empty( $parsingData['import']->options['fields'][ $field->getFieldKey() ] ) ? "" : $parsingData['import']->options['fields'][ $field->getFieldKey() ];
+			$xpath = $parsingData['import']->options['fields'][ $field->getFieldKey() ] ?? '';
 			$field->parse( $xpath, $parsingData );
 		}
 	}

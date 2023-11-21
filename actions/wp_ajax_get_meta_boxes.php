@@ -49,5 +49,5 @@ function pmai_wp_ajax_get_meta_boxes() {
 
 	$meta_box->view();
 
-	wp_send_json( [ 'html' => ob_get_clean() ] );
+	wp_send_json_success( [ 'html' => ob_get_clean() ] );
 }

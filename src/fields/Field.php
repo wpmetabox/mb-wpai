@@ -97,7 +97,7 @@ abstract class Field implements FieldInterface {
 		}
 
 		if ( array_key_exists( 'id', $field ) ) {
-			$data['current_field'] = empty( $post['fields'][ $field['id'] ] ) ? false : $post['fields'][ $field['id'] ];
+			$data['current_field'] = $post['fields'][ $field['id'] ] ?? false;
 		} else {
 			$data['current_field'] = false;
 		}
@@ -129,10 +129,10 @@ abstract class Field implements FieldInterface {
 				}
 			}
 
-			$data['current_field'] = empty( $data['current_field'][ $field['id'] ] ) ? false : $data['current_field'][ $field['id'] ];
+			$data['current_field'] = $data['current_field'][ $field['id'] ] ?? false;
 
 			foreach ( $options as $option ) {
-				$data[ 'current_' . $option ] = isset( $data[ 'current_' . $option ][ $field['id'] ] ) ? $data[ 'current_' . $option ][ $field['id'] ] : false;
+				$data[ 'current_' . $option ] =  $data[ 'current_' . $option ][ $field['id'] ] ?? false;
 			}
 		}
 
@@ -241,7 +241,6 @@ abstract class Field implements FieldInterface {
 	public function saved_post( $importData ) {
 	}
 
-
 	public function getType(): string {
 		$slug = strtolower( preg_replace( '/([a-z])([A-Z])/', '$1_$2', get_class( $this ) ) );
 		$type =  str_replace( 'wpai_meta_box_add_on\\fields\\mb\\', '', $slug );
@@ -270,7 +269,6 @@ abstract class Field implements FieldInterface {
 	public function setData( $option, $value ) {
 		$this->data[ $option ] = $value;
 	}
-
 
 	public function getOption( $option ) {
 		return $this->options[ $option ] ?? false;
@@ -381,14 +379,14 @@ abstract class Field implements FieldInterface {
 		if ( isset( $this->options['is_multiple_field'] ) && $this->options['is_multiple_field'] == 'yes' ) {
 			$value = array_shift( $values );
 		} else {
-			$value   = isset( $values[ $this->getPostIndex() ] ) ? $values[ $this->getPostIndex() ] : '';
+			$value   = $values[ $this->getPostIndex() ] ?? '';
 			$parents = $this->getParents();
 
 			if ( ! empty( $parents ) ) {
-				foreach ( $parents as $key => $parent ) {
+				foreach ( $parents as $parent ) {
 					if ( $parent['delimiter'] !== false ) {
 						$value = explode( $parent['delimiter'], $value );
-						$value = isset( $value[ $parent['index'] ] ) ? $value[ $parent['index'] ] : '';
+						$value = $value[ $parent['index'] ] ?? '';
 					}
 				}
 			}

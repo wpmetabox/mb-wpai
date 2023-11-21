@@ -10,13 +10,14 @@ class Text extends Field {
 	public function parse( $xpath, $parsingData, $args = [] ) {
 		parent::parse( $xpath, $parsingData, $args );
 		$values = $this->getByXPath( $xpath );
+		
 		$this->setOption( 'values', $values );
 	}
 
 	public function import( $importData, array $args = [] ) {
-		$canUpdate = parent::import( $importData, $args );
+		$canImport = parent::import( $importData, $args );
 
-		if ( ! $canUpdate ) {
+		if ( ! $canImport ) {
 			return false;
 		}
 
