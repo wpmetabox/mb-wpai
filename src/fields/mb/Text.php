@@ -9,8 +9,8 @@ class Text extends Field {
 
 	public function parse( $xpath, $parsingData, $args = [] ) {
 		parent::parse( $xpath, $parsingData, $args );
+
 		$values = $this->getByXPath( $xpath );
-		
 		$this->setOption( 'values', $values );
 	}
 

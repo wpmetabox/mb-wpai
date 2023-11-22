@@ -157,9 +157,9 @@ abstract class Field implements FieldInterface {
 		];
 
 		$args = array_merge( $defaults, $args );
-
+		
 		$field = $this->getData( 'field' );
-		ff($field);
+		
 		$isMultipleField = $parsingData['import']->options['is_multiple_field_value'][ $field['id'] ] ?? false;
 		$multipleValue   = $parsingData['import']->options['multiple_value'][ $field['id'] ] ?? false;
 
@@ -191,7 +191,7 @@ abstract class Field implements FieldInterface {
 			$isMultipleField = $isMultipleField[ $field['id'] ] ?? false;
 			$multipleValue   = $multipleValue[ $field['id'] ] ?? false;
 		}
-
+	
 		$this->setOption( 'base_xpath', $parsingData['xpath_prefix'] . $parsingData['import']->xpath . $args['xpath_suffix'] );
 		$this->setOption( 'xpath', $xpath );
 		$this->setOption( 'is_multiple_field', $isMultipleField );
@@ -296,7 +296,7 @@ abstract class Field implements FieldInterface {
 			$values = \XmlImportParser::factory( $this->parsingData['xml'], $this->getOption( 'base_xpath' ) . $suffix, $xpath, $file )->parse();
 			@unlink( $file );
 		}
-
+		
 		return $values;
 	}
 
