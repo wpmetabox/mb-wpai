@@ -5,7 +5,7 @@ use wpai_meta_box_add_on\meta_boxes\MetaboxFactory;
 /**
  *  Render ACF group
  */
-function pmai_wp_ajax_get_meta_boxes() {
+function pmai_wp_ajax_get_meta_boxes(): void {
 
 	if ( ! check_ajax_referer( 'wp_all_import_secure', 'security', false ) ) {
 		wp_send_json_error( [ 'message' => __( 'Security check', 'mbai' ) ] );
@@ -31,13 +31,13 @@ function pmai_wp_ajax_get_meta_boxes() {
 		$import->getById( $_GET['id'] );
 	}
 
-	$is_loaded_template = ( ! empty( PMXI_Plugin::$session->is_loaded_template ) ) ? PMXI_Plugin::$session->is_loaded_template : false;
+	$is_loaded_template = PMXI_Plugin::$session->is_loaded_template ?? false;
 
 	if ( $is_loaded_template ) {
 		$default  = PMAI_Plugin::get_default_import_options();
 		$template = new PMXI_Template_Record();
 		if ( ! $template->getById( $is_loaded_template )->isEmpty() ) {
-			$options = ( ! empty( $template->options ) ? $template->options : [] ) + $default;
+			$options = array_merge( $default, $template->options );
 		}
 	} elseif ( ! $import->isEmpty() ) {
 		$options = $import->options;
@@ -46,8 +46,7 @@ function pmai_wp_ajax_get_meta_boxes() {
 	}
 
 	$meta_box = MetaboxFactory::create( $selected_meta_box, $options );
-
 	$meta_box->view();
 
-	wp_send_json_success( [ 'html' => ob_get_clean() ] );
+	wp_send_json( [ 'html' => ob_get_clean() ] );
 }

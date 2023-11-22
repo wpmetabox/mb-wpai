@@ -18,7 +18,7 @@ class Text extends Field {
 		$canImport = parent::import( $importData, $args );
 
 		if ( ! $canImport ) {
-			return false;
+			return;
 		}
 
 		MetaboxService::update_post_meta( $this, $this->getPostID(), $this->getFieldName(), $this->getFieldValue() );

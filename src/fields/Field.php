@@ -159,7 +159,7 @@ abstract class Field implements FieldInterface {
 		$args = array_merge( $defaults, $args );
 
 		$field = $this->getData( 'field' );
-
+		ff($field);
 		$isMultipleField = $parsingData['import']->options['is_multiple_field_value'][ $field['id'] ] ?? false;
 		$multipleValue   = $parsingData['import']->options['multiple_value'][ $field['id'] ] ?? false;
 
@@ -375,7 +375,7 @@ abstract class Field implements FieldInterface {
 	 */
 	public function getFieldValue() {
 		$values = $this->options['values'];
-
+		ff($this->options);
 		if ( isset( $this->options['is_multiple_field'] ) && $this->options['is_multiple_field'] == 'yes' ) {
 			$value = array_shift( $values );
 		} else {
@@ -391,7 +391,7 @@ abstract class Field implements FieldInterface {
 				}
 			}
 		}
-
+		
 		return $this->recursiveTrim( $value );
 	}
 

@@ -26,10 +26,16 @@ class PMAI_Admin_Import extends PMAI_Controller_Admin {
 		return array_map( function ( $meta_box ) {
 			$meta_box->meta_box['fields'] = array_map( function ( $field ) {
 				$multiline             = in_array( $field['type'], [ 'wysiwyg', 'textarea' ] );
-				$field['type']         = $multiline ? 'textarea' : 'text';
-				$field['autocomplete'] = false;
-				$field['datalist']     = false;
-				$field['readonly']     = false;
+	
+				$field = array_merge( $field, [
+					'type' 			=> $multiline ? 'textarea' : 'text',
+					'auto_complete' => false,
+					'data_list'     => false,
+					'readonly'      => false,
+					'disabled'      => false,
+					'multiple'      => false,
+					'placeholder'   => '',
+				] );
 
 				return $field;
 			}, $meta_box->meta_box['fields'] );
