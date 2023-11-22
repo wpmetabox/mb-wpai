@@ -29,7 +29,7 @@ There are two things that we need to handle: rendering views and handling post d
 1. The `PMAI_Import_Record::import()` will be called from the WP All Import.
 
 ### XPath Guide
-To test the xpath, try to use this tool [http://xpather.com/](http://xpather.com/)
+To test the xpath, try this tool [http://xpather.com/](http://xpather.com/)
 
 Some useful xpath related to the example:
 - `casts[1]/cast[*]/name[1]` - Get all cast names of the movies.xml example.

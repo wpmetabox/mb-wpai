@@ -11,6 +11,7 @@ class Text extends Field {
 		parent::parse( $xpath, $parsingData, $args );
 
 		$values = $this->getByXPath( $xpath );
+
 		$this->setOption( 'values', $values );
 	}
 

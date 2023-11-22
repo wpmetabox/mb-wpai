@@ -291,11 +291,21 @@ abstract class Field implements FieldInterface {
 	 */
 	public function getByXPath( $xpath, $suffix = '' ) {
 		$values = array_fill( 0, $this->getOption( 'count' ), "" );
+		
+		add_filter('wp_all_import_multi_glue', function ($glue) {
+			return '||';
+		});
+
 		if ( $xpath != "" ) {
 			$file   = false;
 			$values = \XmlImportParser::factory( $this->parsingData['xml'], $this->getOption( 'base_xpath' ) . $suffix, $xpath, $file )->parse();
+			
 			@unlink( $file );
 		}
+
+		add_filter('wp_all_import_multi_glue', function ($glue) {
+			return ',';
+		});
 		
 		return $values;
 	}
@@ -375,21 +385,13 @@ abstract class Field implements FieldInterface {
 	 */
 	public function getFieldValue() {
 		$values = $this->options['values'];
-		ff($this->options);
-		if ( isset( $this->options['is_multiple_field'] ) && $this->options['is_multiple_field'] == 'yes' ) {
-			$value = array_shift( $values );
-		} else {
-			$value   = $values[ $this->getPostIndex() ] ?? '';
-			$parents = $this->getParents();
+		
+		$value = $values[ $this->getPostIndex() ] ?? '';
 
-			if ( ! empty( $parents ) ) {
-				foreach ( $parents as $parent ) {
-					if ( $parent['delimiter'] !== false ) {
-						$value = explode( $parent['delimiter'], $value );
-						$value = $value[ $parent['index'] ] ?? '';
-					}
-				}
-			}
+		$field = $this->getData( 'field' );
+
+		if ($field['clone']) {
+			$value = explode( '||', $value );
 		}
 		
 		return $this->recursiveTrim( $value );
