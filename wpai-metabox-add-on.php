@@ -113,19 +113,6 @@ final class PMAI_Plugin {
 	 * @param string $pluginFilePath Plugin main file
 	 */
 	protected function __construct() {
-
-		// create/update required database tables
-
-		// register autoloading method
-		spl_autoload_register( [ $this, 'autoload' ] );
-
-		// register helpers
-		if ( is_dir( self::ROOT_DIR . '/helpers' ) ) {
-			foreach ( PMAI_Helper::safe_glob( self::ROOT_DIR . '/helpers/*.php', PMAI_Helper::GLOB_RECURSE | PMAI_Helper::GLOB_PATH ) as $filePath ) {
-				require_once $filePath;
-			}
-		}
-
 		register_activation_hook( self::FILE, [ $this, 'activation' ] );
 
 		// register action handlers
@@ -157,14 +144,6 @@ final class PMAI_Plugin {
 					$priority = 10;
 				}
 				add_filter( $actionName, self::PREFIX . str_replace( '-', '_', $function ), $priority, 99 ); // since we don't know at this point how many parameters each plugin expects, we make sure they will be provided with all of them (it's unlikely any developer will specify more than 99 parameters in a function)
-			}
-		}
-
-		// register shortcodes handlers
-		if ( is_dir( self::ROOT_DIR . '/shortcodes' ) ) {
-			foreach ( PMAI_Helper::safe_glob( self::ROOT_DIR . '/shortcodes/*.php', PMAI_Helper::GLOB_RECURSE | PMAI_Helper::GLOB_PATH ) as $filePath ) {
-				$tag = strtolower( str_replace( '/', '_', preg_replace( '%^' . preg_quote( self::ROOT_DIR . '/shortcodes/', '%' ) . '|\.php$%', '', $filePath ) ) );
-				add_shortcode( $tag, [ $this, 'shortcodeDispatcher' ] );
 			}
 		}
 
@@ -201,7 +180,6 @@ final class PMAI_Plugin {
 			$this->adminDispatcher( $page, strtolower( $input->getpost( 'action', 'index' ) ) );
 		}
 	}
-
 
 	public function shortcodeDispatcher( array $args, string $content, string $tag ): string {
 		$controllerName = self::PREFIX . preg_replace_callback( '%(^|_).%', [
@@ -296,48 +274,6 @@ final class PMAI_Plugin {
 
 	public function replace_callback( $matches ) {
 		return strtoupper( $matches[0] );
-	}
-
-	/**
-	 * Autoloader
-	 * It's assumed class name consists of prefix folloed by its name which in turn corresponds to location of source file
-	 * if `_` symbols replaced by directory path separator. File name consists of prefix folloed by last part in class name (i.e.
-	 * symbols after last `_` in class name)
-	 * When class has prefix it's source is looked in `models`, `controllers`, `shortcodes` folders, otherwise it looked in `core` or `library` folder
-	 *
-	 * @param string $className
-	 *
-	 * @return mixed
-	 */
-	public function autoload( $className ) {
-
-		// if ( ! preg_match( '/MBAI/m', $className ) ) {
-		// 	return false;
-		// }
-
-		$is_prefix = false;
-		$filePath  = str_replace( '_', '/', preg_replace( '%^' . preg_quote( self::PREFIX, '%' ) . '%', '', strtolower( $className ), 1, $is_prefix ) ) . '.php';
-		if ( ! $is_prefix ) { // also check file with original letter case
-			$filePathAlt = $className . '.php';
-		}
-		foreach ( $is_prefix ? [ 'models', 'controllers', 'shortcodes', 'classes' ] : [] as $subdir ) {
-			$path = self::ROOT_DIR . '/' . $subdir . '/' . $filePath;
-			if ( is_file( $path ) ) {
-				require $path;
-
-				return true;
-			}
-			if ( ! $is_prefix ) {
-				$pathAlt = self::ROOT_DIR . '/' . $subdir . '/' . $filePathAlt;
-				if ( is_file( $pathAlt ) ) {
-					require $pathAlt;
-
-					return true;
-				}
-			}
-		}
-
-		return false;
 	}
 
 	/**

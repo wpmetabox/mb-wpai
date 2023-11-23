@@ -2,6 +2,15 @@
   "autoload": {
     "psr-4": {
       "MetaBox\\WPAI\\": "src"
-    }
+    },
+    "classmap": [
+      "models",
+      "controllers",
+      "classes"
+    ],
+    "files": [
+      "helpers/functions.php",
+      "helpers/mbai_is_acf_update_allowed.php"
+    ]
   }
 }

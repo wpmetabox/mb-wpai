@@ -6,6 +6,11 @@ namespace Composer\Autoload;
 
 class ComposerStaticInit65c0eaf6ae3fa3aed47a69df34e1d5a5
 {
+    public static $files = array (
+        'ab382a10c8511339af72dbf4f41802af' => __DIR__ . '/../..' . '/helpers/functions.php',
+        'f1919987d1eb014ccfe0ee083d31753b' => __DIR__ . '/../..' . '/helpers/mbai_is_acf_update_allowed.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'M' => 
         array (
@@ -22,6 +27,29 @@ class ComposerStaticInit65c0eaf6ae3fa3aed47a69df34e1d5a5
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'MetaBox\\WPAI\\Fields\\Field' => __DIR__ . '/../..' . '/src/Fields/Field.php',
+        'MetaBox\\WPAI\\Fields\\FieldFactory' => __DIR__ . '/../..' . '/src/Fields/FieldFactory.php',
+        'MetaBox\\WPAI\\Fields\\FieldInterface' => __DIR__ . '/../..' . '/src/Fields/FieldInterface.php',
+        'MetaBox\\WPAI\\Fields\\Text' => __DIR__ . '/../..' . '/src/Fields/Text.php',
+        'MetaBox\\WPAI\\Fields\\User' => __DIR__ . '/../..' . '/src/Fields/User.php',
+        'MetaBox\\WPAI\\MetaBoxes\\BaseMetabox' => __DIR__ . '/../..' . '/src/MetaBoxes/BaseMetabox.php',
+        'MetaBox\\WPAI\\MetaBoxes\\Metabox' => __DIR__ . '/../..' . '/src/MetaBoxes/Metabox.php',
+        'MetaBox\\WPAI\\MetaBoxes\\MetaboxFactory' => __DIR__ . '/../..' . '/src/MetaBoxes/MetaboxFactory.php',
+        'MetaBox\\WPAI\\MetaBoxes\\MetaboxInterface' => __DIR__ . '/../..' . '/src/MetaBoxes/MetaboxInterface.php',
+        'MetaBox\\WPAI\\MetaboxService' => __DIR__ . '/../..' . '/src/MetaboxService.php',
+        'PMAI_Admin_Import' => __DIR__ . '/../..' . '/controllers/admin/import.php',
+        'PMAI_Compatibility' => __DIR__ . '/../..' . '/classes/compatibility.php',
+        'PMAI_Config' => __DIR__ . '/../..' . '/classes/config.php',
+        'PMAI_Controller' => __DIR__ . '/../..' . '/controllers/controller.php',
+        'PMAI_Controller_Admin' => __DIR__ . '/../..' . '/controllers/controller/admin.php',
+        'PMAI_Helper' => __DIR__ . '/../..' . '/classes/helper.php',
+        'PMAI_Import_List' => __DIR__ . '/../..' . '/models/import/list.php',
+        'PMAI_Import_Record' => __DIR__ . '/../..' . '/models/import/record.php',
+        'PMAI_Input' => __DIR__ . '/../..' . '/classes/input.php',
+        'PMAI_Model' => __DIR__ . '/../..' . '/models/model.php',
+        'PMAI_Model_List' => __DIR__ . '/../..' . '/models/model/list.php',
+        'PMAI_Model_Record' => __DIR__ . '/../..' . '/models/model/record.php',
+        'PMAI_Updater' => __DIR__ . '/../..' . '/classes/updater.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
