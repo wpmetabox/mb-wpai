@@ -7,6 +7,7 @@ This plugin integrates WP All Import with Meta Box which ported from ACF Integra
 ## To do
 - [x] Import from basic and html fields
 - [ ] Import from upload fields
-- [ ] Clonable fields
+- [x] Clonable fields
 - [ ] Group fields
-- [ ] Taxonomy fields
+- [x] User field
+- [ ] Term fields
