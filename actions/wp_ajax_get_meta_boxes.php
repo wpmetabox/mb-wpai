@@ -1,6 +1,6 @@
 <?php
 
-use wpai_meta_box_add_on\meta_boxes\MetaboxFactory;
+use MetaBox\WPAI\MetaBoxes\MetaboxFactory;
 
 /**
  *  Render ACF group

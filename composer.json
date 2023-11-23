@@ -1,7 +1,7 @@
 {
   "autoload": {
     "psr-4": {
-      "wpai_meta_box_add_on\\": "src"
+      "MetaBox\\WPAI\\": "src"
     }
   }
 }

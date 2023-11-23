@@ -1,7 +1,7 @@
 <?php
 
-use wpai_meta_box_add_on\meta_boxes\Metabox;
-use wpai_meta_box_add_on\meta_boxes\MetaboxFactory;
+use MetaBox\WPAI\MetaBoxes\Metabox;
+use MetaBox\WPAI\MetaBoxes\MetaboxFactory;
 
 /**
  * Class PMAI_Import_Record

@@ -1,6 +1,6 @@
 <?php
 
-namespace wpai_meta_box_add_on\meta_boxes;
+namespace MetaBox\WPAI\MetaBoxes;
 
 interface MetaboxInterface {
 	public function initFields(): void;

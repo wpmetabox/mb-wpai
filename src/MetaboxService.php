@@ -1,13 +1,13 @@
 <?php
 
-namespace wpai_meta_box_add_on;
+namespace MetaBox\WPAI;
 
 use PMXI_API;
-use wpai_meta_box_add_on\fields\Field;
+use MetaBox\WPAI\Fields\Field;
 
 /**
  * Class MetaboxService
- * @package wpai_meta_box_add_on
+ * @package MetaBox\WPAI\
  */
 final class MetaboxService {
 
@@ -26,7 +26,7 @@ final class MetaboxService {
 	 *
 	 * Set ACF field value
 	 *
-	 * @param \wpai_meta_box_add_on\fields\Field $field
+	 * @param \MetaBox\WPAI\Fields\Field $field
 	 * @param $pid
 	 * @param $name
 	 * @param $value

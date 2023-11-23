@@ -1,5 +1,5 @@
 <?php
-namespace wpai_meta_box_add_on\meta_boxes;
+namespace MetaBox\WPAI\MetaBoxes;
 
 class Metabox extends BaseMetabox {
 

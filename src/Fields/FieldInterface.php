@@ -1,6 +1,6 @@
 <?php
 
-namespace wpai_meta_box_add_on\fields;
+namespace MetaBox\WPAI\Fields;
 
 interface FieldInterface {
 	public function parse( $xpath, $parsingData, array $args = [] );

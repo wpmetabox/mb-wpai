@@ -1,8 +1,8 @@
 <?php
 
-namespace wpai_meta_box_add_on\meta_boxes;
+namespace MetaBox\WPAI\MetaBoxes;
 
-use wpai_meta_box_add_on\meta_boxes\Metabox;
+use MetaBox\WPAI\MetaBoxes\Metabox;
 
 final class MetaboxFactory {
 	/**

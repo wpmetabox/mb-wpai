@@ -1,8 +1,8 @@
 <?php
 
-namespace wpai_meta_box_add_on\fields;
+namespace MetaBox\WPAI\Fields;
 
-use wpai_meta_box_add_on\MetaboxService;
+use MetaBox\WPAI\MetaboxService;
 
 abstract class Field implements FieldInterface {
 	public array $data;
@@ -191,7 +191,7 @@ abstract class Field implements FieldInterface {
 			$isMultipleField = $isMultipleField[ $field['id'] ] ?? false;
 			$multipleValue   = $multipleValue[ $field['id'] ] ?? false;
 		}
-	
+
 		$this->setOption( 'base_xpath', $parsingData['xpath_prefix'] . $parsingData['import']->xpath . $args['xpath_suffix'] );
 		$this->setOption( 'xpath', $xpath );
 		$this->setOption( 'is_multiple_field', $isMultipleField );
@@ -243,20 +243,20 @@ abstract class Field implements FieldInterface {
 
 	public function getType(): string {
 		$slug = strtolower( preg_replace( '/([a-z])([A-Z])/', '$1_$2', get_class( $this ) ) );
-		$type =  str_replace( 'wpai_meta_box_add_on\\fields\\mb\\', '', $slug );
+		$type =  str_replace( 'MetaBox\WPAI\\fields\\mb\\', '', $slug );
 		
 		return $type;
 	}
 
 	/**
-	 * @return \wpai_meta_box_add_on\fields\Field|mixed
+	 * @return \MetaBox\WPAI\Fields\Field|mixed
 	 */
 	public function getParent() {
 		return $this->parent;
 	}
 
 	/**
-	 * @param \wpai_meta_box_add_on\fields\Field|mixed $parent
+	 * @param \MetaBox\WPAI\Fields\Field|mixed $parent
 	 */
 	public function setParent( $parent ) {
 		$this->parent = $parent;

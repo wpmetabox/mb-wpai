@@ -1,8 +1,8 @@
 <?php
 
-namespace wpai_meta_box_add_on\meta_boxes;
+namespace MetaBox\WPAI\MetaBoxes;
 
-use wpai_meta_box_add_on\fields\FieldFactory;
+use MetaBox\WPAI\Fields\FieldFactory;
 
 abstract class BaseMetabox implements MetaboxInterface {
 
@@ -27,24 +27,34 @@ abstract class BaseMetabox implements MetaboxInterface {
 		$this->post = $post;
 		$this->initFields();
 
-		add_filter( 'rwmb_html', [ $this, 'filterHtml' ], 10, 2 );
+		add_filter('rwmb_meta_boxes', function ($meta_boxes) {
+			ddd($meta_boxes);
+		});
 	}
 
-	public function filterHtml( $html, $field ): string {
-		// Replace name attribute
-		$pattern     = '/name="([^"]+)"/';
-		$replacement = 'name="fields[' . $field['id'] . ']"';
-
-		$html = preg_replace( $pattern, $replacement, $html );
-
-		// Replace type attribute, use type="text" only
-		$pattern     = '/type="([^"]+)"/';
-		$replacement = 'type="text"';
-
-		$html = preg_replace( $pattern, $replacement, $html );
-
-		return $html;
+	public function filterMetaBoxes( $meta_boxes ) {
+		ddd($meta_boxes);
+		return $meta_boxes;
 	}
+
+	// public function filterHtml( $html, $field ): string {
+	// 	// Wrap matched name attribute inside fields array, use name="fields[...]", not name="..."
+	// 	$pattern    = '/name="([^"]+)"/';
+	// 	$replacement = 'name="fields[$1]"';
+
+	// 	// Replace only if fields is not already in the name attribute
+	// 	if ( false === strpos( $html, 'name="fields[' ) ) {
+	// 		$html = preg_replace( $pattern, $replacement, $html );
+	// 	}
+
+	// 	// Replace type attribute, use type="text" only
+	// 	$pattern     = '/type="([^"]+)"/';
+	// 	$replacement = 'type="text"';
+
+	// 	$html = preg_replace( $pattern, $replacement, $html );
+
+	// 	return $html;
+	// }
 
 	public function initFields(): void {
 		foreach ( $this->getFieldsData() as $fieldData ) {
@@ -83,6 +93,7 @@ abstract class BaseMetabox implements MetaboxInterface {
 	}
 
 	public function parse( $parsingData ) {
+		
 		foreach ( $this->getFields() as $field ) {
 			$xpath = $parsingData['import']->options['fields'][ $field->getFieldKey() ] ?? '';
 			$field->parse( $xpath, $parsingData );

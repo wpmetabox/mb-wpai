@@ -7,14 +7,14 @@ namespace Composer\Autoload;
 class ComposerStaticInit65c0eaf6ae3fa3aed47a69df34e1d5a5
 {
     public static $prefixLengthsPsr4 = array (
-        'w' => 
+        'M' => 
         array (
-            'wpai_meta_box_add_on\\' => 20,
+            'MetaBox\\WPAI\\' => 13,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'wpai_meta_box_add_on\\' => 
+        'MetaBox\\WPAI\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),

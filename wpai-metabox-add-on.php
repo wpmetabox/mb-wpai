@@ -354,7 +354,7 @@ final class PMAI_Plugin {
 	 *  Init all available ACF fields.
 	 */
 	public static function get_available_acf_fields() {
-		return [ 'name', 'email', 'phone', 'address1', 'address2' ];
+		return [ 'name', 'email', 'phone', 'address1', 'address2', 'character' ];
 	}
 
 	public static function get_default_import_options() {

@@ -1,9 +1,9 @@
 <?php
 
-namespace wpai_meta_box_add_on\fields\mb;
+namespace MetaBox\WPAI\Fields;
 
-use wpai_meta_box_add_on\MetaboxService;
-use wpai_meta_box_add_on\fields\Field;
+use MetaBox\WPAI\MetaboxService;
+use MetaBox\WPAI\Fields\Field;
 
 class User extends Field {
 

@@ -9,7 +9,7 @@ class PMAI_Admin_Import extends PMAI_Controller_Admin {
 		$meta_box_registry = rwmb_get_registry( 'meta_box' );
 		$meta_boxes        = $meta_box_registry->all();
 		$meta_boxes        = $this->formatMetaBoxes( $meta_boxes );
-
+		
 		$this->data['meta_boxes'] = $meta_boxes;
 
 		PMXI_Plugin::$session->set( 'meta_boxes', $this->data['meta_boxes'] );
@@ -26,10 +26,10 @@ class PMAI_Admin_Import extends PMAI_Controller_Admin {
 		return array_map( function ( $meta_box ) {
 			$meta_box->meta_box['fields'] = array_map( function ( $field ) {
 				$multiline             = in_array( $field['type'], [ 'wysiwyg', 'textarea' ] );
-	
+		
 				$field = array_merge( $field, [
-					'type' 			=> $multiline ? 'textarea' : 'text',
-					'auto_complete' => false,
+					// 'type' 			=> $multiline ? 'textarea' : 'text',
+					'autocomplete' => false,
 					'data_list'     => false,
 					'readonly'      => false,
 					'disabled'      => false,
