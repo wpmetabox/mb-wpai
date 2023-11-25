@@ -28,7 +28,7 @@ abstract class Field implements FieldInterface {
 			'field_name' => $field_name,
 		], $this->getFieldData() );
 
-		$this->initSubFields();
+		//$this->initSubFields();
 	}
 
 	/**
