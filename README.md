@@ -11,3 +11,6 @@ This plugin integrates WP All Import with Meta Box which ported from ACF Integra
 - [ ] Group fields
 - [x] User field
 - [ ] Term fields
+
+## FAQ
+- **Does it work with WP All Import free edition?** Yes, it does.

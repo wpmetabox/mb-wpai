@@ -27,55 +27,6 @@ abstract class Field implements FieldInterface {
 			'post'       => $post,
 			'field_name' => $field_name,
 		], $this->getFieldData() );
-
-		//$this->initSubFields();
-	}
-
-	/**
-	 *  Create sub field instances
-	 */
-	public function initSubFields() {
-
-		// Get sub fields configuration
-		$subFieldsData = $this->isLocalFieldStorage() ? $this->getLocalSubFieldsData() : $this->getDBSubFieldsData();
-
-		if ( $subFieldsData ) {
-			foreach ( $subFieldsData as $subFieldData ) {
-				$field             = $this->initDataAndCreateField( $subFieldData );
-				$this->subFields[] = $field;
-			}
-		}
-
-		// Init sub fields for Flexible Content
-		if ( MetaboxService::isACFNewerThan( '5.0.0' ) && $this->getType() == 'flexible_content' && $this->isLocalFieldStorage() ) {
-			// get flexible field
-			$flexibleField = $this->getData( 'field' );
-			// vars
-			$flex_fields = acf_get_fields( $flexibleField );
-			// loop through layouts, sub fields and swap out the field key with the real field
-			foreach ( array_keys( $flexibleField['layouts'] ) as $fi ) {
-				// extract layout
-				$layout = acf_extract_var( $flexibleField['layouts'], $fi );
-				// append sub fields
-				if ( ! empty( $flex_fields ) ) {
-					$layout['sub_fields'] = [];
-					foreach ( array_keys( $flex_fields ) as $fk ) {
-						// check if 'parent_layout' is empty
-						if ( empty( $flex_fields[ $fk ]['parent_layout'] ) ) {
-							// parent_layout did not save for this field, default it to first layout
-							$flex_fields[ $fk ]['parent_layout'] = $layout['id'];
-						}
-						// append sub field to layout,
-						if ( $flex_fields[ $fk ]['parent_layout'] == $layout['id'] ) {
-							$layout['sub_fields'][] = acf_extract_var( $flex_fields, $fk );
-						}
-					}
-				}
-				// append back to layouts
-				$this->data['field']['layouts'][ $fi ] = $layout;
-			}
-		}
-
 	}
 
 	/**
