@@ -26,15 +26,6 @@ abstract class BaseMetabox implements MetaboxInterface {
 		$this->meta_box = $meta_box;
 		$this->post = $post;
 		$this->initFields();
-
-		add_filter('rwmb_meta_boxes', function ($meta_boxes) {
-			ddd($meta_boxes);
-		});
-	}
-
-	public function filterMetaBoxes( $meta_boxes ) {
-		ddd($meta_boxes);
-		return $meta_boxes;
 	}
 
 	// public function filterHtml( $html, $field ): string {
@@ -77,19 +68,23 @@ abstract class BaseMetabox implements MetaboxInterface {
 
 	public function view(): void {
 		$this->render_block( 'header' );
-		$this->meta_box->show();
+		
+		foreach ( $this->getFields() as $field ) {
+			$field->view();
+		}
+
 		$this->render_block( 'footer' );
 	}
 
 	protected function render_block( $block = 'header' ): void {
-		$filePath = __DIR__ . '/templates/' . $block . '.php';
+		$file_path = PMAI_ROOT_DIR . '/views/mb/' . $block . '.php';
 
-		if ( ! file_exists( $filePath ) ) {
+		if ( ! file_exists( $file_path ) ) {
 			return;
 		}
 
 		extract( $this->meta_box->meta_box );
-		include $filePath;
+		include $file_path;
 	}
 
 	public function parse( $parsingData ) {

@@ -17,8 +17,6 @@ abstract class Field implements FieldInterface {
 
 	public $parent;
 
-	public array $subFields = [];
-
 	public function __construct( array $field, array $post, $field_name = "", $parent_field = false ) {
 		$this->setParent( $parent_field );
 		
@@ -27,6 +25,27 @@ abstract class Field implements FieldInterface {
 			'post'       => $post,
 			'field_name' => $field_name,
 		], $this->getFieldData() );
+	}
+
+	public function view( $field = null, $parent = null ): void {
+		$field = $field ?? $this->getData( 'field' );
+		$field_type = 'text';
+		$field_name = $parent ? $parent['name'] . '[][' . $field['name'] . ']' : $field['name'];		
+		$file_path = PMAI_ROOT_DIR . '/views/fields/' . $field_type . '.php';
+
+		if ( ! file_exists( $file_path ) ) {
+			return;
+		}
+
+		include $file_path;
+
+		if (!isset($field['fields'])) {
+			return;
+		}
+
+		foreach ($field['fields'] as $sub_field) {
+			$this->view($sub_field, $field);
+		}
 	}
 
 	/**
