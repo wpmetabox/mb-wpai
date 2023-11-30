@@ -15,8 +15,8 @@ class Text extends Field {
 		$this->setOption( 'values', $values );
 	}
 
-	public function import( $importData, array $args = [] ) {
-		$canImport = parent::import( $importData, $args );
+	public function import( $import_data, array $args = [] ) {
+		$canImport = parent::import( $import_data, $args );
 
 		if ( ! $canImport ) {
 			return;
