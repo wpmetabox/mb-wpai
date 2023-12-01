@@ -213,7 +213,7 @@ abstract class Field implements FieldInterface {
 
 	public function getType(): string {
 		$slug = strtolower( preg_replace( '/([a-z])([A-Z])/', '$1_$2', get_class( $this ) ) );
-		$type =  str_replace( 'MetaBox\WPAI\\fields\\mb\\', '', $slug );
+		$type =  str_replace( 'MetaBox\WPAI\\Fields\\', '', $slug );
 		
 		return $type;
 	}

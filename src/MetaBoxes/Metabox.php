@@ -25,25 +25,6 @@ class Metabox implements MetaboxInterface {
 		$this->init_fields();
 	}
 
-	// public function filterHtml( $html, $field ): string {
-	// 	// Wrap matched name attribute inside fields array, use name="fields[...]", not name="..."
-	// 	$pattern    = '/name="([^"]+)"/';
-	// 	$replacement = 'name="fields[$1]"';
-
-	// 	// Replace only if fields is not already in the name attribute
-	// 	if ( false === strpos( $html, 'name="fields[' ) ) {
-	// 		$html = preg_replace( $pattern, $replacement, $html );
-	// 	}
-
-	// 	// Replace type attribute, use type="text" only
-	// 	$pattern     = '/type="([^"]+)"/';
-	// 	$replacement = 'type="text"';
-
-	// 	$html = preg_replace( $pattern, $replacement, $html );
-
-	// 	return $html;
-	// }
-
 	public function init_fields(array $fields = []): void {
 		if ( empty( $fields ) ) {
 			$fields = $this->meta_box->meta_box['fields'];
