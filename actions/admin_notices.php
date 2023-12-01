@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Render admin notices if ACF or WP All Import plugins are activated
+ * Render admin notices if Meta Box or WP All Import plugins are activated
  */
 function pmai_admin_notices() {
 
@@ -16,7 +16,7 @@ function pmai_admin_notices() {
             </p></div>
 		<?php
 
-		deactivate_plugins( PMAI_ROOT_DIR . '/wpai-acf-add-on.php' );
+		deactivate_plugins( PMAI_ROOT_DIR . '/wpai-metabox-add-on.php' );
 	}
 
 	if ( class_exists( 'PMXI_Plugin' ) and ( version_compare( PMXI_VERSION, '4.1.1' ) < 0 and PMXI_EDITION == 'paid' or version_compare( PMXI_VERSION, '3.2.3' ) <= 0 and PMXI_EDITION == 'free' ) ) {
@@ -29,21 +29,19 @@ function pmai_admin_notices() {
             </p></div>
 		<?php
 
-		deactivate_plugins( PMAI_ROOT_DIR . '/wpai-acf-add-on.php' );
+		deactivate_plugins( PMAI_ROOT_DIR . '/wpai-metabox-add-on.php' );
 	}
 
-	if ( ! class_exists( 'acf' ) ) {
+	if ( ! function_exists( 'rwmb_meta' ) ) {
 		?>
         <div class="error"><p>
 				<?php printf(
-					__( '<b>%s Plugin</b>: <a target="_blank" href="http://wordpress.org/plugins/advanced-custom-fields/">Advanced Custom Fields</a> must be installed', 'mbai' ),
+					__( '<b>%s Plugin</b>: <a target="_blank" href="http://wordpress.org/plugins/meta-box/">Meta Box</a> must be installed', 'mbai' ),
 					PMAI_Plugin::getInstance()->getName()
 				) ?>
             </p></div>
 		<?php
-
-		deactivate_plugins( PMAI_ROOT_DIR . '/wpai-acf-add-on.php' );
-
+		deactivate_plugins( PMAI_ROOT_DIR . '/wpai-metabox-add-on.php' );
 	}
 	$input    = new PMAI_Input();
 	$messages = $input->get( 'pmai_nt', [] );
