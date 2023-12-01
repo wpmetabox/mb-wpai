@@ -7,13 +7,13 @@ use MetaBox\WPAI\Fields\Field;
 
 class User extends Field {
 
-	public function parse( $xpath, $parsingData, $args = array() ) {
+	public function parse( $xpath, $parsingData, $args = [] ) {
 		parent::parse( $xpath, $parsingData, $args );
 		$values = $this->getByXPath( $xpath );
 		$this->setOption( 'values', $values );
 	}
 
-	public function import( $importData, $args = array() ) {
+	public function import( $importData, $args = [] ) {
 		$isUpdated = parent::import( $importData, $args );
 
 		if ( ! $isUpdated ) {

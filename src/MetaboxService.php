@@ -12,17 +12,6 @@ use MetaBox\WPAI\Fields\Field;
 final class MetaboxService {
 
 	/**
-	 * @param $version
-	 *
-	 * @return mixed
-	 */
-	public static function isACFNewerThan( $version ) {
-		global $acf;
-
-		return version_compare( $acf->settings['version'], $version ) >= 0;
-	}
-
-	/**
 	 *
 	 * Set ACF field value
 	 *

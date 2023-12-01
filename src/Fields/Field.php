@@ -1,13 +1,10 @@
 <?php
-
 namespace MetaBox\WPAI\Fields;
 
 use MetaBox\WPAI\MetaboxService;
 
 abstract class Field implements FieldInterface {
 	public array $data;
-
-	public $supportedVersion = false;
 
 	public array $parsingData;
 
@@ -17,21 +14,26 @@ abstract class Field implements FieldInterface {
 
 	public $parent;
 
-	public function __construct( array $field, array $post, $field_name = "", $parent_field = false ) {
+	public function __construct(
+		array $field,
+		array $post,
+		$field_name = "",
+		$parent_field = false
+	) {
 		$this->setParent( $parent_field );
-		
-		$this->data = array_merge( [
-			'field'      => $field,
-			'post'       => $post,
+
+		$this->data = array_merge( [ 
+			'field' => $field,
+			'post' => $post,
 			'field_name' => $field_name,
 		], $this->getFieldData() );
 	}
 
 	public function view( $field = null, $parent = null ): void {
-		$field = $field ?? $this->getData( 'field' );
+		$field      = $field ?? $this->getData( 'field' );
 		$field_type = 'text';
-		$field_name = $parent ? $parent['name'] . '[][' . $field['name'] . ']' : $field['name'];		
-		$file_path = PMAI_ROOT_DIR . '/views/fields/' . $field_type . '.php';
+		$field_name = $parent ? $parent['name'] . '[][' . $field['name'] . ']' : $field['name'];
+		$file_path  = PMAI_ROOT_DIR . '/views/fields/' . $field_type . '.php';
 
 		if ( ! file_exists( $file_path ) ) {
 			return;
@@ -39,12 +41,12 @@ abstract class Field implements FieldInterface {
 
 		include $file_path;
 
-		if (!isset($field['fields'])) {
+		if ( ! isset( $field['fields'] ) ) {
 			return;
 		}
 
-		foreach ($field['fields'] as $sub_field) {
-			$this->view($sub_field, $field);
+		foreach ( $field['fields'] as $child ) {
+			$this->view( $child, $field );
 		}
 	}
 
@@ -102,7 +104,7 @@ abstract class Field implements FieldInterface {
 			$data['current_field'] = $data['current_field'][ $field['id'] ] ?? false;
 
 			foreach ( $options as $option ) {
-				$data[ 'current_' . $option ] =  $data[ 'current_' . $option ][ $field['id'] ] ?? false;
+				$data[ 'current_' . $option ] = $data[ 'current_' . $option ][ $field['id'] ] ?? false;
 			}
 		}
 
@@ -119,17 +121,17 @@ abstract class Field implements FieldInterface {
 	public function parse( $xpath, $parsingData, $args = [] ) {
 		$this->parsingData = $parsingData;
 
-		$defaults = [
-			'field_path'          => '',
-			'xpath_suffix'        => '',
+		$defaults = [ 
+			'field_path' => '',
+			'xpath_suffix' => '',
 			'repeater_count_rows' => 0,
-			'inside_repeater'     => false,
+			'inside_repeater' => false,
 		];
 
 		$args = array_merge( $defaults, $args );
-		
+
 		$field = $this->getData( 'field' );
-		
+
 		$isMultipleField = $parsingData['import']->options['is_multiple_field_value'][ $field['id'] ] ?? false;
 		$multipleValue   = $parsingData['import']->options['multiple_value'][ $field['id'] ] ?? false;
 
@@ -178,8 +180,8 @@ abstract class Field implements FieldInterface {
 	 * @return mixed
 	 */
 	public function import( $importData, array $args = [] ) {
-		$defaults = [
-			'container_name'  => '',
+		$defaults = [ 
+			'container_name' => '',
 			'parent_repeater' => '',
 		];
 
@@ -192,14 +194,14 @@ abstract class Field implements FieldInterface {
 		$this->parsingData['logger'] and call_user_func( $this->parsingData['logger'], sprintf( __( '- Importing field `%s`', 'mbai' ), $this->importData['container_name'] . $field['name'] ) );
 
 		$parsedData = $this->getParsedData();
-		
+
 		// If update is not allowed
 		if ( ! empty( $this->importData['articleData']['id'] ) && ! \pmai_is_acf_update_allowed( $this->importData['container_name'] . $field['name'], $this->parsingData['import']->options, $this->parsingData['import']->id ) ) {
 			$this->parsingData['logger'] && call_user_func( $this->parsingData['logger'], sprintf( __( '- Field `%s` is skipped attempted to import options', 'mbai' ), $this->getFieldName() ) );
 
 			return false;
 		}
-		
+
 		// MetaboxService::update_post_meta( $this, $this->getPostID(), $this->getFieldName(), $this->getFieldValue() );
 
 		return true;
@@ -213,8 +215,8 @@ abstract class Field implements FieldInterface {
 
 	public function getType(): string {
 		$slug = strtolower( preg_replace( '/([a-z])([A-Z])/', '$1_$2', get_class( $this ) ) );
-		$type =  str_replace( 'MetaBox\WPAI\\Fields\\', '', $slug );
-		
+		$type = str_replace( 'MetaBox\WPAI\\Fields\\', '', $slug );
+
 		return $type;
 	}
 
@@ -261,22 +263,22 @@ abstract class Field implements FieldInterface {
 	 */
 	public function getByXPath( $xpath, $suffix = '' ) {
 		$values = array_fill( 0, $this->getOption( 'count' ), "" );
-		
-		add_filter('wp_all_import_multi_glue', function ($glue) {
+
+		add_filter( 'wp_all_import_multi_glue', function ($glue) {
 			return '||';
-		});
+		} );
 
 		if ( $xpath != "" ) {
 			$file   = false;
 			$values = \XmlImportParser::factory( $this->parsingData['xml'], $this->getOption( 'base_xpath' ) . $suffix, $xpath, $file )->parse();
-			
+
 			@unlink( $file );
 		}
 
-		add_filter('wp_all_import_multi_glue', function ($glue) {
+		add_filter( 'wp_all_import_multi_glue', function ($glue) {
 			return ',';
-		});
-		
+		} );
+
 		return $values;
 	}
 
@@ -312,7 +314,7 @@ abstract class Field implements FieldInterface {
 	 * @return string
 	 */
 	public function getFieldName() {
-		$fieldName =  $this->data['field']['name'] ?? '';
+		$fieldName = $this->data['field']['name'] ?? '';
 		// if ( empty( $fieldName ) ) {
 		// 	if ( function_exists( 'acf_get_field' ) ) {
 		// 		$field = acf_get_field( $this->data['field']['id'] );
@@ -355,15 +357,15 @@ abstract class Field implements FieldInterface {
 	 */
 	public function getFieldValue() {
 		$values = $this->options['values'];
-		
-		$value = $values[ $this->getPostIndex() ] ?? '';
+
+		$value = $values[ $this->getPostIndex()] ?? '';
 
 		$field = $this->getData( 'field' );
 
-		if ($field['clone']) {
+		if ( $field['clone'] ) {
 			$value = explode( '||', $value );
 		}
-		
+
 		return $this->recursiveTrim( $value );
 	}
 
@@ -459,10 +461,7 @@ abstract class Field implements FieldInterface {
 		return FieldFactory::create( $fieldData, $this->getData( 'post' ), $this->getFieldName(), $this );
 	}
 
-	/**
-	 * @return mixed
-	 */
-	public function isNotEmpty() {
+	public function isNotEmpty(): bool {
 		return (bool) $this->getCountValues();
 	}
 
@@ -500,7 +499,7 @@ abstract class Field implements FieldInterface {
 	public function getOriginalFieldValueAsString() {
 		$values = $this->options['values'];
 
-		return $values[ $this->getPostIndex() ] ?? '';
+		return $values[ $this->getPostIndex()] ?? '';
 	}
 
 	/**
@@ -515,9 +514,9 @@ abstract class Field implements FieldInterface {
 				switch ( $parent->type ) {
 					case 'repeater':
 						if ( $parent->getMode() == 'fixed' || $parent->getMode() == 'csv' && $parent->getDelimiter() ) {
-							$parents[] = [
+							$parents[] = [ 
 								'delimiter' => $parent->getDelimiter(),
-								'index'     => $parent->getRowIndex(),
+								'index' => $parent->getRowIndex(),
 							];
 						}
 						break;
@@ -537,17 +536,17 @@ abstract class Field implements FieldInterface {
 	public function getParsedData() {
 		$field = $this->getData( 'field' );
 
-		return [
-			'type'              => $field['type'],
-			'post_type'         => $field['post_type'] ?? false,
-			'name'              => $field['name'],
-			'multiple'          => $field['multiple'] ?? false,
-			'values'            => $this->getOption( 'values' ),
-			'is_multiple'       => $this->getOption( 'is_multiple' ),
-			'is_variable'       => $this->getOption( 'is_variable' ),
+		return [ 
+			'type' => $field['type'],
+			'post_type' => $field['post_type'] ?? false,
+			'name' => $field['name'],
+			'multiple' => $field['multiple'] ?? false,
+			'values' => $this->getOption( 'values' ),
+			'is_multiple' => $this->getOption( 'is_multiple' ),
+			'is_variable' => $this->getOption( 'is_variable' ),
 			'is_ignore_empties' => $this->getOption( 'is_ignore_empties' ),
-			'xpath'             => $this->getOption( 'xpath' ),
-			'id'                => $field['id']
+			'xpath' => $this->getOption( 'xpath' ),
+			'id' => $field['id'],
 		];
 	}
 }
