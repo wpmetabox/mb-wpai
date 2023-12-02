@@ -5,7 +5,7 @@ namespace MetaBox\WPAI\Fields;
 use MetaBox\WPAI\MetaboxService;
 use MetaBox\WPAI\Fields\Field;
 
-class User extends Field {
+class UserHandler extends FieldHandler {
 
 	public function parse( $xpath, $parsingData, $args = [] ) {
 		parent::parse( $xpath, $parsingData, $args );

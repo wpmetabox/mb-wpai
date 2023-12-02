@@ -3,7 +3,7 @@ namespace MetaBox\WPAI\Fields;
 
 use MetaBox\WPAI\MetaboxService;
 
-abstract class Field implements FieldInterface {
+abstract class FieldHandler implements FieldInterface {
 	public array $data;
 
 	public array $parsingData;

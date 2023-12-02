@@ -4,7 +4,7 @@ namespace MetaBox\WPAI\MetaBoxes;
 
 use MetaBox\WPAI\Fields\FieldFactory;
 
-class Metabox implements MetaboxInterface {
+class MetaBoxHandler implements MetaboxInterface {
 	/**
 	 * @var $post Import options
 	 */

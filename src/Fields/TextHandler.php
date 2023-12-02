@@ -3,9 +3,9 @@
 namespace MetaBox\WPAI\Fields;
 
 use MetaBox\WPAI\MetaboxService;
-use MetaBox\WPAI\Fields\Field;
+use MetaBox\WPAI\Fields\FieldHandler;
 
-class Text extends Field {
+class TextHandler extends FieldHandler {
 
 	public function parse( $xpath, $parsingData, $args = [] ) {
 		parent::parse( $xpath, $parsingData, $args );

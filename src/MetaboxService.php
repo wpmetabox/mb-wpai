@@ -2,6 +2,7 @@
 
 namespace MetaBox\WPAI;
 
+use MetaBox\WPAI\Fields\FieldHandler;
 use PMXI_API;
 use MetaBox\WPAI\Fields\Field;
 
@@ -15,12 +16,12 @@ final class MetaboxService {
 	 *
 	 * Set ACF field value
 	 *
-	 * @param \MetaBox\WPAI\Fields\Field $field
+	 * @param \MetaBox\WPAI\Fields\FieldHandler $field
 	 * @param $pid
 	 * @param $name
 	 * @param $value
 	 */
-	public static function update_post_meta( Field $field, $pid, $name, $value ) {
+	public static function update_post_meta( FieldHandler $field, $pid, $name, $value ) {
 		switch ( $field->getImportType() ) {
 			case 'import_users':
 			case 'shop_customer':
