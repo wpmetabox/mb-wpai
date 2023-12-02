@@ -32,5 +32,5 @@ There are two things that we need to handle: rendering views and handling post d
 To test the xpath, try this tool [http://xpather.com/](http://xpather.com/)
 
 Some useful xpath related to the example:
-- `casts[1]/cast[*]/name[1]` - Get all cast names of the movies.xml example.
-- `casts[1]/cast[*]/name` - Get all cast names of the movies-cast-name-only.xml example.
+- `casts[1]/cast[1]/name` - Get first cast name.
+- `casts[1]/cast/name` - Get all cast names.

@@ -2,7 +2,7 @@
 
 namespace MetaBox\WPAI\MetaBoxes;
 
-interface MetaboxInterface {
+interface MetaBoxInterface {
 	public function init_field_handlers( array $fields ): void;
 	public function view(): void;
 	public function parse( array $parsing_data );

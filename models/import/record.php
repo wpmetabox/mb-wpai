@@ -1,7 +1,7 @@
 <?php
 
-use MetaBox\WPAI\MetaBoxes\Metabox;
-use MetaBox\WPAI\MetaBoxes\MetaboxFactory;
+use MetaBox\WPAI\MetaBoxes\MetaBoxHandler;
+use MetaBox\WPAI\MetaBoxes\MetaBoxFactory;
 
 /**
  * Class PMAI_Import_Record
@@ -9,7 +9,7 @@ use MetaBox\WPAI\MetaBoxes\MetaboxFactory;
 class PMAI_Import_Record extends PMAI_Model_Record {
 
 	/**
-	 * @var Metabox[]
+	 * @var MetaBoxHandler[]
 	 */
 	public array $metaboxes = [];
 
@@ -51,10 +51,10 @@ class PMAI_Import_Record extends PMAI_Model_Record {
 						$group = pmai_get_meta_box_by_slug( $groupId );
 
 						if ( ! empty( $group ) ) {
-							$this->metaboxes[] = MetaboxFactory::create( $group, $parsingData['import']->options );
+							$this->metaboxes[] = MetaBoxFactory::create( $group, $parsingData['import']->options );
 						}
 					} else {
-						$this->metaboxes[] = MetaboxFactory::create( $groupId, $parsingData['import']->options );
+						$this->metaboxes[] = MetaBoxFactory::create( $groupId, $parsingData['import']->options );
 					}
 				}
 			}

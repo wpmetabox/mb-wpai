@@ -1,15 +1,11 @@
 <?php
 
-use MetaBox\WPAI\MetaBoxes\MetaboxFactory;
+use MetaBox\WPAI\MetaBoxes\MetaBoxFactory;
 
 /**
  *  Render ACF group
  */
 function pmai_wp_ajax_get_meta_boxes(): void {
-
-	if ( ! check_ajax_referer( 'wp_all_import_secure', 'security', false ) ) {
-		wp_send_json_error( [ 'message' => __( 'Security check', 'mbai' ) ] );
-	}
 
 	if ( ! current_user_can( PMXI_Plugin::$capabilities ) ) {
 		wp_send_json_error( [ 'html' => __( 'Security check', 'mbai' ) ] );
@@ -45,7 +41,7 @@ function pmai_wp_ajax_get_meta_boxes(): void {
 		$options = PMXI_Plugin::$session->options;
 	}
 
-	$meta_box = MetaboxFactory::create( $selected_meta_box, $options );
+	$meta_box = MetaBoxFactory::create( $selected_meta_box, $options );
 	$meta_box->view();
 
 	wp_send_json( [ 'html' => ob_get_clean() ] );

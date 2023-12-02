@@ -4,7 +4,7 @@ namespace MetaBox\WPAI\MetaBoxes;
 
 use MetaBox\WPAI\Fields\FieldFactory;
 
-class MetaBoxHandler implements MetaboxInterface {
+class MetaBoxHandler implements MetaBoxInterface {
 	/**
 	 * @var $post Import options
 	 */
@@ -26,17 +26,17 @@ class MetaBoxHandler implements MetaboxInterface {
 		$this->init_field_handlers();
 	}
 
-	public function init_field_handlers(array $fields = []): void {
+	public function init_field_handlers(array $fields = [], $parent = null): void {
 		if ( empty( $fields ) ) {
 			$fields = $this->meta_box->meta_box['fields'];
 		}
 
 		foreach ( $fields as $mb_field ) {
-			$field          = FieldFactory::create( $mb_field, $this->get_post() );
+			$field          = FieldFactory::create( $mb_field, $this->get_post(), $parent );
 			$this->field_handlers[] = $field;
 
 			if ( ! empty( $mb_field['fields'] ) ) {
-				$this->init_field_handlers( $mb_field['fields'] );
+				$this->init_field_handlers( $mb_field['fields'], $field );
 			}
 		}
 	}
@@ -48,11 +48,35 @@ class MetaBoxHandler implements MetaboxInterface {
 	public function view(): void {
 		$this->render_block( 'header' );
 		
-		foreach ( $this->field_handlers as $field ) {
-			$field->view();
-		}
+		$this->render_fields();
 
 		$this->render_block( 'footer' );
+	}
+
+	public function render_fields( $fields = [], $parent = null ): void {
+		if ( empty( $fields ) ) {
+			$fields = $this->meta_box->meta_box['fields'];
+		}
+
+		foreach ( $fields as $field ) {
+			$this->render_field( $field, $parent );
+
+			if ( ! empty( $field['fields'] ) ) {
+				$this->render_fields( $field['fields'], $field );
+			}
+		}
+	}
+
+	public function render_field( $field, $parent = null ): void {
+		$field_type = 'text';
+		$field_name = $parent ? $parent['name'] . '.' . $field['name'] : $field['name'];
+		$file_path  = PMAI_ROOT_DIR . '/views/fields/' . $field_type . '.php';
+
+		if ( ! file_exists( $file_path ) ) {
+			return;
+		}
+
+		include $file_path;
 	}
 
 	protected function render_block( $block = 'header' ): void {
@@ -67,14 +91,17 @@ class MetaBoxHandler implements MetaboxInterface {
 	}
 
 	public function parse( $parsingData ) {
+		// $fields = $parsingData['import']->options['fields'];
+	
 		foreach ( $this->field_handlers as $field ) {
 			$xpath = $parsingData['import']->options['fields'][ $field->getFieldKey() ] ?? '';
+			
 			$field->parse( $xpath, $parsingData );
 		}
 	}
 
 	public function import( $import_data, $args = [] ) {
-		foreach ( $this->field_handlers as $field ) {
+		foreach ( $this->field_handlers as $field ) {			
 			$field->import( $import_data, $args );
 		}
 	}

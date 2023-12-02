@@ -22,6 +22,32 @@ class TextHandler extends FieldHandler {
 			return;
 		}
 
+		if ($this->is_sub_field()) {
+			$key = $this->getFieldKey();
+			$root_key = $this->get_root_key();
+
+			$root_value = MetaboxService::get_meta( $this, $this->getPostID(), $root_key );
+
+			if ( ! is_array( $root_value ) ) {
+				return;
+			}
+
+			foreach ( $this->getFieldValue() as $index => $value ) {
+				// Add index before key
+				$paths = explode( '.', $key );
+				$paths[count($paths) - 1] = $index . '.' . $paths[count($paths) - 1];
+				array_shift( $paths );
+
+				$path       = implode( '.', $paths );
+				
+				\MetaBox\Support\Arr::set( $root_value, $path, $value );
+			}
+
+			MetaboxService::set_meta( $this, $this->getPostID(), $root_key, $root_value );
+
+			return;
+		}
+
 		MetaboxService::set_meta( $this, $this->getPostID(), $this->getFieldName(), $this->getFieldValue() );
 	}
 }

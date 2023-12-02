@@ -14,46 +14,28 @@ abstract class FieldHandler implements FieldInterface {
 
 	public $parent;
 
+	public $xpath = '';
+
 	public function __construct(
 		array $field,
 		array $post,
-		$field_name = "",
-		$parent_field = false
+	    $parent = null
 	) {
-		$this->setParent( $parent_field );
+		$this->setParent( $parent );
 
 		$this->data = array_merge( [ 
 			'field' => $field,
 			'post' => $post,
-			'field_name' => $field_name,
 		], $this->getFieldData() );
 	}
 
-	public function view( $field = null, $parent = null ): void {
-		$field      = $field ?? $this->getData( 'field' );
-		$field_type = 'text';
-		$field_name = $parent ? $parent['name'] . '[][' . $field['name'] . ']' : $field['name'];
-		$file_path  = PMAI_ROOT_DIR . '/views/fields/' . $field_type . '.php';
-
-		if ( ! file_exists( $file_path ) ) {
-			return;
-		}
-
-		include $file_path;
-
-		if ( ! isset( $field['fields'] ) ) {
-			return;
-		}
-
-		foreach ( $field['fields'] as $child ) {
-			$this->view( $child, $field );
-		}
-	}
-
 	/**
-	 * @return array
+	 * @return array|null
 	 */
 	private function getFieldData() {
+		if (empty($this->xpath)) {
+			return [];
+		}
 
 		$data = [];
 
@@ -119,6 +101,12 @@ abstract class FieldHandler implements FieldInterface {
 	 * @return void
 	 */
 	public function parse( $xpath, $parsingData, $args = [] ) {
+		$this->xpath = $xpath;
+
+		if (empty($xpath)) {
+			return;
+		}
+
 		$this->parsingData = $parsingData;
 
 		$defaults = [ 
@@ -180,6 +168,10 @@ abstract class FieldHandler implements FieldInterface {
 	 * @return mixed
 	 */
 	public function import( $importData, array $args = [] ) {
+		if (empty($this->xpath)) {
+			return false;
+		}
+
 		$defaults = [ 
 			'container_name' => '',
 			'parent_repeater' => '',
@@ -228,7 +220,7 @@ abstract class FieldHandler implements FieldInterface {
 	}
 
 	/**
-	 * @param \MetaBox\WPAI\Fields\Field|mixed $parent
+	 * @param \MetaBox\WPAI\Fields\FieldHandler $parent
 	 */
 	public function setParent( $parent ) {
 		$this->parent = $parent;
@@ -342,7 +334,9 @@ abstract class FieldHandler implements FieldInterface {
 	 * @return string
 	 */
 	public function getFieldKey() {
-		return $this->data['field']['id'];
+		$prefix = $this->parent ? $this->parent->getFieldKey() . '.' : '';
+
+		return $prefix . $this->data['field']['id'];
 	}
 
 	/**
@@ -362,11 +356,29 @@ abstract class FieldHandler implements FieldInterface {
 
 		$field = $this->getData( 'field' );
 
-		if ( $field['clone'] ) {
+		if ( $field['clone'] || $this->parent ) {
 			$value = explode( '||', $value );
 		}
 
 		return $this->recursiveTrim( $value );
+	}
+
+	public function is_clonable(): bool {
+		return $this->data['field']['clone'] ?? false;
+	}
+
+	public function is_sub_field(): bool {
+		return $this->parent ? true : false;
+	}
+
+	public function get_root_key(): string {
+		$key = $this->getFieldKey();
+
+		// Split key into parts separated by '.' and get the first part
+		$key = explode( '.', $key );
+		$key = $key[0];
+		
+		return $key;
 	}
 
 	/**
