@@ -8,19 +8,11 @@ use MetaBox\WPAI\Fields\Field;
 
 /**
  * Class MetaboxService
- * @package MetaBox\WPAI\
+ * 
+ * @package MetaBox\WPAI
  */
 final class MetaboxService {
 
-	/**
-	 *
-	 * Set ACF field value
-	 *
-	 * @param \MetaBox\WPAI\Fields\FieldHandler $field
-	 * @param $pid
-	 * @param $name
-	 * @param $value
-	 */
 	public static function update_post_meta( FieldHandler $field, $pid, $name, $value ) {
 		switch ( $field->getImportType() ) {
 			case 'import_users':
@@ -36,17 +28,7 @@ final class MetaboxService {
 		}
 	}
 
-	/**
-	 *
-	 * Get ACF field value
-	 *
-	 * @param Field $field
-	 * @param $pid
-	 * @param $name
-	 *
-	 * @return mixed
-	 */
-	public static function get_post_meta( Field $field, $pid, $name ) {
+	public static function get_post_meta( FieldHandler $field, $pid, $name ) {
 		switch ( $field->getImportType() ) {
 			case 'import_users':
 			case 'shop_customer':
