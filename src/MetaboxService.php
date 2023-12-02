@@ -12,36 +12,32 @@ use PMXI_API;
  */
 final class MetaboxService {
 
-	public static function update_post_meta( FieldHandler $field, $pid, $name, $value ) {
-		switch ( $field->getImportType() ) {
-			case 'import_users':
-			case 'shop_customer':
-				update_user_meta( $pid, $name, $value );
-				break;
-			case 'taxonomies':
-				update_term_meta( $pid, $name, $value );
-				break;
-			default:
-				rwmb_set_meta( $pid, $name, $value );
-				break;
-		}
+	private static function get_object_type( FieldHandler $field ) {
+		$import_types = [ 
+			'import_users' => 'user',
+			'shop_customer' => 'user',
+			'taxonomies' => 'term',
+		];
+
+		return $import_types[ $field->getImportType()] ?? 'post';
 	}
 
-	public static function get_post_meta( FieldHandler $field, $pid, $name ) {
-		switch ( $field->getImportType() ) {
-			case 'import_users':
-			case 'shop_customer':
-				$value = get_user_meta( $pid, $name, true );
-				break;
-			case 'taxonomies':
-				$value = get_term_meta( $pid, $name, true );
-				break;
-			default:
-				$value = get_post_meta( $pid, $name, true );
-				break;
-		}
+	public static function set_meta( FieldHandler $field, $pid, $name, $value ) {
+		$object_type = self::get_object_type( $field );
 
-		return $value;
+		rwmb_set_meta( $pid, $name, $value, [ 
+			'object_type' => $object_type,
+		] );
+	}
+
+	public static function get_meta( FieldHandler $field, $pid, $name ) {
+		$object_type = self::get_object_type( $field );
+
+		return rwmb_meta( $name, [ 
+			'object_type' => $object_type,
+			'post_id' => $pid,
+			'single' => true,
+		], $pid );
 	}
 
 	/**
@@ -92,7 +88,7 @@ final class MetaboxService {
 		$term_ids = [];
 		foreach ( $assign_taxes as $tt ) {
 			do_action( 'wp_all_import_associate_term', $pid, $tt, $tx_name );
-			$values[]   = $wpdb->prepare( "(%d, %d, %d)", $pid, $tt, ++ $term_order );
+			$values[]   = $wpdb->prepare( "(%d, %d, %d)", $pid, $tt, ++$term_order );
 			$term_ids[] = $tt;
 		}
 

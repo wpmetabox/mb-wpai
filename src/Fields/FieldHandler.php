@@ -202,7 +202,7 @@ abstract class FieldHandler implements FieldInterface {
 			return false;
 		}
 
-		// MetaboxService::update_post_meta( $this, $this->getPostID(), $this->getFieldName(), $this->getFieldValue() );
+		// MetaboxService::set_meta( $this, $this->getPostID(), $this->getFieldName(), $this->getFieldValue() );
 
 		return true;
 	}

@@ -3,7 +3,6 @@
 namespace MetaBox\WPAI\Fields;
 
 use MetaBox\WPAI\MetaboxService;
-use MetaBox\WPAI\Fields\Field;
 
 class UserHandler extends FieldHandler {
 
@@ -20,7 +19,7 @@ class UserHandler extends FieldHandler {
 			return false;
 		}
 
-		MetaboxService::update_post_meta( $this, $this->getPostID(), $this->getFieldName(), $this->getFieldValue() );
+		MetaboxService::set_meta( $this, $this->getPostID(), $this->getFieldName(), $this->getFieldValue() );
 	}
 
 	public function getFieldValue(): ?int {

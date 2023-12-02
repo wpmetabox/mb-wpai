@@ -22,6 +22,6 @@ class TextHandler extends FieldHandler {
 			return;
 		}
 
-		MetaboxService::update_post_meta( $this, $this->getPostID(), $this->getFieldName(), $this->getFieldValue() );
+		MetaboxService::set_meta( $this, $this->getPostID(), $this->getFieldName(), $this->getFieldValue() );
 	}
 }

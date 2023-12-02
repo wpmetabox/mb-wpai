@@ -6,8 +6,8 @@ use MetaBox\WPAI\MetaBoxes\MetaboxHandler;
 
 final class MetaboxFactory {
 	/**
-	 * @param $meta_box
-	 * @param $post array import options
+	 * @param \RW_Meta_Box $meta_box
+	 * @param $post array import
 	 *
 	 * @return MetaboxHandler
 	 */
