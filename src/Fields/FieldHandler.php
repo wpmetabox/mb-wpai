@@ -426,41 +426,6 @@ abstract class FieldHandler implements FieldInterface {
 		return $this->parsingData['logger'];
 	}
 
-	/**
-	 * @param $subFieldData
-	 *
-	 * @return Field|mixed
-	 */
-	public function initDataAndCreateField( $subFieldData ) {
-
-		$fieldData = $subFieldData;
-
-		if ( is_object( $subFieldData ) ) {
-			$fieldData          = empty( $subFieldData->post_content ) ? [] : unserialize( $subFieldData->post_content );
-			$fieldData['id']    = $fieldData['id'] = $subFieldData->ID;
-			$fieldData['label'] = $subFieldData->post_title;
-			$fieldData['id']    = $subFieldData->post_name;
-			$fieldData['name']  = $subFieldData->post_excerpt;
-		}
-
-		// Do not include same field as child to avoid `Maximum function nesting level` exception.
-		$parent = $this->getParent();
-		if ( $parent ) {
-			do {
-				if ( $parent->getFieldKey() == $fieldData['id'] ) {
-					return false;
-				}
-				$parent = $parent->getParent();
-			} while ( $parent );
-		}
-		if ( $this->getFieldKey() == $fieldData['id'] ) {
-			return false;
-		}
-
-		// Create sub field instance
-		return FieldFactory::create( $fieldData, $this->getData( 'post' ), $this->getFieldName(), $this );
-	}
-
 	public function isNotEmpty(): bool {
 		return (bool) $this->getCountValues();
 	}

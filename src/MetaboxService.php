@@ -4,7 +4,6 @@ namespace MetaBox\WPAI;
 
 use MetaBox\WPAI\Fields\FieldHandler;
 use PMXI_API;
-use MetaBox\WPAI\Fields\Field;
 
 /**
  * Class MetaboxService
