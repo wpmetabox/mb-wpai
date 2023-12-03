@@ -6,33 +6,26 @@ use MetaBox\WPAI\MetaboxService;
 
 class UserHandler extends FieldHandler {
 
-	public function parse( $xpath, $parsingData, $args = [] ) {
-		parent::parse( $xpath, $parsingData, $args );
-		$values = $this->getByXPath( $xpath );
-		$this->setOption( 'values', $values );
-	}
-
-	public function import( $importData, $args = [] ) {
-		$isUpdated = parent::import( $importData, $args );
-
-		if ( ! $isUpdated ) {
-			return false;
-		}
-
-		MetaboxService::set_meta( $this, $this->getPostID(), $this->getFieldName(), $this->getFieldValue() );
-	}
-
-	public function getFieldValue(): ?int {
+	public function get_value() {
 		$by = [ 'login', 'slug', 'email', 'id' ];
+        $value = parent::get_value();
 
-		foreach ( $by as $column ) {
-			$user = get_user_by( $column, parent::getFieldValue() );
+        if ( ! is_array( $value ) ) {
+            $value = [ $value ];
+        }
 
-			if ( ! empty( $user ) ) {
-				return $user->ID;
-			}
-		}
+        $ids = [];
 
-		return null;
+        foreach ( $value as $v ) {
+            foreach ( $by as $column ) {
+                $user = get_user_by( $column, $v );
+
+                if ( ! empty( $user ) ) {
+                    $ids[] = $user->ID;
+                }
+            }
+        }
+
+        return $ids;
 	}
 }

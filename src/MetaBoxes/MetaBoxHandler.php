@@ -60,6 +60,7 @@ class MetaBoxHandler implements MetaBoxInterface {
 		}
 
 		foreach ( $fields as $field ) {
+            $field['id'] = $parent ? $parent['id'] . '.' . $field['id'] : $field['id'];
 			$this->render_field( $field, $parent );
 
 			if ( ! empty( $field['fields'] ) ) {
@@ -70,9 +71,11 @@ class MetaBoxHandler implements MetaBoxInterface {
 
 	public function render_field( $field, $parent = null ): void {
 		$field_type = 'text';
-		$field_name = $parent ? $parent['name'] . '.' . $field['name'] : $field['name'];
+        $field_name = $field['name'];
+        $field_value = $this->post['fields'][$field['id']] ?? '';
+ 
 		$file_path  = PMAI_ROOT_DIR . '/views/fields/' . $field_type . '.php';
-
+        
 		if ( ! file_exists( $file_path ) ) {
 			return;
 		}
@@ -92,8 +95,6 @@ class MetaBoxHandler implements MetaBoxInterface {
 	}
 
 	public function parse( $parsingData ) {
-		$fields = $parsingData['import']->options['fields'];
-
 		foreach ( $this->field_handlers as $field ) {
 			$xpath = $parsingData['import']->options['fields'][ $field->key ] ?? '';
 			$field->parse( $xpath, $parsingData );

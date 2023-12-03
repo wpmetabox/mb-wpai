@@ -9,8 +9,6 @@ abstract class FieldHandler implements FieldInterface {
 
 	public array $importData;
 
-	public array $options = [];
-
 	public $parent;
 
 	public $xpath = '';
@@ -96,28 +94,7 @@ abstract class FieldHandler implements FieldInterface {
 	public function saved_post( $importData ) {
 	}
 
-	public function getType(): string {
-		$slug = strtolower( preg_replace( '/([a-z])([A-Z])/', '$1_$2', get_class( $this ) ) );
-		$type = str_replace( 'MetaBox\WPAI\\Fields\\', '', $slug );
-
-		return $type;
-	}
-
-	public function getOption( $option ) {
-		return $this->options[ $option ] ?? false;
-	}
-
-	/**
-	 * @param $option
-	 * @param $value
-	 */
-	public function setOption( $option, $value ) {
-		$this->options[ $option ] = $value;
-	}
-
 	public function get_value_by_xpath( string $xpath, $suffix = '' ) {
-		$values = array_fill( 0, $this->getOption( 'count' ), "" );
-
 		add_filter( 'wp_all_import_multi_glue', function ($glue) {
 			return '||';
 		} );
@@ -190,13 +167,13 @@ abstract class FieldHandler implements FieldInterface {
 			$values = explode( '||', $values );
 		}
 
-		$values = $this->recursiveTrim( $values );
+		$values = $this->recursive_trim( $values );
 
-		if ( ! $this->parent) {
-			return $values;
-		}
+        return $this->parent ? $this->get_root_value( $values ) : $values;
+	}
 
-		$root_value = MetaBoxService::get_meta( $this, $this->getPostID(), $this->get_root_key() );
+    public function get_root_value( $values ) {
+        $root_value = MetaBoxService::get_meta( $this, $this->getPostID(), $this->get_root_key() );
 
 		if ( ! is_array( $root_value ) ) {
 			return;
@@ -214,7 +191,7 @@ abstract class FieldHandler implements FieldInterface {
 		}
 
 		return $root_value;
-	}
+    }
 
 	public function is_clonable(): bool {
 		return $this->field['clone'] ?? false;
@@ -241,11 +218,11 @@ abstract class FieldHandler implements FieldInterface {
 	 *
 	 * @return array|string
 	 */
-	public function recursiveTrim( $value ) {
+	public function recursive_trim( $value ) {
 		if ( is_array( $value ) ) {
 			foreach ( $value as $k => $v ) {
 				if ( is_string( $v ) ) {
-					$value[ $k ] = $this->recursiveTrim( $v );
+					$value[ $k ] = $this->recursive_trim( $v );
 				}
 			}
 
@@ -284,34 +261,5 @@ abstract class FieldHandler implements FieldInterface {
 	 */
 	public function getLogger() {
 		return $this->parsingData['logger'];
-	}
-
-
-	/**
-	 * @return mixed
-	 */
-	public function getOriginalFieldValueAsString() {
-		$values = $this->options['values'];
-
-		return $values[ $this->getPostIndex()] ?? '';
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getParsedData() {
-		$field = $this->field;
-
-		return [ 
-			'type' => $field['type'],
-			'name' => $field['name'],
-			'multiple' => $field['multiple'] ?? false,
-			'values' => $this->getOption( 'values' ),
-			'is_multiple' => $this->getOption( 'is_multiple' ),
-			'is_variable' => $this->getOption( 'is_variable' ),
-			'is_ignore_empties' => $this->getOption( 'is_ignore_empties' ),
-			'xpath' => $this->xpath,
-			'id' => $field['id'],
-		];
 	}
 }

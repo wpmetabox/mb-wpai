@@ -1,4 +1,4 @@
 <div>
     <label><?= $field['name'] ?></label>
-    <input type="text" name="fields[<?= $field_name ?>]" />
+    <input type="text" value="<?= $field_value ?>" name="fields[<?= $field['id'] ?>]" />
 </div>
