@@ -3,7 +3,7 @@ namespace MetaBox\WPAI\Fields;
 
 final class FieldFactory {
 
-	public static function create( $fieldData, $post, $fieldName = "", $fieldParent = false ): FieldHandler {
+	public static function create( $fieldData, $post, $key, $parent ): FieldHandler {
 		$field_name = str_replace( " ", "", ucwords( str_replace( "_", " ", $fieldData['type'] ) ) );
 		$field_class = __NAMESPACE__ . '\\' . $field_name . 'Handler';
 
@@ -11,6 +11,6 @@ final class FieldFactory {
 			$field_class = __NAMESPACE__ . '\\TextHandler';
 		}
 
-		return new $field_class( $fieldData, $post, $fieldName, $fieldParent );
+		return new $field_class( $fieldData, $post, $key, $parent );
 	}
 }

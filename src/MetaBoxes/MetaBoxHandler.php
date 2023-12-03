@@ -32,7 +32,8 @@ class MetaBoxHandler implements MetaBoxInterface {
 		}
 
 		foreach ( $fields as $mb_field ) {
-			$field          = FieldFactory::create( $mb_field, $this->get_post(), $parent );
+			$field_key = $parent ? $parent->key . '.' . $mb_field['id'] : $mb_field['id'];
+			$field          = FieldFactory::create( $mb_field, $this->get_post(), $field_key, $parent );
 			$this->field_handlers[] = $field;
 
 			if ( ! empty( $mb_field['fields'] ) ) {
@@ -91,17 +92,16 @@ class MetaBoxHandler implements MetaBoxInterface {
 	}
 
 	public function parse( $parsingData ) {
-		// $fields = $parsingData['import']->options['fields'];
-	
+		$fields = $parsingData['import']->options['fields'];
+
 		foreach ( $this->field_handlers as $field ) {
-			$xpath = $parsingData['import']->options['fields'][ $field->getFieldKey() ] ?? '';
-			
+			$xpath = $parsingData['import']->options['fields'][ $field->key ] ?? '';
 			$field->parse( $xpath, $parsingData );
 		}
 	}
 
 	public function import( $import_data, $args = [] ) {
-		foreach ( $this->field_handlers as $field ) {			
+		foreach ( $this->field_handlers as $field ) {
 			$field->import( $import_data, $args );
 		}
 	}

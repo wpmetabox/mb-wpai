@@ -1,10 +1,9 @@
 <?php
 namespace MetaBox\WPAI\Fields;
 
-use MetaBox\WPAI\MetaboxService;
+use MetaBox\WPAI\MetaBoxService;
 
 abstract class FieldHandler implements FieldInterface {
-	public array $data;
 
 	public array $parsingData;
 
@@ -16,81 +15,24 @@ abstract class FieldHandler implements FieldInterface {
 
 	public $xpath = '';
 
+	public $field;
+
+	public $post;
+
+	public $base_xpath = '';
+
+	public $key = '';
+
 	public function __construct(
 		array $field,
 		array $post,
+		string $key,
 	    $parent = null
 	) {
-		$this->setParent( $parent );
-
-		$this->data = array_merge( [ 
-			'field' => $field,
-			'post' => $post,
-		], $this->getFieldData() );
-	}
-
-	/**
-	 * @return array|null
-	 */
-	private function getFieldData() {
-		if (empty($this->xpath)) {
-			return [];
-		}
-
-		$data = [];
-
-		$field = $this->getData( 'field' );
-		$post  = $this->getData( 'post' );
-
-		// set field default values
-		$reset = [ 'multiple', 'class', 'id' ];
-		foreach ( $reset as $key ) {
-			if ( empty( $field[ $key ] ) ) {
-				$field[ $key ] = false;
-			}
-		}
-
-		if ( array_key_exists( 'id', $field ) ) {
-			$data['current_field'] = $post['fields'][ $field['id'] ] ?? false;
-		} else {
-			$data['current_field'] = false;
-		}
-
-		$options = [ 'is_multiple_field_value', 'multiple_value' ];
-		foreach ( $options as $option ) {
-			$data[ 'current_' . $option ] = isset( $field['id'] ) && isset( $post[ $option ][ $field['id'] ] ) ? $post[ $option ][ $field['id'] ] : false;
-		}
-
-		// If parent field exists, parse field name
-		if ( "" != $this->getData( 'field_name' ) ) {
-
-			$field_keys = str_replace( [ '[', ']' ], [ '' ], str_replace( '][', ':', $this->getData( 'field_name' ) ) );
-
-			$data['current_field'] = false;
-			foreach ( explode( ":", $field_keys ) as $n => $key ) {
-				if ( ! empty( $post['fields'][ $key ] ) ) {
-					$data['current_field'] = $post['fields'][ $key ];
-				} elseif ( isset( $data['current_field'][ $key ] ) ) {
-					$data['current_field'] = $data['current_field'][ $key ];
-				}
-
-				foreach ( $options as $option ) {
-					if ( ! empty( $post[ $option ][ $key ] ) ) {
-						$data[ 'current_' . $option ] = $post[ $option ][ $key ];
-					} elseif ( ! empty( $data[ 'current_' . $option ][ $key ] ) ) {
-						$data[ 'current_' . $option ] = $data[ 'current_' . $option ][ $key ];
-					}
-				}
-			}
-
-			$data['current_field'] = $data['current_field'][ $field['id'] ] ?? false;
-
-			foreach ( $options as $option ) {
-				$data[ 'current_' . $option ] = $data[ 'current_' . $option ][ $field['id'] ] ?? false;
-			}
-		}
-
-		return $data;
+		$this->parent = $parent;
+		$this->field = $field;
+		$this->key = $key;
+		$this->post = $post;
 	}
 
 	/**
@@ -108,57 +50,8 @@ abstract class FieldHandler implements FieldInterface {
 		}
 
 		$this->parsingData = $parsingData;
-
-		$defaults = [ 
-			'field_path' => '',
-			'xpath_suffix' => '',
-			'repeater_count_rows' => 0,
-			'inside_repeater' => false,
-		];
-
-		$args = array_merge( $defaults, $args );
-
-		$field = $this->getData( 'field' );
-
-		$isMultipleField = $parsingData['import']->options['is_multiple_field_value'][ $field['id'] ] ?? false;
-		$multipleValue   = $parsingData['import']->options['multiple_value'][ $field['id'] ] ?? false;
-
-		if ( "" != $args['field_path'] ) {
-
-			$fieldKeys               = preg_replace( '%[\[\]]%', '', str_replace( '][', ':', $args['field_path'] ) );
-			$is_multiple_field_value = $parsingData['import']->options['is_multiple_field_value'];
-			$is_multiple_value       = $parsingData['import']->options['multiple_value'];
-
-			foreach ( explode( ":", $fieldKeys ) as $n => $key ) {
-				$xpath = ( ! $n ) ? $parsingData['import']->options['fields'][ $key ] : $xpath[ $key ];
-
-				if ( ! $n && isset( $is_multiple_field_value[ $key ] ) ) {
-					$isMultipleField = $is_multiple_field_value[ $key ];
-				}
-				if ( isset( $isMultipleField[ $key ] ) ) {
-					$isMultipleField = $isMultipleField[ $key ];
-				}
-
-				if ( ! $n && isset( $is_multiple_value[ $key ] ) ) {
-					$multipleValue = $is_multiple_value[ $key ];
-				}
-				if ( isset( $multipleValue[ $key ] ) ) {
-					$multipleValue = $multipleValue[ $key ];
-				}
-			}
-
-			$xpath           = $xpath[ $field['id'] ] ?? false;
-			$isMultipleField = $isMultipleField[ $field['id'] ] ?? false;
-			$multipleValue   = $multipleValue[ $field['id'] ] ?? false;
-		}
-
-		$this->setOption( 'base_xpath', $parsingData['xpath_prefix'] . $parsingData['import']->xpath . $args['xpath_suffix'] );
-		$this->setOption( 'xpath', $xpath );
-		$this->setOption( 'is_multiple_field', $isMultipleField );
-		$this->setOption( 'multiple_value', $multipleValue );
-		$this->setOption( 'count', ( $args['repeater_count_rows'] ) ? $args['repeater_count_rows'] : $parsingData['count'] );
-		$this->setOption( 'values', array_fill( 0, $this->getOption( 'count' ), "" ) );
-		$this->setOption( 'field_path', $args['field_path'] );
+		
+		$this->base_xpath = $parsingData['xpath_prefix'] . $parsingData['import']->xpath . $args['xpath_suffix'];
 	}
 
 	/**
@@ -172,31 +65,29 @@ abstract class FieldHandler implements FieldInterface {
 			return false;
 		}
 
-		$defaults = [ 
-			'container_name' => '',
-			'parent_repeater' => '',
-		];
-
-		$field = $this->getData( 'field' );
-
-		$args = array_merge( $defaults, $args );
+		$field = $this->field;
 
 		$this->importData = array_merge( $importData, $args );
 
-		$this->parsingData['logger'] and call_user_func( $this->parsingData['logger'], sprintf( __( '- Importing field `%s`', 'mbai' ), $this->importData['container_name'] . $field['name'] ) );
+		$this->parsingData['logger'] and call_user_func( $this->parsingData['logger'], sprintf( __( '- Importing field `%s`', 'mbai' ),  $field['name'] ) );
 
-		$parsedData = $this->getParsedData();
-
+		// @todo: Handle update permission
 		// If update is not allowed
-		if ( ! empty( $this->importData['articleData']['id'] ) && ! \pmai_is_acf_update_allowed( $this->importData['container_name'] . $field['name'], $this->parsingData['import']->options, $this->parsingData['import']->id ) ) {
-			$this->parsingData['logger'] && call_user_func( $this->parsingData['logger'], sprintf( __( '- Field `%s` is skipped attempted to import options', 'mbai' ), $this->getFieldName() ) );
+		// if ( ! empty( $this->importData['articleData']['id'] ) && ! \pmai_is_acf_update_allowed( $this->importData['container_name'] . $field['name'], $this->parsingData['import']->options, $this->parsingData['import']->id ) ) {
+		// 	$this->parsingData['logger'] && call_user_func( $this->parsingData['logger'], sprintf( __( '- Field `%s` is skipped attempted to import options', 'mbai' ), $this->getFieldName() ) );
 
-			return false;
-		}
+		// 	return false;
+		// }
 
-		// MetaboxService::set_meta( $this, $this->getPostID(), $this->getFieldName(), $this->getFieldValue() );
+		MetaBoxService::set_meta( $this, $this->getPostID(), $this->get_id(), $this->get_value() );
 
 		return true;
+	}
+
+	public function get_field_path($parent = null): string {
+		$path = $parent ? $parent->field['id'] . '.' . $this->field['id'] : $this->field['id'];
+
+		return $path;
 	}
 
 	/**
@@ -212,28 +103,6 @@ abstract class FieldHandler implements FieldInterface {
 		return $type;
 	}
 
-	/**
-	 * @return \MetaBox\WPAI\Fields\Field|mixed
-	 */
-	public function getParent() {
-		return $this->parent;
-	}
-
-	/**
-	 * @param \MetaBox\WPAI\Fields\FieldHandler $parent
-	 */
-	public function setParent( $parent ) {
-		$this->parent = $parent;
-	}
-
-	public function getData( $option ) {
-		return $this->data[ $option ] ?? false;
-	}
-
-	public function setData( $option, $value ) {
-		$this->data[ $option ] = $value;
-	}
-
 	public function getOption( $option ) {
 		return $this->options[ $option ] ?? false;
 	}
@@ -246,27 +115,15 @@ abstract class FieldHandler implements FieldInterface {
 		$this->options[ $option ] = $value;
 	}
 
-	/**
-	 * @param $xpath
-	 * @param string $suffix
-	 *
-	 * @return array
-	 * @throws \XmlImportException
-	 */
-	public function getByXPath( $xpath, $suffix = '' ) {
+	public function get_value_by_xpath( string $xpath, $suffix = '' ) {
 		$values = array_fill( 0, $this->getOption( 'count' ), "" );
 
 		add_filter( 'wp_all_import_multi_glue', function ($glue) {
 			return '||';
 		} );
 
-		if ( $xpath != "" ) {
-			$file   = false;
-			$values = \XmlImportParser::factory( $this->parsingData['xml'], $this->getOption( 'base_xpath' ) . $suffix, $xpath, $file )->parse();
-
-			@unlink( $file );
-		}
-
+		$values = \XmlImportParser::factory( $this->parsingData['xml'], $this->base_xpath . $suffix, $xpath, $file )->parse();
+		
 		add_filter( 'wp_all_import_multi_glue', function ($glue) {
 			return ',';
 		} );
@@ -302,32 +159,12 @@ abstract class FieldHandler implements FieldInterface {
 		return $this->importData['pid'];
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getFieldName() {
-		$fieldName = $this->data['field']['name'] ?? '';
-		// if ( empty( $fieldName ) ) {
-		// 	if ( function_exists( 'acf_get_field' ) ) {
-		// 		$field = acf_get_field( $this->data['field']['id'] );
-		// 	} else {
-		// 		$label = sanitize_title( $this->data['field']['label'] );
-		// 		$fieldName = str_replace( '-', '_', $label );
-		// 	}
-
-		// 	if ( ! empty( $field ) ) {
-		// 		$fieldName = $this->data['field']['name'] = $field['name'];
-		// 	}
-		// }
-		return ! isset( $this->importData['container_name'] ) ? $fieldName : $this->importData['container_name'] . $fieldName;
+	public function get_original_id(): string {
+		return $this->field['id'];
 	}
 
-	/**
-	 * @param $fieldName
-	 */
-	public function setFieldInputName( $fieldName ) {
-		$this->data['field_name'] = $fieldName;
-		$this->data               = array_merge( $this->data, $this->getFieldData() );
+	public function get_id(): string {
+		return $this->parent ? $this->get_root_key() : $this->field['id'];
 	}
 
 	/**
@@ -336,35 +173,51 @@ abstract class FieldHandler implements FieldInterface {
 	public function getFieldKey() {
 		$prefix = $this->parent ? $this->parent->getFieldKey() . '.' : '';
 
-		return $prefix . $this->data['field']['id'];
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getFieldLabel() {
-		return $this->data['field']['label'];
+		return $prefix . $this->field['id'];
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function getFieldValue() {
-		$values = $this->options['values'];
+	public function get_value() {
+		$values = $this->get_value_by_xpath( $this->xpath );
 
-		$value = $values[ $this->getPostIndex()] ?? '';
+		$values = $values[ $this->getPostIndex()] ?? '';
 
-		$field = $this->getData( 'field' );
+		$field = $this->field;
 
 		if ( $field['clone'] || $this->parent ) {
-			$value = explode( '||', $value );
+			$values = explode( '||', $values );
 		}
 
-		return $this->recursiveTrim( $value );
+		$values = $this->recursiveTrim( $values );
+
+		if ( ! $this->parent) {
+			return $values;
+		}
+
+		$root_value = MetaBoxService::get_meta( $this, $this->getPostID(), $this->get_root_key() );
+
+		if ( ! is_array( $root_value ) ) {
+			return;
+		}
+
+		foreach ( $values as $index => $value ) {
+			// Add index before key
+			$paths = explode( '.', $this->key );
+			$paths[count($paths) - 1] = $index . '.' . $paths[count($paths) - 1];
+			array_shift( $paths );
+
+			$path       = implode( '.', $paths );
+			
+			\MetaBox\Support\Arr::set( $root_value, $path, $value );
+		}
+
+		return $root_value;
 	}
 
 	public function is_clonable(): bool {
-		return $this->data['field']['clone'] ?? false;
+		return $this->field['clone'] ?? false;
 	}
 
 	public function is_sub_field(): bool {
@@ -402,11 +255,6 @@ abstract class FieldHandler implements FieldInterface {
 		return is_string( $value ) ? trim( $value ) : $value;
 	}
 
-
-	public function getFieldOption( string $option ) {
-		return $this->data['field'][ $option ] ?? null;
-	}
-
 	public function getImportOption( string $option ) {
 		$importData = $this->getImportData();
 
@@ -438,37 +286,6 @@ abstract class FieldHandler implements FieldInterface {
 		return $this->parsingData['logger'];
 	}
 
-	public function isNotEmpty(): bool {
-		return (bool) $this->getCountValues();
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getCountValues( $parentIndex = false ) {
-		$parents = $this->getParents();
-		if ( $parentIndex !== false && isset( $parents[ $parentIndex ] ) ) {
-			$parents = [ $parents[ $parentIndex ] ];
-		}
-		$value = $this->getOriginalFieldValueAsString();
-		if ( ! empty( $parents ) && ! empty( $value ) && ! is_array( $value ) ) {
-			$parentIndex = false;
-			foreach ( $parents as $key => $parent ) {
-				if ( $parentIndex !== false ) {
-					$value = $value[ $parentIndex ];
-				}
-				if ( $parent['delimiter'] !== false ) {
-					$value = explode( $parent['delimiter'], $value );
-					if ( is_array( $value ) ) {
-						$value = array_filter( $value );
-					}
-					$parentIndex = $parent['index'];
-				}
-			}
-		}
-
-		return is_array( $value ) ? count( $value ) : ! empty( $value );
-	}
 
 	/**
 	 * @return mixed
@@ -482,47 +299,18 @@ abstract class FieldHandler implements FieldInterface {
 	/**
 	 * @return array
 	 */
-	protected function getParents() {
-		$field   = $this;
-		$parents = [];
-		do {
-			$parent = $field->getParent();
-			if ( $parent ) {
-				switch ( $parent->type ) {
-					case 'repeater':
-						if ( $parent->getMode() == 'fixed' || $parent->getMode() == 'csv' && $parent->getDelimiter() ) {
-							$parents[] = [ 
-								'delimiter' => $parent->getDelimiter(),
-								'index' => $parent->getRowIndex(),
-							];
-						}
-						break;
-					default:
-						break;
-				}
-				$field = $parent;
-			}
-		} while ( $parent );
-
-		return array_reverse( $parents );
-	}
-
-	/**
-	 * @return array
-	 */
 	public function getParsedData() {
-		$field = $this->getData( 'field' );
+		$field = $this->field;
 
 		return [ 
 			'type' => $field['type'],
-			'post_type' => $field['post_type'] ?? false,
 			'name' => $field['name'],
 			'multiple' => $field['multiple'] ?? false,
 			'values' => $this->getOption( 'values' ),
 			'is_multiple' => $this->getOption( 'is_multiple' ),
 			'is_variable' => $this->getOption( 'is_variable' ),
 			'is_ignore_empties' => $this->getOption( 'is_ignore_empties' ),
-			'xpath' => $this->getOption( 'xpath' ),
+			'xpath' => $this->xpath,
 			'id' => $field['id'],
 		];
 	}
