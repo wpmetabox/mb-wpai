@@ -1,29 +1,28 @@
 <?php
-
-
 namespace MetaBox\WPAI\Fields;
+
 class UserHandler extends FieldHandler {
 
 	public function get_value() {
-		$by = [ 'login', 'slug', 'email', 'id' ];
-        $value = parent::get_value();
+		$by    = [ 'login', 'slug', 'email', 'id' ];
+		$value = parent::get_value();
 
-        if ( ! is_array( $value ) ) {
-            $value = [ $value ];
-        }
+		if ( ! is_array( $value ) ) {
+			$value = [ $value ];
+		}
 
-        $ids = [];
+		$ids = [];
 
-        foreach ( $value as $v ) {
-            foreach ( $by as $column ) {
-                $user = get_user_by( $column, $v );
+		foreach ( $value as $v ) {
+			foreach ( $by as $column ) {
+				$user = get_user_by( $column, $v );
 
-                if ( ! empty( $user ) ) {
-                    $ids[] = $user->ID;
-                }
-            }
-        }
+				if ( ! empty( $user ) ) {
+					$ids[] = $user->ID;
+				}
+			}
+		}
 
-        return $ids;
+		return $ids;
 	}
 }

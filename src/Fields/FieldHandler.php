@@ -77,7 +77,7 @@ abstract class FieldHandler implements FieldInterface {
 		// 	return false;
 		// }
 
-		MetaBoxService::set_meta( $this, $this->getPostID(), $this->get_id(), $this->get_value() );
+		MetaBoxService::set_meta( $this, $this->get_post_id(), $this->get_id(), $this->get_value() );
 
 		return true;
 	}
@@ -118,21 +118,20 @@ abstract class FieldHandler implements FieldInterface {
 	/**
 	 * @return mixed
 	 */
-	public function getImportData() {
+	public function get_import_data() {
 		return $this->importData;
 	}
 
-	/**
-	 * @return mixed
-	 */
-	public function getPostIndex() {
+    /**
+     * Get the index of the post in the import file, starting from 0
+     * 
+     * @return int
+     */
+	public function get_post_index(): int {
 		return $this->importData['i'];
 	}
 
-	/**
-	 * @return mixed
-	 */
-	public function getPostID() {
+	public function get_post_id(): int {
 		return $this->importData['pid'];
 	}
 
@@ -147,19 +146,16 @@ abstract class FieldHandler implements FieldInterface {
 	/**
 	 * @return string
 	 */
-	public function getFieldKey() {
-		$prefix = $this->parent ? $this->parent->getFieldKey() . '.' : '';
+	public function get_field_key() {
+		$prefix = $this->parent ? $this->parent->get_field_key() . '.' : '';
 
 		return $prefix . $this->field['id'];
 	}
 
-	/**
-	 * @return mixed
-	 */
 	public function get_value() {
 		$values = $this->get_value_by_xpath( $this->xpath );
         
-		$values = $values[ $this->getPostIndex()] ?? '';
+		$values = $values[ $this->get_post_index()] ?? '';
         
 		$field = $this->field;
 
@@ -173,13 +169,11 @@ abstract class FieldHandler implements FieldInterface {
 	}
 
     public function get_root_value( $values ) {
-        $root_value = MetaBoxService::get_meta( $this, $this->getPostID(), $this->get_root_key() );
+        $root_value = MetaBoxService::get_meta( $this, $this->get_post_id(), $this->get_root_key() );
 
 		if ( ! is_array( $root_value ) ) {
 			return;
 		}
-
-  
 
 		foreach ( $values as $index => $value ) {
 			// Add index before key
@@ -191,9 +185,7 @@ abstract class FieldHandler implements FieldInterface {
             if ($this->key === 'actors.subgroup.character') {
                 ddd($path);
             }
-			\MetaBox\Support\Arr::set( $root_value, $path, $value );
-
-            
+			\MetaBox\Support\Arr::set( $root_value, $path, $value );            
 		}
 
 		return $root_value;
@@ -208,7 +200,7 @@ abstract class FieldHandler implements FieldInterface {
 	}
 
 	public function get_root_key(): string {
-		$key = $this->getFieldKey();
+		$key = $this->get_field_key();
 
 		// Split key into parts separated by '.' and get the first part
 		$key = explode( '.', $key );
@@ -238,8 +230,8 @@ abstract class FieldHandler implements FieldInterface {
 		return is_string( $value ) ? trim( $value ) : $value;
 	}
 
-	public function getImportOption( string $option ) {
-		$importData = $this->getImportData();
+	public function get_import_option( string $option ) {
+		$importData = $this->get_import_data();
 
 		return $importData['import']->options[ $option ] ?? null;
 	}
@@ -248,7 +240,7 @@ abstract class FieldHandler implements FieldInterface {
 	 * @return mixed
 	 */
 	public function getImportType() {
-		$importData = $this->getImportData();
+		$importData = $this->get_import_data();
 
 		return $importData['import']->options['custom_type'];
 	}
@@ -257,7 +249,7 @@ abstract class FieldHandler implements FieldInterface {
 	 * @return mixed
 	 */
 	public function getTaxonomyType() {
-		$importData = $this->getImportData();
+		$importData = $this->get_import_data();
 
 		return $importData['import']->options['taxonomy_type'];
 	}
