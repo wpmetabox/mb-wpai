@@ -1,9 +1,7 @@
 <?php
 
+
 namespace MetaBox\WPAI\Fields;
-
-use MetaBox\WPAI\MetaboxService;
-
 class UserHandler extends FieldHandler {
 
 	public function get_value() {

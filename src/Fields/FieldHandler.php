@@ -158,9 +158,9 @@ abstract class FieldHandler implements FieldInterface {
 	 */
 	public function get_value() {
 		$values = $this->get_value_by_xpath( $this->xpath );
-
+        
 		$values = $values[ $this->getPostIndex()] ?? '';
-
+        
 		$field = $this->field;
 
 		if ( $field['clone'] || $this->parent ) {
@@ -179,6 +179,8 @@ abstract class FieldHandler implements FieldInterface {
 			return;
 		}
 
+  
+
 		foreach ( $values as $index => $value ) {
 			// Add index before key
 			$paths = explode( '.', $this->key );
@@ -186,8 +188,12 @@ abstract class FieldHandler implements FieldInterface {
 			array_shift( $paths );
 
 			$path       = implode( '.', $paths );
-			
+            if ($this->key === 'actors.subgroup.character') {
+                ddd($path);
+            }
 			\MetaBox\Support\Arr::set( $root_value, $path, $value );
+
+            
 		}
 
 		return $root_value;
