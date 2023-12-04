@@ -12,9 +12,11 @@ Then install this plugin as a normal WordPress plugin.
 
 ## To do
 - [x] Import from basic and html fields
-- [ ] Import from upload fields
+- [x] Import from upload fields
 - [x] Clonable fields
-- [x] Group fields
+- [-] Group fields
+    - [x] Same levels
+    - [ ] Different levels
 - [x] User field
 - [ ] Term fields
 
@@ -22,4 +24,3 @@ Then install this plugin as a normal WordPress plugin.
 **Does it work with WP All Import free edition?** 
 
 Yes, it does.
-

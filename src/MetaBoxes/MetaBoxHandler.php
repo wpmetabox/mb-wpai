@@ -49,16 +49,12 @@ class MetaBoxHandler implements MetaBoxInterface {
 	public function view(): void {
 		$this->render_block( 'header' );
 		
-		$this->render_fields();
+		$this->render_fields($this->meta_box->meta_box['fields']);
 
 		$this->render_block( 'footer' );
 	}
 
 	public function render_fields( $fields = [], $parent = null ): void {
-		if ( empty( $fields ) ) {
-			$fields = $this->meta_box->meta_box['fields'];
-		}
-
 		foreach ( $fields as $field ) {
             $field['id'] = $parent ? $parent['id'] . '.' . $field['id'] : $field['id'];
 			$this->render_field( $field, $parent );

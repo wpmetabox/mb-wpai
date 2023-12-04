@@ -5,7 +5,6 @@ namespace MetaBox\WPAI;
 use MetaBox\WPAI\Fields\FieldHandler;
 use PMXI_API;
 
-
 final class MetaBoxService {
 
 	private static function get_object_type( FieldHandler $field ) {
