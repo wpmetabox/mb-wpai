@@ -14,7 +14,7 @@ Then install this plugin as a normal WordPress plugin.
 - [x] Import from basic and html fields
 - [x] Import from upload fields
 - [x] Clonable fields
-- [-] Group fields
+- [ ] Group fields
     - [x] Same levels
     - [ ] Different levels
 - [x] User field

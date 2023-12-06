@@ -69,7 +69,7 @@ class MetaBoxHandler implements MetaBoxInterface {
 		$field_type = 'text';
         $field_name = $field['name'];
         $field_value = $this->post['fields'][$field['id']] ?? '';
- 
+        $field_type = $field['type'] === 'taxonomy' ? 'taxonomy' : 'text';
 		$file_path  = PMAI_ROOT_DIR . '/views/fields/' . $field_type . '.php';
         
 		if ( ! file_exists( $file_path ) ) {
@@ -91,6 +91,7 @@ class MetaBoxHandler implements MetaBoxInterface {
 	}
 
 	public function parse( $parsingData ) {
+        ddd($parsingData['import']->options['fields']);
 		foreach ( $this->field_handlers as $field ) {
 			$xpath = $parsingData['import']->options['fields'][ $field->key ] ?? '';
 			$field->parse( $xpath, $parsingData );
