@@ -2,7 +2,7 @@
 /**
  * @var array $field
  * @var string $field_name
- * @var string $current_field
+ * @var string $field_value
  * @var string $current_is_multiple_field_value
  * @var string $current_multiple_value
  */
@@ -20,10 +20,11 @@ $field_name = str_replace(array('[',']'), '', $field_name);
                 <?php
                     // @todo: remove this hard code
                     $tax_field = [
-                        'id' => 'fields[taxonomy]',
-                        'name' => 'fields[taxonomy]',
+                        'id' => $field['_name'],
+                        'name' => $field['_name'],
                         'type' => 'taxonomy',
                         'taxonomy' => 'category',
+                        'std' => $field_value,
                     ];
 
                     $tax_fields = \RW_Meta_Box::normalize_fields( [$tax_field] );
@@ -55,8 +56,8 @@ $field_name = str_replace(array('[',']'), '', $field_name);
                                             'delim' => ','
                                         );
                                     }
-                                    if ( ! empty($current_field['value']) ):
-                                        $taxonomies_hierarchy = json_decode($current_field['value']);
+                                    if ( ! empty($field_value) ):
+                                        $taxonomies_hierarchy = json_decode($field_value);
 
                                         if ( ! empty($taxonomies_hierarchy) and is_array($taxonomies_hierarchy)): $i = 0; foreach ($taxonomies_hierarchy as $cat) { $i++;
                                             if ( is_null($cat->parent_id) or empty($cat->parent_id) )
@@ -95,7 +96,7 @@ $field_name = str_replace(array('[',']'), '', $field_name);
                                         </div>
                                     </li>
                                 </ol>
-                                <input type="hidden" class="hierarhy-output" name="fields<?php echo $field_name; ?>" value="<?php echo esc_attr($current_field['value']); ?>"/>
+                                <input type="hidden" class="hierarhy-output" name="<?= $field['_name'] ?>" value="<?= esc_attr($field_value) ?>"/>
 
                                 <div class="input">
                                     <label for=""><?php _e('Separated by'); ?></label>

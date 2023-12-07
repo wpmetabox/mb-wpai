@@ -41,6 +41,11 @@ abstract class FieldHandler implements FieldInterface {
 	 * @return void
 	 */
 	public function parse( $xpath, $parsingData, $args = [] ) {
+
+        if ($this->key === 'category') {
+            ddd($xpath);
+        }
+        
 		$this->xpath = $xpath;
 
 		if (empty($xpath)) {

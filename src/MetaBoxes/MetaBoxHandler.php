@@ -56,7 +56,8 @@ class MetaBoxHandler implements MetaBoxInterface {
 
 	public function render_fields( $fields = [], $parent = null ): void {
 		foreach ( $fields as $field ) {
-            $field['id'] = $parent ? $parent['id'] . '.' . $field['id'] : $field['id'];
+            $field['_name'] = $parent ? $parent['_name'] . '[' . $field['id'] . ']' : 'fields[' . $field['id'] . ']';
+            
 			$this->render_field( $field, $parent );
 
 			if ( ! empty( $field['fields'] ) ) {
@@ -67,7 +68,7 @@ class MetaBoxHandler implements MetaBoxInterface {
 
 	public function render_field( $field, $parent = null ): void {
 		$field_type = 'text';
-        $field_name = $field['name'];
+        $field_name = $field['_name'];
         $field_value = $this->post['fields'][$field['id']] ?? '';
         $field_type = $field['type'] === 'taxonomy' ? 'taxonomy' : 'text';
 		$file_path  = PMAI_ROOT_DIR . '/views/fields/' . $field_type . '.php';
