@@ -28,6 +28,14 @@ There are two things that we need to handle: rendering views and handling post d
 1. The `PMAI_Import_Record::parse()` will be called from the WP All Import.
 1. The `PMAI_Import_Record::import()` will be called from the WP All Import.
 
+### Testing
+The `tests` folder contains some xml files and meta boxes to test the plugin.
+It's recommended to use WP CLI to test the output as it's faster than using the dashboard. For example:
+
+```bash
+wp all-import run 66 --force-run
+```
+
 ### XPath Guide
 To test the xpath, try this tool [http://xpather.com/](http://xpather.com/)
 
