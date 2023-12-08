@@ -41,11 +41,6 @@ abstract class FieldHandler implements FieldInterface {
 	 * @return void
 	 */
 	public function parse( $xpath, $parsingData, $args = [] ) {
-
-        if ($this->key === 'category') {
-            ddd($xpath);
-        }
-        
 		$this->xpath = $xpath;
 
 		if (empty($xpath)) {
@@ -53,8 +48,7 @@ abstract class FieldHandler implements FieldInterface {
 		}
 
 		$this->parsingData = $parsingData;
-		
-		$this->base_xpath = $parsingData['xpath_prefix'] . $parsingData['import']->xpath . $args['xpath_suffix'];
+		$this->base_xpath = $parsingData['xpath_prefix'] . $parsingData['import']['xpath'];
 	}
 
 	/**
@@ -99,7 +93,7 @@ abstract class FieldHandler implements FieldInterface {
 	public function saved_post( $importData ) {
 	}
 
-	public function get_value_by_xpath( string $xpath, $suffix = '' ) {
+	public function get_value_by_xpath( $xpath, $suffix = '' ) {
 		add_filter( 'wp_all_import_multi_glue', function ($glue) {
 			return '||';
 		} );

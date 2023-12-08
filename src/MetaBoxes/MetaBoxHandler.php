@@ -92,9 +92,11 @@ class MetaBoxHandler implements MetaBoxInterface {
 	}
 
 	public function parse( $parsingData ) {
-        ddd($parsingData['import']->options['fields']);
+        // Convert to associated array to make it easier to work with
+        $parsingData = json_decode(json_encode($parsingData), true);
+        
 		foreach ( $this->field_handlers as $field ) {
-			$xpath = $parsingData['import']->options['fields'][ $field->key ] ?? '';
+			$xpath = $parsingData['import']['options']['fields'][ $field->key ] ?? '';
 			$field->parse( $xpath, $parsingData );
 		}
 	}

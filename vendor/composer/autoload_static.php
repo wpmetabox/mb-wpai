@@ -27,16 +27,6 @@ class ComposerStaticInit65c0eaf6ae3fa3aed47a69df34e1d5a5
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
-        'MetaBox\\WPAI\\Fields\\Field' => __DIR__ . '/../..' . '/src/Fields/Field.php',
-        'MetaBox\\WPAI\\Fields\\FieldFactory' => __DIR__ . '/../..' . '/src/Fields/FieldFactory.php',
-        'MetaBox\\WPAI\\Fields\\FieldInterface' => __DIR__ . '/../..' . '/src/Fields/FieldInterface.php',
-        'MetaBox\\WPAI\\Fields\\Text' => __DIR__ . '/../..' . '/src/Fields/Text.php',
-        'MetaBox\\WPAI\\Fields\\User' => __DIR__ . '/../..' . '/src/Fields/User.php',
-        'MetaBox\\WPAI\\MetaBoxes\\BaseMetabox' => __DIR__ . '/../..' . '/src/MetaBoxes/BaseMetabox.php',
-        'MetaBox\\WPAI\\MetaBoxes\\Metabox' => __DIR__ . '/../..' . '/src/MetaBoxes/Metabox.php',
-        'MetaBox\\WPAI\\MetaBoxes\\MetaboxFactory' => __DIR__ . '/../..' . '/src/MetaBoxes/MetaboxFactory.php',
-        'MetaBox\\WPAI\\MetaBoxes\\MetaboxInterface' => __DIR__ . '/../..' . '/src/MetaBoxes/MetaboxInterface.php',
-        'MetaBox\\WPAI\\MetaboxService' => __DIR__ . '/../..' . '/src/MetaboxService.php',
         'PMAI_Admin_Import' => __DIR__ . '/../..' . '/controllers/admin/import.php',
         'PMAI_Compatibility' => __DIR__ . '/../..' . '/classes/compatibility.php',
         'PMAI_Config' => __DIR__ . '/../..' . '/classes/config.php',

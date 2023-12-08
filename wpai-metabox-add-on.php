@@ -297,6 +297,7 @@ final class PMAI_Plugin {
 		return [
 			'meta_box'                => [],
 			'fields'                  => [],
+            'fields_settings'         => [],
 			'is_multiple_field_value' => [],
 			'multiple_value'          => [],
 			'fields_delimiter'        => [],
