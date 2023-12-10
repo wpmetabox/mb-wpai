@@ -107,9 +107,6 @@ class MetaBoxHandler implements MetaBoxInterface {
 		}
 	}
 
-	/**
-	 * @todo: check when this method is called
-	 */
 	public function saved_post( $import_data ) {
 		foreach ( $this->field_handlers as $field ) {
 			$field->saved_post( $import_data );

@@ -17,8 +17,10 @@ Then install this plugin as a normal WordPress plugin.
 - [ ] Group fields
     - [x] Same levels
     - [ ] Different levels
-- [x] User field
-- [ ] Term fields
+- [x] Users field
+- [ ] Taxonomy fields
+    - [ ] Select taxonomy
+    - [x] Set with xpath
 
 ## FAQ
 **Does it work with WP All Import free edition?** 

@@ -7,7 +7,7 @@ use PMXI_API;
 
 final class MetaBoxService {
 
-	private static function get_object_type( FieldHandler $field ) {
+	private static function get_object_type( FieldHandler $field ): string {
 		$import_types = [ 
 			'import_users' => 'user',
 			'shop_customer' => 'user',
@@ -17,7 +17,7 @@ final class MetaBoxService {
 		return $import_types[ $field->getImportType()] ?? 'post';
 	}
 
-	public static function set_meta( FieldHandler $field, $pid, $name, $value ) {
+	public static function set_meta( FieldHandler $field, int $pid, string $name, $value ) {
 		$object_type = self::get_object_type( $field );
 
 		rwmb_set_meta( $pid, $name, $value, [ 
