@@ -90,6 +90,11 @@ class TaxonomyHandler extends FieldHandler {
 	public function get_value() {
 		$output      = [];
 		$taxonomy    = $this->field['taxonomy'][0];
+        
+        if ( ! $taxonomy || !is_array( $this->xpath ) ) {
+            return;
+        }
+
 		$this->xpath = $this->build_tree( $this->xpath );
 		$output      = $this->fill_tree( $this->xpath, $taxonomy );
 		$output      = $this->get_tree_values( $output, $this->get_post_index() );

@@ -70,7 +70,7 @@ abstract class FieldHandler implements FieldInterface {
 
 		// @todo: Handle update permission
 		// If update is not allowed
-		// if ( ! empty( $this->importData['articleData']['id'] ) && ! \pmai_is_acf_update_allowed( $this->importData['container_name'] . $field['name'], $this->parsingData['import']->options, $this->parsingData['import']->id ) ) {
+		// if ( ! empty( $this->importData['articleData']['id'] ) && ! \pmai_is_acf_update_allowed( $this->importData['container_name'] . $field['name'], $this->parsingData['import']['options'], $this->parsingData['import']->id ) ) {
 		// 	$this->parsingData['logger'] && call_user_func( $this->parsingData['logger'], sprintf( __( '- Field `%s` is skipped attempted to import options', 'mbai' ), $this->getFieldName() ) );
 
 		// 	return false;
@@ -94,15 +94,15 @@ abstract class FieldHandler implements FieldInterface {
 	}
 
 	public function get_value_by_xpath( $xpath, $suffix = '' ) {
-		add_filter( 'wp_all_import_multi_glue', function ($glue) {
-			return '||';
-		} );
+		// add_filter( 'wp_all_import_multi_glue', function ($glue) {
+		// 	return '||';
+		// } );
 
 		$values = \XmlImportParser::factory( $this->parsingData['xml'], $this->base_xpath . $suffix, $xpath, $file )->parse();
 		
-		add_filter( 'wp_all_import_multi_glue', function ($glue) {
-			return ',';
-		} );
+		// add_filter( 'wp_all_import_multi_glue', function ($glue) {
+		// 	return ',';
+		// } );
 
 		return $values;
 	}
@@ -153,18 +153,15 @@ abstract class FieldHandler implements FieldInterface {
 
 	public function get_value() {
 		$values = $this->get_value_by_xpath( $this->xpath );
-        
 		$values = $values[ $this->get_post_index()] ?? '';
         
-		$field = $this->field;
-
-		if ( $field['clone'] || $this->parent ) {
-			$values = explode( '||', $values );
-		}
-
-		$values = $this->recursive_trim( $values );
-
-        return $this->parent ? $this->get_root_value( $values ) : $values;
+        if ($this->is_clonable() || $this->is_sub_field()) {
+            $values = explode( ',', $values );
+        }
+        
+        $values = $this->recursive_trim( $values );
+        
+        return $values;
 	}
 
     public function get_root_value( $values ) {
@@ -232,7 +229,7 @@ abstract class FieldHandler implements FieldInterface {
 	public function get_import_option( string $option ) {
 		$importData = $this->get_import_data();
 
-		return $importData['import']->options[ $option ] ?? null;
+		return $importData['import']['options'][ $option ] ?? null;
 	}
 
 	/**
@@ -241,7 +238,7 @@ abstract class FieldHandler implements FieldInterface {
 	public function getImportType() {
 		$importData = $this->get_import_data();
 
-		return $importData['import']->options['custom_type'];
+		return $importData['import']['options']['custom_type'];
 	}
 
 	/**
@@ -250,7 +247,7 @@ abstract class FieldHandler implements FieldInterface {
 	public function getTaxonomyType() {
 		$importData = $this->get_import_data();
 
-		return $importData['import']->options['taxonomy_type'];
+		return $importData['import']['options']['taxonomy_type'];
 	}
 
 	/**
