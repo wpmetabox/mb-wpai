@@ -58,7 +58,7 @@ abstract class FieldHandler implements FieldInterface {
         if ($value) {
 		    MetaBoxService::set_meta( $this, $this->get_post_id(), $this->get_id(), $value );
         }
-        
+
 		return true;
 	}
 
@@ -120,7 +120,7 @@ abstract class FieldHandler implements FieldInterface {
 	}
 
 	public function get_id(): string {
-		return $this->parent ? $this->get_root_key() : $this->field['id'];
+		return $this->field['id'];
 	}
 
 	/**
