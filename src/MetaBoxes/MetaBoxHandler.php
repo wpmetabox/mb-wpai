@@ -24,18 +24,7 @@ class MetaBoxHandler implements MetaBoxInterface {
 	public function __construct( \RW_Meta_Box $meta_box, array $post ) {
 		$this->meta_box = $meta_box;
 		$this->post = $post;
-
-		// $this->init_field_handlers($meta_box->meta_box['fields']);
 	}
-
-	// public function init_field_handlers(array $fields = []): void {
-    //     $fields = $this->merge_fields_with_bindings($fields, $this->post['bindings']);
-	// 	foreach ( $fields as $mb_field ) {
-	// 		$field          = FieldFactory::create( $mb_field, $this->get_post() );
-
-    //         $this->field_handlers[] = $field;
-	// 	}
-	// }
 
     private function merge_fields_with_bindings($fields, $bindings) {
         $merged_fields = [];

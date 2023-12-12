@@ -36,6 +36,14 @@ It's recommended to use WP CLI to test the output as it's faster than using the 
 wp all-import run 66 --force-run
 ```
 
+To make the import run after processed. We can clear the posts table and run the import again.
+
+**PLEASE DO NOT RUN THIS COMMAND IN PRODUCTION SITE.**
+
+```bash
+wp db query "TRUNCATE TABLE xp_posts; TRUNCATE TABLE xp_pmxi_posts;"
+```
+
 ### XPath Guide
 To test the xpath, try this tool [http://xpather.com/](http://xpather.com/)
 

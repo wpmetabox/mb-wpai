@@ -9,9 +9,9 @@ final class MetaBoxService {
 
 	private static function get_object_type( FieldHandler $field ): string {
 		$import_types = [ 
-			'import_users' => 'user',
+			'import_users'  => 'user',
 			'shop_customer' => 'user',
-			'taxonomies' => 'term',
+			'taxonomies'    => 'term',
 		];
 
 		return $import_types[ $field->getImportType()] ?? 'post';
@@ -30,8 +30,8 @@ final class MetaBoxService {
 
 		return rwmb_meta( $name, [ 
 			'object_type' => $object_type,
-			'post_id' => $pid,
-			'single' => true,
+			'post_id'     => $pid,
+			'single'      => true,
 		], $pid );
 	}
 
