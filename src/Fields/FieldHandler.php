@@ -4,13 +4,11 @@ namespace MetaBox\WPAI\Fields;
 use MetaBox\WPAI\MetaBoxService;
 use MetaBox\WPAI\MetaBoxes\MetaBoxHandler;
 
-abstract class FieldHandler implements FieldInterface {
+abstract class FieldHandler {
 
 	public array $parsingData;
 
 	public array $importData;
-
-	public $parent;
 
 	public $xpath = '';
 
@@ -55,9 +53,7 @@ abstract class FieldHandler implements FieldInterface {
 
         $value = $this->get_value();
 
-        if ($value) {
-		    MetaBoxService::set_meta( $this, $this->get_post_id(), $this->get_id(), $value );
-        }
+		MetaBoxService::set_meta( $this, $this->get_post_id(), $this->get_id(), $value );
 
 		return true;
 	}

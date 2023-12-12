@@ -8,6 +8,11 @@
       <name>Keanu Reeves</name>
       <name>Laurence Fishburne</name>
     </casts>
+    <released>false</released>
+    <genres>
+      <genre>Action</genre>
+      <genre>Sci-Fi</genre>
+    </genres>
   </movie>
   <movie>
     <title>Inception</title>
@@ -17,6 +22,12 @@
         <name>Leonardo DiCaprio</name>
         <name>Joseph Gordon-Levitt</name>
     </casts>
+     <released>true</released>
+    <genres>
+      <genre>Action</genre>
+      <genre>Adventure</genre>
+      <genre>Sci-Fi</genre>
+    </genres>
   </movie>
   <movie>
     <title>Interstellar</title>
@@ -26,5 +37,11 @@
         <name>Matthew McConaughey</name>
         <name>Anne Hathaway</name>
     </casts>
+    <released>true</released>
+    <genres>
+      <genre>Adventure</genre>
+      <genre>Drama</genre>
+      <genre>Sci-Fi</genre>
+    </genres>
   </movie>
 </movies>
