@@ -12,7 +12,9 @@ class MetaBoxHandler implements MetaBoxInterface {
 
 	public \RW_Meta_Box $meta_box;
 
-	public $field_handlers = [];
+	public $fields = [];
+
+    public $parsingData = [];
 
 	/**
 	 * meta_box constructor.
@@ -23,24 +25,35 @@ class MetaBoxHandler implements MetaBoxInterface {
 		$this->meta_box = $meta_box;
 		$this->post = $post;
 
-		$this->init_field_handlers();
+		// $this->init_field_handlers($meta_box->meta_box['fields']);
 	}
 
-	public function init_field_handlers(array $fields = [], $parent = null): void {
-		if ( empty( $fields ) ) {
-			$fields = $this->meta_box->meta_box['fields'];
-		}
+	// public function init_field_handlers(array $fields = []): void {
+    //     $fields = $this->merge_fields_with_bindings($fields, $this->post['bindings']);
+	// 	foreach ( $fields as $mb_field ) {
+	// 		$field          = FieldFactory::create( $mb_field, $this->get_post() );
 
-		foreach ( $fields as $mb_field ) {
-			$field_key = $parent ? $parent->key . '.' . $mb_field['id'] : $mb_field['id'];
-			$field          = FieldFactory::create( $mb_field, $this->get_post(), $field_key, $parent );
-			$this->field_handlers[] = $field;
+    //         $this->field_handlers[] = $field;
+	// 	}
+	// }
 
-			if ( ! empty( $mb_field['fields'] ) ) {
-				$this->init_field_handlers( $mb_field['fields'], $field );
-			}
-		}
-	}
+    private function merge_fields_with_bindings($fields, $bindings) {
+        $merged_fields = [];
+        
+        foreach ($fields as $index => $field) {
+            if (isset($bindings[$field['id']])) {
+                $merged_fields[$index] = array_merge($field, [
+                    'binding' => $bindings[$field['id']],
+                ]);
+            }
+    
+            if (isset($field['fields'])) {
+                $merged_fields[$index]['fields'] = $this->merge_fields_with_bindings($field['fields'], $bindings[$field['id']]);
+            }
+        }
+    
+        return $merged_fields;
+    }
 
 	public function get_post(): array {
 		return $this->post;
@@ -94,22 +107,30 @@ class MetaBoxHandler implements MetaBoxInterface {
 	public function parse( $parsingData ) {
         // Convert to associated array to make it easier to work with
         $parsingData = json_decode(json_encode($parsingData), true);
-        
-		foreach ( $this->field_handlers as $field ) {
-			$xpath = $parsingData['import']['options']['fields'][ $field->key ] ?? '';
-			$field->parse( $xpath, $parsingData );
-		}
+        $bindings = $parsingData['import']['options']['fields'] ?? [];
+
+        $this->meta_box->meta_box['fields'] = $this->merge_fields_with_bindings($this->meta_box->meta_box['fields'], $bindings);
+        $this->parsingData = $parsingData;
+
+        // file_put_contents(__DIR__ . '/parsingData.json', json_encode($parsingData, JSON_PRETTY_PRINT));
 	}
 
 	public function import( $import_data, $args = [] ) {
-		foreach ( $this->field_handlers as $field ) {
-			$field->import( $import_data, $args );
-		}
+		foreach ( $this->meta_box->meta_box['fields'] as $mb_field ) {
+            $field = FieldFactory::create( $mb_field, $this->get_post(), $this );
+            $field->parsingData = $this->parsingData;
+            $field->base_xpath = $this->parsingData['xpath_prefix'] . $this->parsingData['import']['xpath'];
+            $field->xpath = $mb_field['binding'];
+            $field->importData = $import_data;
+            $field->import($import_data, $args);
+        }
 	}
 
 	public function saved_post( $import_data ) {
-		foreach ( $this->field_handlers as $field ) {
-			$field->saved_post( $import_data );
-		}
+        foreach ( $this->meta_box->meta_box['fields'] as $field ) {
+            $field = FieldFactory::create( $field, $this->get_post(), $this );
+            $field->parsingData = $this->parsingData;
+            $field->saved_post($import_data);
+        }
 	}
 }

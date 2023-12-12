@@ -104,6 +104,10 @@ class TaxonomyHandler extends FieldHandler {
 
 
 	public function saved_post( $importData ) {
+        if ( empty($this->xpath) || ! is_array( $this->xpath ) ) {
+            return;
+        }
+
 		$taxonomy = $this->field['taxonomy'][0];
 		$values   = explode( ',', $this->get_value() );
 		$values   = array_filter( $values );

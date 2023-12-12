@@ -2,6 +2,7 @@
 namespace MetaBox\WPAI\Fields;
 
 use MetaBox\WPAI\MetaBoxService;
+use MetaBox\WPAI\MetaBoxes\MetaBoxHandler;
 
 abstract class FieldHandler implements FieldInterface {
 
@@ -19,36 +20,16 @@ abstract class FieldHandler implements FieldInterface {
 
 	public $base_xpath = '';
 
-	public $key = '';
+    public ?MetaBoxHandler $meta_box = null;
 
 	public function __construct(
 		array $field,
 		array $post,
-		string $key,
-	    $parent = null
+	    MetaBoxHandler $meta_box = null
 	) {
-		$this->parent = $parent;
-		$this->field = $field;
-		$this->key = $key;
-		$this->post = $post;
-	}
-
-	/**
-	 * @param $xpath
-	 * @param $parsingData
-	 * @param array $args
-	 *
-	 * @return void
-	 */
-	public function parse( $xpath, $parsingData, $args = [] ) {
-		$this->xpath = $xpath;
-
-		if (empty($xpath)) {
-			return;
-		}
-
-		$this->parsingData = $parsingData;
-		$this->base_xpath = $parsingData['xpath_prefix'] . $parsingData['import']['xpath'];
+		$this->meta_box = $meta_box;
+		$this->field  = $field;
+		$this->post   = $post;
 	}
 
 	/**
@@ -58,10 +39,6 @@ abstract class FieldHandler implements FieldInterface {
 	 * @return mixed
 	 */
 	public function import( $importData, array $args = [] ) {
-		if (empty($this->xpath)) {
-			return false;
-		}
-
 		$field = $this->field;
 
 		$this->importData = array_merge( $importData, $args );
@@ -76,8 +53,12 @@ abstract class FieldHandler implements FieldInterface {
 		// 	return false;
 		// }
 
-		MetaBoxService::set_meta( $this, $this->get_post_id(), $this->get_id(), $this->get_value() );
+        $value = $this->get_value();
 
+        if ($value) {
+		    MetaBoxService::set_meta( $this, $this->get_post_id(), $this->get_id(), $value );
+        }
+        
 		return true;
 	}
 
@@ -152,6 +133,10 @@ abstract class FieldHandler implements FieldInterface {
 	}
 
 	public function get_value() {
+        if ( ! $this->xpath ) {
+            return;
+        }
+
 		$values = $this->get_value_by_xpath( $this->xpath );
 		$values = $values[ $this->get_post_index()] ?? '';
         
