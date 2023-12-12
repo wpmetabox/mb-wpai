@@ -62,12 +62,6 @@ abstract class FieldHandler implements FieldInterface {
 		return true;
 	}
 
-	public function get_field_path($parent = null): string {
-		$path = $parent ? $parent->field['id'] . '.' . $this->field['id'] : $this->field['id'];
-
-		return $path;
-	}
-
 	/**
 	 * @param $importData
 	 */
@@ -123,15 +117,6 @@ abstract class FieldHandler implements FieldInterface {
 		return $this->field['id'];
 	}
 
-	/**
-	 * @return string
-	 */
-	public function get_field_key() {
-		$prefix = $this->parent ? $this->parent->get_field_key() . '.' : '';
-
-		return $prefix . $this->field['id'];
-	}
-
 	public function get_value() {
         if ( ! $this->xpath ) {
             return;
@@ -140,54 +125,17 @@ abstract class FieldHandler implements FieldInterface {
 		$values = $this->get_value_by_xpath( $this->xpath );
 		$values = $values[ $this->get_post_index()] ?? '';
         
-        if ($this->is_clonable() || $this->is_sub_field()) {
-            $values = explode( ',', $values );
-        }
-        
+        $values = explode( ',', $values );
         $values = $this->recursive_trim( $values );
         
+        $values = $this->is_clonable() ? $values : $values[0] ?? '';
+
         return $values;
 	}
 
-    public function get_root_value( $values ) {
-        $root_value = MetaBoxService::get_meta( $this, $this->get_post_id(), $this->get_root_key() );
-
-		if ( ! is_array( $root_value ) ) {
-			return;
-		}
-
-		foreach ( $values as $index => $value ) {
-			// Add index before key
-			$paths = explode( '.', $this->key );
-			$paths[count($paths) - 1] = $index . '.' . $paths[count($paths) - 1];
-			array_shift( $paths );
-
-			$path       = implode( '.', $paths );
-            if ($this->key === 'actors.subgroup.character') {
-                ddd($path);
-            }
-			\MetaBox\Support\Arr::set( $root_value, $path, $value );            
-		}
-
-		return $root_value;
-    }
 
 	public function is_clonable(): bool {
 		return $this->field['clone'] ?? false;
-	}
-
-	public function is_sub_field(): bool {
-		return $this->parent ? true : false;
-	}
-
-	public function get_root_key(): string {
-		$key = $this->get_field_key();
-
-		// Split key into parts separated by '.' and get the first part
-		$key = explode( '.', $key );
-		$key = $key[0];
-		
-		return $key;
 	}
 
 	/**
