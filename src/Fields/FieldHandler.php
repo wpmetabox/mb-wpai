@@ -18,16 +18,16 @@ abstract class FieldHandler {
 
 	public $base_xpath = '';
 
-    public ?MetaBoxHandler $meta_box = null;
+	public ?MetaBoxHandler $meta_box = null;
 
 	public function __construct(
 		array $field,
 		array $post,
-	    MetaBoxHandler $meta_box = null
+		MetaBoxHandler $meta_box = null
 	) {
 		$this->meta_box = $meta_box;
-		$this->field  = $field;
-		$this->post   = $post;
+		$this->field    = $field;
+		$this->post     = $post;
 	}
 
 	/**
@@ -41,7 +41,7 @@ abstract class FieldHandler {
 
 		$this->importData = array_merge( $importData, $args );
 
-		$this->parsingData['logger'] and call_user_func( $this->parsingData['logger'], sprintf( __( '- Importing field `%s`', 'mbai' ),  $field['name'] ) );
+		$this->parsingData['logger'] and call_user_func( $this->parsingData['logger'], sprintf( __( '- Importing field `%s`', 'mbai' ), $field['name'] ) );
 
 		// @todo: Handle update permission
 		// If update is not allowed
@@ -51,7 +51,7 @@ abstract class FieldHandler {
 		// 	return false;
 		// }
 
-        $value = $this->get_value();
+		$value = $this->get_value();
 
 		MetaBoxService::set_meta( $this, $this->get_post_id(), $this->get_id(), $value );
 
@@ -70,7 +70,7 @@ abstract class FieldHandler {
 		// } );
 
 		$values = \XmlImportParser::factory( $this->parsingData['xml'], $this->base_xpath . $suffix, $xpath, $file )->parse();
-		
+
 		// add_filter( 'wp_all_import_multi_glue', function ($glue) {
 		// 	return ',';
 		// } );
@@ -92,11 +92,11 @@ abstract class FieldHandler {
 		return $this->importData;
 	}
 
-    /**
-     * Get the index of the post in the import file, starting from 0
-     * 
-     * @return int
-     */
+	/**
+	 * Get the index of the post in the import file, starting from 0
+	 * 
+	 * @return int
+	 */
 	public function get_post_index(): int {
 		return $this->importData['i'];
 	}
@@ -114,24 +114,34 @@ abstract class FieldHandler {
 	}
 
 	public function get_value() {
-        if ( ! $this->xpath ) {
-            return;
-        }
+		if ( ! $this->xpath ) {
+			return;
+		}
 
 		$values = $this->get_value_by_xpath( $this->xpath );
 		$values = $values[ $this->get_post_index()] ?? '';
-        
-        $values = explode( ',', $values );
-        $values = $this->recursive_trim( $values );
-        
-        $values = $this->is_clonable() ? $values : $values[0] ?? '';
 
-        return $values;
+		$values = explode( ',', $values );
+		$values = $this->recursive_trim( $values );
+
+		$values = $this->returns_array() ? $values : $values[0] ?? '';
+
+		return $values;
 	}
 
 
-	public function is_clonable(): bool {
-		return $this->field['clone'] ?? false;
+	public function returns_array(): bool {
+		if ( $this->field['clone'] ) {
+			return true;
+		}
+
+        if ($this->field['multiple']) {
+            return true;
+        }
+
+		$multiple_type = [ 'checkbox_list' ];
+
+		return in_array( $this->field['type'], $multiple_type ) ?? false;
 	}
 
 	/**

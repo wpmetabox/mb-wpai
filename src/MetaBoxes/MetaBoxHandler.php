@@ -26,7 +26,7 @@ class MetaBoxHandler implements MetaBoxInterface {
 		$this->post = $post;
 	}
 
-    private function merge_fields_with_bindings($fields, $bindings) {
+    private function add_binding_to_fields(array $fields, array $bindings): array {
         $merged_fields = [];
         
         foreach ($fields as $index => $field) {
@@ -37,7 +37,7 @@ class MetaBoxHandler implements MetaBoxInterface {
             }
     
             if (isset($field['fields'])) {
-                $merged_fields[$index]['fields'] = $this->merge_fields_with_bindings($field['fields'], $bindings[$field['id']]);
+                $merged_fields[$index]['fields'] = $this->add_binding_to_fields($field['fields'], $bindings[$field['id']]);
             }
         }
     
@@ -98,7 +98,7 @@ class MetaBoxHandler implements MetaBoxInterface {
         $parsingData = json_decode(json_encode($parsingData), true);
         $bindings = $parsingData['import']['options']['fields'] ?? [];
 
-        $this->meta_box->meta_box['fields'] = $this->merge_fields_with_bindings($this->meta_box->meta_box['fields'], $bindings);
+        $this->meta_box->meta_box['fields'] = $this->add_binding_to_fields($this->meta_box->meta_box['fields'], $bindings);
         $this->parsingData = $parsingData;
 
         // file_put_contents(__DIR__ . '/parsingData.json', json_encode($parsingData, JSON_PRETTY_PRINT));
