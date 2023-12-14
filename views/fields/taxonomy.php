@@ -7,6 +7,7 @@
  * @var string $current_multiple_value
  */
 $field_name = str_replace(array('[',']'), '', $field_name);
+$current_field = $field_value;
 ?>
 <div class="input">
     <div class="main_choise">

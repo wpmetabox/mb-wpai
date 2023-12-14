@@ -223,11 +223,13 @@
 	});
 
 	$(document).on('change', '.variable_repeater_mode', function() {
-		// if variable mode
-		if ($(this).is(':checked') && ($(this).val() == 'yes' || $(this).val() == 'csv')){
+        const val = $(this).val();
+
+		if ($(this).is(':checked') && (val == 'yes' || val == 'csv')){
 			var $parent = $(this).parents('.repeater:first');
-			$parent.find('tbody:first').children('.row:not(:first)').remove();
-			if ( ! $parent.find('tbody:first').children('.row').length) pmai_repeater_clone($parent);
+            console.log($parent);
+			// $parent.find('tbody:first').children('.row:not(:first)').remove();
+			// if ( ! $parent.find('tbody:first').children('.row').length) pmai_repeater_clone($parent);
 		}
 	});
 

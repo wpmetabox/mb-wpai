@@ -47,7 +47,7 @@ abstract class PMAI_Controller_Admin extends PMAI_Controller {
 			'jquery-ui-droppable',
 			'jquery-nestable',
 			'pmxi-admin-script',
-		] );
+        ], time() );
 		wp_enqueue_script( 'pmai-datetimepicker', PMAI_ROOT_URL . '/static/js/jquery/datetime.min.js', [ 'jquery' ] );
 
 

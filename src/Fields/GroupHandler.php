@@ -6,7 +6,6 @@ class GroupHandler extends FieldHandler {
 		$value = [];
 
 		foreach ( $fields as $mb_field ) {
-
 			$field = FieldFactory::create( $mb_field, $this->post, $this->meta_box );
 
 			$field->parsingData = $this->parsingData;

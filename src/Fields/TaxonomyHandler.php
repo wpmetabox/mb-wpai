@@ -110,8 +110,7 @@ class TaxonomyHandler extends FieldHandler {
 
 		$taxonomy = $this->field['taxonomy'][0];
 		$values   = explode( ',', $this->get_value() );
-		$values   = array_filter( $values );
-		$values   = array_unique( $values );
+		$values   = array_filter( array_unique( $values ) );
 
 		wp_set_post_terms( $this->get_post_id(), $values, $taxonomy );
 	}
