@@ -1,7 +1,4 @@
 <?php
-// -- Header
-?>
-<?php
 /**
  * @var array $field
  * @var string $field_name
@@ -9,8 +6,8 @@
  * @var string $current_is_multiple_field_value
  * @var string $current_multiple_value
  */
-$field_name    = str_replace( array( '[', ']' ), '', $field_name );
-$current_field = $field_value;
+$field_name    = str_replace( [ '[', ']' ], '', $field_name );
+$current_field = is_array( $field['std'] ) ? $field['std'] : $field_value;
 
 if ( ! is_array( $current_field ) ) {
 	$current_field = [ 
@@ -18,7 +15,7 @@ if ( ! is_array( $current_field ) ) {
 		'foreach' => '',
 	];
 }
-
+// -- Header
 ?>
 <div class="repeater">
 	<div class="input" style="margin-bottom: 10px;">
@@ -88,38 +85,38 @@ if ( ! is_array( $current_field ) ) {
 		<tbody>
 			<?php
 			if ( ! empty( $current_field['rows'] ) ) :
-				foreach ( $current_field['rows'] as $key => $row ) :
-					if ( "ROWNUMBER" == $key )
+				foreach ( $current_field['rows'] as $index => $row ) :
+					if ( "ROWNUMBER" == $index )
 						continue; ?>
 					<tr class="row">
 						<td class="order" style="padding:8px;">
-							<?php echo $key; ?>
+							<?= $index; ?>
 						</td>
 						<td class="acf_input-wrap" style="padding:0 !important;">
 							<table class="widefat acf_input" style="border:none;">
 								<tbody>
 									<?php
-									if ( ! empty( $fields ) ) {
-										/** @var \wpai_acf_add_on\fields\Field $subField */
-										foreach ( $fields as $subField ) {
+									if ( ! empty( $handler->fields ) ) :
+										foreach ( $handler->fields as $sub_field ) :
 											?>
 											<tr
-												class="field sub_field field_type-<?php echo $subField->getType(); ?> field_key-<?php echo $subField->getFieldKey(); ?>">
+												class="field sub_field field_type-<?= $sub_field->field['type'] ?> field_key-<?= $sub_field->field['id'] ?>">
 												<td class="label">
-													<?php echo $subField->getFieldLabel(); ?>
+													<?= $sub_field->field['name'] ?>
 												</td>
 												<td>
 													<div class="inner input">
 														<?php
-														$subField->setFieldInputName( $field_name . "[" . $field['key'] . "][rows][" . $key . "]" );
-														$subField->view();
+														$sub_field->field['_name'] = $handler->field['_name'] . '[rows][' . $index . '][' . $sub_field->field['id'] . ']';
+														$sub_field->field['std']   = $row[ $sub_field->field['id'] ] ?? '';
+														$sub_field->view();
 														?>
 													</div>
 												</td>
 											</tr>
 											<?php
-										}
-									}
+										endforeach;
+									endif;
 									?>
 								</tbody>
 							</table>
@@ -143,7 +140,8 @@ if ( ! is_array( $current_field ) ) {
 										<td>
 											<div class="inner input">
 												<?php
-												$sub_field->field['_name'] = $sub_field->field['_name'] . '[ROWNUMBER]';
+												$sub_field->field['_name'] = $handler->field['_name'] . '[rows][ROWNUMBER][' . $sub_field->field['id'] . ']';
+
 												$sub_field->view();
 												?>
 											</div>

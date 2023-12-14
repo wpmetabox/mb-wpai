@@ -2,6 +2,15 @@
 namespace MetaBox\WPAI\Fields;
 
 class GroupHandler extends FieldHandler {
+	public function parse( $xpath, $parsingData, $args = [] ) {
+		$xpath = json_decode( $xpath, true );
+
+		$this->xpath       = $xpath;
+		$this->parsingData = $parsingData;
+		$this->base_xpath  = $parsingData['xpath_prefix'] . $parsingData['import']['xpath'];
+	}
+
+
 	private function get_children_value( $fields, $args ): array {
 		$value = [];
 

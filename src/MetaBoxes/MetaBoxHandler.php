@@ -24,12 +24,12 @@ class MetaBoxHandler implements MetaBoxInterface {
 	public function __construct( \RW_Meta_Box $meta_box, array $post ) {
 		$this->meta_box = $meta_box;
 		$this->post     = $post;
-
         $this->init_fields();
 	}
 
     private function init_fields(): void {
         foreach ( $this->meta_box->meta_box['fields'] as $field ) {
+            // we create _name field to be able to use it in view
             $field['_name'] = 'fields[' . $field['id'] . ']';
             $this->fields[ $field['id'] ] = FieldFactory::create( $field, $this->get_post(), $this );
         }
@@ -82,7 +82,7 @@ class MetaBoxHandler implements MetaBoxInterface {
 		$parsingData = json_decode( json_encode( $parsingData ), true );
 		$bindings    = $parsingData['import']['options']['fields'] ?? [];
 
-        $this->fields = $this->add_binding_to_fields( $this->fields, $bindings );
+        $this->fields = $this->add_binding_to_fields( $this->fields, $bindings ); 
 		$this->parsingData                  = $parsingData;
 
 		// file_put_contents(__DIR__ . '/parsingData.json', json_encode($parsingData, JSON_PRETTY_PRINT));

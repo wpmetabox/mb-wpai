@@ -53,9 +53,9 @@ abstract class FieldHandler {
     public function view(): void {
         $field_type  = 'text';
 		$field_name  = $this->field['_name'];
-
 		$field_value = $this->post['fields'][ $this->field['id'] ] ?? '';
         $field = $this->field;
+        $field['std'] = $field['std'] ?? $field_value;
         $handler = $this;
 
 		$view_path = $this->get_view_path( $this->field['type'] );
@@ -187,7 +187,7 @@ abstract class FieldHandler {
             return true;
         }
 
-		$multiple_type = [ 'checkbox_list' ];
+		$multiple_type = [ 'checkbox_list', 'group' ];
 
 		return in_array( $this->field['type'], $multiple_type ) ?? false;
 	}

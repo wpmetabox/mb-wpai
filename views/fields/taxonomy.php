@@ -6,7 +6,7 @@
  * @var string $current_is_multiple_field_value
  * @var string $current_multiple_value
  */
-$field_name = str_replace(array('[',']'), '', $field_name);
+$field_name = str_replace(['[',']'], '', $field_name);
 $current_field = $field_value;
 ?>
 <div class="input">
@@ -39,7 +39,7 @@ $current_field = $field_value;
 <div class="input" style="overflow:hidden;">
     <div class="main_choise">
         <input type="radio" id="is_multiple_field_value_<?= $field_name ?>_<?= $field['id'];?>_no" class="switcher" name="is_multiple_field_value<?php echo $field_name; ?>[<?= $field['id'];?>]" value="no" <?php echo 'no' == $current_is_multiple_field_value ? 'checked="checked"': '' ?>/>
-        <label for="is_multiple_field_value_<?= $field_name ?>_<?= $field['id'];?>_no" class="chooser_label"><?php _e('Set with XPath', 'wp_all_import_acf_add_on' )?></label>
+        <label for="is_multiple_field_value_<?= $field_name ?>_<?= $field['id'];?>_no" class="chooser_label"><?php _e('Set with XPath', 'mb-wpai' )?></label>
     </div>
     <div class="wpallimport-clear"></div>
     <div class="switcher-target-is_multiple_field_value_<?= $field_name ?>_<?= $field['id'];?>_no">
@@ -52,10 +52,10 @@ $current_field = $field_value;
                                 <ol class="sortable no-margin">
                                     <?php
                                     if (!is_array($current_field)){
-                                        $current_field = array(
+                                        $current_field = [
                                             'value' => $current_field,
                                             'delim' => ','
-                                        );
+                                        ];
                                     }
                                     if ( ! empty($field_value) ):
                                         $taxonomies_hierarchy = json_decode($field_value);
@@ -109,7 +109,7 @@ $current_field = $field_value;
                                         class="small rad4">
                                 </div>
                                 <div class="delim">
-                                    <a href="javascript:void(0);" class="icon-item add-new-ico"><?php _e('Add more','wp_all_import_acf_add_on');?></a>
+                                    <a href="javascript:void(0);" class="icon-item add-new-ico"><?php _e('Add more','mb-wpai');?></a>
                                 </div>
                             </div>
                         </td>
