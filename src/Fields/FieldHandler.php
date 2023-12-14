@@ -18,6 +18,10 @@ abstract class FieldHandler {
 
 	public $base_xpath = '';
 
+    public $parent;
+
+    public array $fields = [];
+
 	public ?MetaBoxHandler $meta_box = null;
 
 	public function __construct(
@@ -28,6 +32,50 @@ abstract class FieldHandler {
 		$this->meta_box = $meta_box;
 		$this->field    = $field;
 		$this->post     = $post;
+
+        $this->init_children_fields();
+	}
+
+    private function init_children_fields(): void {
+        if ( ! isset( $this->field['fields'] ) ) {
+            return;
+        }
+
+        foreach ( $this->field['fields'] as $sub_field ) {
+            $sub_field['_name'] = $this->field['_name'] . '[' . $sub_field['id'] . ']';
+            $field = FieldFactory::create( $sub_field, $this->post, $this->meta_box );
+            $field->parent = $this;
+
+            $this->fields[] = $field;
+        }
+    }
+
+    public function view(): void {
+        $field_type  = 'text';
+		$field_name  = $this->field['_name'];
+
+		$field_value = $this->post['fields'][ $this->field['id'] ] ?? '';
+        $field = $this->field;
+        $handler = $this;
+
+		$view_path = $this->get_view_path( $this->field['type'] );
+
+		if ( ! file_exists( $view_path ) || ! $view_path ) {
+			return;
+		}
+
+		include $view_path;
+    }
+
+	private function get_view_path( string $field_type ): ?string {
+		$matches = [ 
+			'taxonomy' => 'taxonomy',
+			'group' => 'group',
+		];
+
+        $field_type = $matches[ $field_type ] ?? 'text';
+
+		return PMAI_ROOT_DIR . '/views/fields/' . $field_type . '.php';
 	}
 
 	/**

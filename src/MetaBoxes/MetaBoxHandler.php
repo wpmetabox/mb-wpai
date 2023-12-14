@@ -24,20 +24,28 @@ class MetaBoxHandler implements MetaBoxInterface {
 	public function __construct( \RW_Meta_Box $meta_box, array $post ) {
 		$this->meta_box = $meta_box;
 		$this->post     = $post;
+
+        $this->init_fields();
 	}
+
+    private function init_fields(): void {
+        foreach ( $this->meta_box->meta_box['fields'] as $field ) {
+            $field['_name'] = 'fields[' . $field['id'] . ']';
+            $this->fields[ $field['id'] ] = FieldFactory::create( $field, $this->get_post(), $this );
+        }
+    }
 
 	private function add_binding_to_fields( array $fields, array $bindings ): array {
 		$merged_fields = [];
 
 		foreach ( $fields as $index => $field ) {
 			if ( isset( $bindings[ $field['id'] ] ) ) {
-				$merged_fields[ $index ] = array_merge( $field, [ 
-					'binding' => $bindings[ $field['id'] ],
-				] );
+                $field->binding = $bindings[ $field['id'] ];
+				$merged_fields[ $index ] = $field;
 			}
 
 			if ( isset( $field['fields'] ) ) {
-				$merged_fields[ $index ]['fields'] = $this->add_binding_to_fields( $field['fields'], $bindings[ $field['id'] ] );
+				$merged_fields[ $index ]['fields'] = $this->add_binding_to_fields( $field->field['fields'], $bindings[ $field['id'] ] );
 			}
 		}
 
@@ -51,46 +59,11 @@ class MetaBoxHandler implements MetaBoxInterface {
 	public function view(): void {
 		$this->render_block( 'header' );
 
-		$this->render_fields( $this->meta_box->meta_box['fields'] );
+		foreach ( $this->fields as $field ) {
+			$field->view();
+		}
 
 		$this->render_block( 'footer' );
-	}
-
-	public function render_fields( $fields = [], $parent = null ): void {
-		foreach ( $fields as $field ) {
-			$field['_name'] = $parent ? $parent['_name'] . '[' . $field['id'] . ']' : 'fields[' . $field['id'] . ']';
-
-			$this->render_field( $field, $parent );
-
-			if ( ! empty( $field['fields'] ) ) {
-				$this->render_fields( $field['fields'], $field );
-			}
-		}
-	}
-
-	public function render_field( $field, $parent = null ): void {
-		$field_type  = 'text';
-		$field_name  = $field['_name'];
-		$field_value = $this->post['fields'][ $field['id'] ] ?? '';
-
-		$view_path = $this->get_view_path( $field['type'] );
-
-		if ( ! file_exists( $view_path ) || ! $view_path ) {
-			return;
-		}
-
-		include $view_path;
-	}
-
-	private function get_view_path( string $field_type ): ?string {
-		$matches = [ 
-			'taxonomy' => 'taxonomy',
-			'group' => 'group',
-		];
-
-        $field_type = $matches[ $field_type ] ?? 'text';
-
-		return PMAI_ROOT_DIR . '/views/fields/' . $field_type . '.php';
 	}
 
 	protected function render_block( $block = 'header' ): void {
@@ -109,26 +82,25 @@ class MetaBoxHandler implements MetaBoxInterface {
 		$parsingData = json_decode( json_encode( $parsingData ), true );
 		$bindings    = $parsingData['import']['options']['fields'] ?? [];
 
-		$this->meta_box->meta_box['fields'] = $this->add_binding_to_fields( $this->meta_box->meta_box['fields'], $bindings );
+        $this->fields = $this->add_binding_to_fields( $this->fields, $bindings );
 		$this->parsingData                  = $parsingData;
 
 		// file_put_contents(__DIR__ . '/parsingData.json', json_encode($parsingData, JSON_PRETTY_PRINT));
 	}
 
 	public function import( $import_data, $args = [] ) {
-		foreach ( $this->meta_box->meta_box['fields'] as $mb_field ) {
-			$field              = FieldFactory::create( $mb_field, $this->get_post(), $this );
+		foreach ( $this->fields as $field ) {
 			$field->parsingData = $this->parsingData;
 			$field->base_xpath  = $this->parsingData['xpath_prefix'] . $this->parsingData['import']['xpath'];
-			$field->xpath       = $mb_field['binding'];
+			$field->xpath       = $field->field['binding'];
 			$field->importData  = $import_data;
+
 			$field->import( $import_data, $args );
 		}
 	}
 
 	public function saved_post( $import_data ) {
-		foreach ( $this->meta_box->meta_box['fields'] as $field ) {
-			$field              = FieldFactory::create( $field, $this->get_post(), $this );
+		foreach ($this->fields as $field ) {
 			$field->parsingData = $this->parsingData;
 			$field->saved_post( $import_data );
 		}
