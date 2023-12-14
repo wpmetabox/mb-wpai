@@ -39,14 +39,15 @@ class MetaBoxHandler implements MetaBoxInterface {
 		$merged_fields = [];
 
 		foreach ( $fields as $index => $field ) {
-			if ( isset( $bindings[ $field['id'] ] ) ) {
-                $field->binding = $bindings[ $field['id'] ];
-				$merged_fields[ $index ] = $field;
+			if ( isset( $bindings[ $index ] ) ) {
+                $field->field['binding'] = $bindings[ $index ];
 			}
 
-			if ( isset( $field['fields'] ) ) {
-				$merged_fields[ $index ]['fields'] = $this->add_binding_to_fields( $field->field['fields'], $bindings[ $field['id'] ] );
+			if ( isset( $field->field['fields'] ) ) {
+				$field->field['fields'] = $this->add_binding_to_fields( $field->field['fields'], $bindings );
 			}
+
+            $merged_fields[ $index ] = $field;
 		}
 
 		return $merged_fields;
@@ -84,7 +85,6 @@ class MetaBoxHandler implements MetaBoxInterface {
 
         $this->fields = $this->add_binding_to_fields( $this->fields, $bindings ); 
 		$this->parsingData                  = $parsingData;
-
 		// file_put_contents(__DIR__ . '/parsingData.json', json_encode($parsingData, JSON_PRETTY_PRINT));
 	}
 

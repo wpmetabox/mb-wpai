@@ -2,6 +2,11 @@
 namespace MetaBox\WPAI\Fields;
 
 class GroupHandler extends FieldHandler {
+    public $mode = 'fixed';
+    public $delimeter = ',';
+    public $is_ignore_empties = false;
+    public $foreach = '';
+
 	public function parse( $xpath, $parsingData, $args = [] ) {
 		$xpath = json_decode( $xpath, true );
 
@@ -32,13 +37,44 @@ class GroupHandler extends FieldHandler {
 		return $value;
 	}
 
-	public function get_value(): array {
-		$value = [];
+    public function get_tree_value($rows, $post_index) {
+        $value = [];
 
-		if ( isset( $this->field['fields'] ) && is_array( $this->field['fields'] ) ) {
-			$value[] = $this->get_children_value( $this->field['fields'], [] );
-		}
-        
-        return $this->field['clone'] ? $value : $value[0];
+        foreach ( $rows as $index => $row ) {
+            if ( $index === 'ROWNUMBER' ) {
+                continue;
+            }
+
+            foreach ($row as $column => $xpath) {
+                if (is_string($xpath)) {
+                    $values = $this->get_value_by_xpath($xpath);
+
+                    if (isset($values[$post_index])) {
+                        $value[$index][$column] = $values[$post_index];
+                    }
+                }
+
+                if (is_array($xpath)) {
+                    $value[$index][$column] = $this->get_tree_value($xpath['rows'], $post_index);
+                }
+            }
+        }
+
+        return $value;
+    }
+
+	public function get_value() {
+        if (!is_array($this->xpath)) {
+            return;
+        }
+
+        $post_index = $this->get_post_index();
+        $value = $this->get_tree_value($this->xpath['rows'], $post_index);
+
+        if ($this->returns_array()) {
+            return $value;
+        } 
+
+        return $value[0];
 	}
 }
