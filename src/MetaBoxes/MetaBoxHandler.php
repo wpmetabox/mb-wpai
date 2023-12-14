@@ -84,7 +84,7 @@ class MetaBoxHandler implements MetaBoxInterface {
 		$bindings    = $parsingData['import']['options']['fields'] ?? [];
 
         $this->fields = $this->add_binding_to_fields( $this->fields, $bindings ); 
-		$this->parsingData                  = $parsingData;
+		$this->parsingData = $parsingData;
 		// file_put_contents(__DIR__ . '/parsingData.json', json_encode($parsingData, JSON_PRETTY_PRINT));
 	}
 

@@ -228,9 +228,9 @@
 
             if ($(this).is(':checked') && val !== 'no') {
                 var $parent = $(this).parents('.repeater:first');
-                console.log($parent);
-                // $parent.find('tbody:first').children('.row:not(:first)').remove();
-                // if ( ! $parent.find('tbody:first').children('.row').length) pmai_repeater_clone($parent);
+                
+                $parent.find('tbody:first').children('.row:not(:first)').remove();
+                if ( ! $parent.find('tbody:first').children('.row').length) pmai_repeater_clone($parent);
             }
         });
 

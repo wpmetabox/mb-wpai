@@ -15,52 +15,32 @@ class GroupHandler extends FieldHandler {
 		$this->base_xpath  = $parsingData['xpath_prefix'] . $parsingData['import']['xpath'];
 	}
 
+    public function get_tree_value(array $xpath, $post_index) {
+        $output = [];
 
-	private function get_children_value( $fields, $args ): array {
-		$value = [];
-
-		foreach ( $fields as $mb_field ) {
-			$field = FieldFactory::create( $mb_field, $this->post, $this->meta_box );
-
-			$field->parsingData = $this->parsingData;
-			$field->base_xpath  = $this->parsingData['xpath_prefix'] . $this->parsingData['import']['xpath'];
-			$field->xpath       = $mb_field['binding'];
-			$field->importData  = $this->importData;
-
-			if ( isset($field->field['fields']) && is_array( $field->field['fields'] ) ) {
-				$value[ $field->field['id'] ] = $this->get_children_value( $field->field['fields'], $args );
-			} else {
-                $value[ $field->field['id'] ] = $field->get_value();
-            }
-		}
-
-		return $value;
-	}
-
-    public function get_tree_value($rows, $post_index) {
-        $value = [];
-
-        foreach ( $rows as $index => $row ) {
+        foreach ( $xpath['rows'] as $index => $row ) {
             if ( $index === 'ROWNUMBER' ) {
                 continue;
             }
 
-            foreach ($row as $column => $xpath) {
-                if (is_string($xpath)) {
-                    $values = $this->get_value_by_xpath($xpath);
+            foreach ($row as $column => $sub_xpath) {
+                if (is_string($sub_xpath)) {
+                    $values = $this->get_value_by_xpath($sub_xpath);
 
                     if (isset($values[$post_index])) {
-                        $value[$index][$column] = $values[$post_index];
+                        // Variable repeater mode
+                        $values[$post_index] = explode($xpath['separator'] ?? '|', $values[$post_index]);
+                        $output[$index][$column] = $values[$post_index];
                     }
                 }
 
-                if (is_array($xpath)) {
-                    $value[$index][$column] = $this->get_tree_value($xpath['rows'], $post_index);
+                if (is_array($sub_xpath)) {
+                    $output[$index][$column] = $this->get_tree_value($sub_xpath, $post_index);
                 }
             }
         }
 
-        return $value;
+        return $output;
     }
 
 	public function get_value() {
@@ -68,13 +48,61 @@ class GroupHandler extends FieldHandler {
             return;
         }
 
+        $this->xpath = $this->bind_foreach($this->xpath);
+        
         $post_index = $this->get_post_index();
-        $value = $this->get_tree_value($this->xpath['rows'], $post_index);
-
+        $values = $this->get_tree_value($this->xpath, $post_index);
+                
         if ($this->returns_array()) {
-            return $value;
+            return $values;
         } 
 
-        return $value[0];
+        return $values[0];
 	}
+
+    private function bind_foreach(array $xpath)
+    {
+        foreach ($xpath['rows'] as $index => $row) {
+            if ($index === 'ROWNUMBER') {
+                continue;
+            }
+
+            foreach ($row as $column => $cxpath) {
+                if (is_string($cxpath)) {
+                    $cxpath = '{' . $this->get_string_between($xpath['foreach']) . $this->get_string_between($cxpath) . '}';
+                }
+
+                if (is_array($cxpath)) {
+                    $cxpath = $this->bind_foreach($cxpath);
+                }
+
+                $xpath['rows'][$index][$column] = $cxpath;
+            }
+        }
+
+        return $xpath;
+    }
+
+    private function get_string_between($string)
+    {
+        $start = '{';
+        $end = '}';
+
+        $string = ' ' . $string;
+        $ini = strpos($string, $start);
+
+        if ($ini == 0) {
+            return '';
+        }
+
+        $ini += strlen($start);
+        $len = strpos($string, $end, $ini) - $ini;
+        $str = substr($string, $ini, $len);
+
+        if ($str === '.') {
+            $str = '';
+        }
+
+        return $str;
+    }
 }

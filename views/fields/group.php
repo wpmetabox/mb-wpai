@@ -21,21 +21,21 @@ if ( ! is_array( $current_field ) ) {
 	<div class="input" style="margin-bottom: 10px;">
 		<div class="input">
 			<input type="radio" id="is_variable_<?= $field_name ?>_<?= $field['id'] ?>_no"
-				class="switcher variable_repeater_mode" name="<?= $field_name ?>[is_variable]" value="no" <?php echo 'yes' != $current_field['is_variable'] ? 'checked="checked"' : '' ?> />
+				class="switcher variable_repeater_mode" name="<?= $field['_name'] ?>[is_variable]" value="no" <?php echo 'yes' != $current_field['is_variable'] ? 'checked="checked"' : '' ?> />
 			<label for="is_variable_<?= $field_name ?>_<?= $field['id'] ?>_no" class="chooser_label">
 				<?php _e( 'Fixed Repeater Mode', 'mb-wpai' ) ?>
 			</label>
 		</div>
 		<div class="input">
 			<input type="radio" id="is_variable_<?= $field_name ?>_<?= $field['id'] ?>_yes"
-				class="switcher variable_repeater_mode" name="<?= $field_name ?>[is_variable]" value="yes" <?php echo 'yes' == $current_field['is_variable'] ? 'checked="checked"' : '' ?> />
+				class="switcher variable_repeater_mode" name="<?= $field['_name'] ?>[is_variable]" value="yes" <?php echo 'yes' == $current_field['is_variable'] ? 'checked="checked"' : '' ?> />
 			<label for="is_variable_<?= $field_name ?>_<?= $field['id'] ?>_yes" class="chooser_label">
 				<?php _e( 'Variable Repeater Mode (XML)', 'mb-wpai' ) ?>
 			</label>
 		</div>
 		<div class="input">
 			<input type="radio" id="is_variable_<?= $field_name ?>_<?= $field['id'] ?>_yes_csv"
-				class="switcher variable_repeater_mode" name="<?= $field_name ?>[is_variable]" value="csv" <?php echo 'csv' == $current_field['is_variable'] ? 'checked="checked"' : '' ?> />
+				class="switcher variable_repeater_mode" name="<?= $field['_name'] ?>[is_variable]" value="csv" <?php echo 'csv' == $current_field['is_variable'] ? 'checked="checked"' : '' ?> />
 			<label for="is_variable_<?= $field_name ?>_<?= $field['id'] ?>_yes_csv" class="chooser_label">
 				<?php _e( 'Variable Repeater Mode (CSV)', 'mb-wpai' ) ?>
 			</label>
