@@ -16,18 +16,20 @@ class UserHandler extends FieldHandler {
 			$value = [ $value ];
 		}
 
-		$ids = [];
+		$user_ids = [];
 
 		foreach ( $value as $v ) {
 			foreach ( $by as $column ) {
 				$user = get_user_by( $column, $v );
 
 				if ( ! empty( $user ) ) {
-					$ids[] = $user->ID;
+					$user_ids[] = $user->ID;
 				}
 			}
 		}
 
-		return $ids;
+        $user_ids = array_unique( $user_ids );
+
+        return $this->returns_array() ? $user_ids : reset( $user_ids );
 	}
 }
