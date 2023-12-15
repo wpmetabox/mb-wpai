@@ -24,7 +24,7 @@ $current_field = $field_value;
                         'id' => $field['_name'],
                         'name' => $field['_name'],
                         'type' => 'taxonomy',
-                        'taxonomy' => 'category',
+                        'taxonomy' => $field['taxonomy'],
                         'std' => $field_value,
                     ];
 

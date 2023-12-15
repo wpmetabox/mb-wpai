@@ -11,7 +11,7 @@ class PMAI_Admin_Import extends PMAI_Controller_Admin {
 		
 		$this->data['meta_boxes'] = $meta_boxes;
 
-		PMXI_Plugin::$session->set( 'meta_boxes', $this->data['meta_boxes'] );
+		PMXI_Plugin::$session->set( 'meta_boxes', $meta_boxes );
 		PMXI_Plugin::$session->save_data();
 
 		$this->render();
