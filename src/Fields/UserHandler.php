@@ -3,6 +3,11 @@ namespace MetaBox\WPAI\Fields;
 
 class UserHandler extends FieldHandler {
 
+    /**
+     * Loop through the value and get user ID from login, slug, email or ID.
+     * 
+     * @return int[]|null
+     */
 	public function get_value() {
 		$by    = [ 'login', 'slug', 'email', 'id' ];
 		$value = parent::get_value();

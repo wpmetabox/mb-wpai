@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+   <product>
+      <title>Soflyy T-Shirt</title>
+      <sku>999-X</sku>
+      <parent_sku />
+      <price />
+      <color />
+      <description>This shirt is awesome.</description>
+   </product>
+   <product>
+      <title>Soflyy T-Shirt (blue)</title>
+      <sku>999-B</sku>
+      <parent_sku>999-X</parent_sku>
+      <price>15</price>
+      <color>blue</color>
+      <description />
+   </product>
+   <product>
+      <title>Soflyy T-Shirt (red)</title>
+      <sku>999-C</sku>
+      <parent_sku>999-X</parent_sku>
+      <price>15</price>
+      <color>red</color>
+      <description />
+   </product>
+   <product>
+      <title>Soflyy Mug</title>
+      <sku>777-X</sku>
+      <parent_sku />
+      <price />
+      <color />
+      <description>This mug is awesome.</description>
+   </product>
+   <product>
+      <title>Soflyy Mug</title>
+      <sku>777-O</sku>
+      <parent_sku>777-X</parent_sku>
+      <price>9</price>
+      <color>orange</color>
+      <description />
+   </product>
+   <product>
+      <title>Soflyy Mug</title>
+      <sku>777-Y</sku>
+      <parent_sku>777-X</parent_sku>
+      <price>9</price>
+      <color>yellow</color>
+      <description />
+   </product>
+</document>

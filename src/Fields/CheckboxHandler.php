@@ -21,7 +21,7 @@ class CheckboxHandler extends FieldHandler {
 		}
 
 		return array_map( function ($item) {
-			return filter_var( $item, FILTER_VALIDATE_BOOLEAN);
+			return $this->to_bool( $item );
 		}, $value );
 	}
 

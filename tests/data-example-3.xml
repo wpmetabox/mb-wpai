@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+   <product>
+      <title>Wagyu Tenderloin Steak</title>
+      <price />
+      <weight />
+      <qty />
+      <description>The most decadent, succulent cut of beef, ever.</description>
+   </product>
+   <product>
+      <title>Wagyu Tenderloin Steak</title>
+      <price>55</price>
+      <weight>6 oz</weight>
+      <qty />
+      <description />
+   </product>
+   <product>
+      <title>Wagyu Tenderloin Steak</title>
+      <price>65</price>
+      <weight>9 oz</weight>
+      <qty />
+      <description />
+   </product>
+   <product>
+      <title>Wagyu Tenderloin Steak</title>
+      <price>79</price>
+      <weight>12 oz</weight>
+      <qty />
+      <description />
+   </product>
+   <product>
+      <title>Lamb Chops</title>
+      <price />
+      <weight />
+      <qty />
+      <description>These taste really good.</description>
+   </product>
+   <product>
+      <title>Lamb Chops</title>
+      <price>20</price>
+      <weight />
+      <qty>3 chops</qty>
+      <description />
+   </product>
+   <product>
+      <title>Lamb Chops</title>
+      <price>40</price>
+      <weight />
+      <qty>6 chops</qty>
+      <description />
+   </product>
+   <product>
+      <title>Lamb Chops</title>
+      <price>60</price>
+      <weight />
+      <qty>9 chops</qty>
+      <description />
+   </product>
+</document>

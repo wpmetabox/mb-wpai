@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+   <product>
+      <title>Coca Cola</title>
+      <group_id>1253</group_id>
+      <price>6</price>
+      <size>6 pack</size>
+      <description>Fizzy and tastes great.</description>
+   </product>
+   <product>
+      <title>Coca Cola</title>
+      <group_id>1253</group_id>
+      <price>10</price>
+      <size>12 pack</size>
+      <description>Fizzy and tastes great.</description>
+   </product>
+   <product>
+      <title>Coca Cola</title>
+      <group_id>1253</group_id>
+      <price>12</price>
+      <size>18 pack</size>
+      <description>Fizzy and tastes great.</description>
+   </product>
+   <product>
+      <title>Coca Cola</title>
+      <group_id>1253</group_id>
+      <price>99</price>
+      <size>300 can case</size>
+      <description>Fizzy and tastes great.</description>
+   </product>
+   <product>
+      <title>Sprite</title>
+      <group_id>19283</group_id>
+      <price>6</price>
+      <size>6 pack</size>
+      <description>Not as good as Coca Cola.</description>
+   </product>
+   <product>
+      <title>Sprite</title>
+      <group_id>19283</group_id>
+      <price>10</price>
+      <size>12 pack</size>
+      <description>Not as good as Coca Cola.</description>
+   </product>
+   <product>
+      <title>Sprite</title>
+      <group_id>19283</group_id>
+      <price>12</price>
+      <size>18 pack</size>
+      <description>Not as good as Coca Cola.</description>
+   </product>
+   <product>
+      <title>Sprite</title>
+      <group_id>19283</group_id>
+      <price>99</price>
+      <size>300 can case</size>
+      <description>Not as good as Coca Cola.</description>
+   </product>
+</document>

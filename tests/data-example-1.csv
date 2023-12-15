@@ -1,0 +1,7 @@
+Product Title,SKU,Parent SKU,Price,Color,Description
+Soflyy T-Shirt,999-X,,,,This shirt is awesome.
+Soflyy T-Shirt (blue),999-B,999-X,15 ,blue,
+Soflyy T-Shirt (red),999-C,999-X,15 ,red,
+Soflyy Mug,777-X,,,,This mug is awesome.
+Soflyy Mug,777-O,777-X,9 ,orange,
+Soflyy Mug,777-Y,777-X,9 ,yellow,

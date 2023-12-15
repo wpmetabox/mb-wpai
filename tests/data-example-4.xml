@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+   <product>
+      <title>Apple Tree</title>
+      <price>39</price>
+      <rootstock>M12</rootstock>
+      <height>36</height>
+      <description>Good tasting fruit.</description>
+   </product>
+   <product>
+      <title>Apple Tree</title>
+      <price>39</price>
+      <rootstock>M40</rootstock>
+      <height>36</height>
+      <description />
+   </product>
+   <product>
+      <title>Apple Tree</title>
+      <price>39</price>
+      <rootstock>M12</rootstock>
+      <height>50</height>
+      <description />
+   </product>
+   <product>
+      <title>Apple Tree</title>
+      <price>39</price>
+      <rootstock>M40</rootstock>
+      <height>50</height>
+      <description />
+   </product>
+   <product>
+      <title>Orange Tree</title>
+      <price>53</price>
+      <rootstock>A67</rootstock>
+      <height>48</height>
+      <description>Bad tasting fruit.</description>
+   </product>
+   <product>
+      <title>Orange Tree</title>
+      <price>53</price>
+      <rootstock>B78</rootstock>
+      <height>48</height>
+      <description />
+   </product>
+   <product>
+      <title>Orange Tree</title>
+      <price>70</price>
+      <rootstock>A67</rootstock>
+      <height>70</height>
+      <description />
+   </product>
+   <product>
+      <title>Orange Tree</title>
+      <price>70</price>
+      <rootstock>B78</rootstock>
+      <height>70</height>
+      <description />
+   </product>
+</document>
