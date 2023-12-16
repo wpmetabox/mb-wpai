@@ -1,6 +1,13 @@
-<fieldset>
-	<label>
-		<?= esc_html( $field['name'] ) ?>
-	</label>
-	<input type="text" value="<?= esc_attr( $field['std'] ) ?>" name="<?= esc_attr( $field_name ) ?>" />
-</fieldset>
+<?php
+// For every field type, we just need to create a simple text field with no attributes
+$text_field = array_merge($field, [
+    'id' => $field['_name'],
+    'multiple' => false,
+    'type' => 'text',
+    'clone' => false,
+]);
+
+$text_fields = \RW_Meta_Box::normalize_fields( [$text_field] );
+
+RWMB_Field::call('show', $text_fields[0] , false );
+?>
