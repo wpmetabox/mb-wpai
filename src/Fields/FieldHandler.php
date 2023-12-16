@@ -72,6 +72,7 @@ abstract class FieldHandler {
 			'taxonomy' => 'taxonomy',
 			'group' => 'group',
             'fieldset_text' => 'fieldset_text',
+            'key_value' => 'key_value',
 		];
 
         $field_type = $matches[ $field_type ] ?? 'text';

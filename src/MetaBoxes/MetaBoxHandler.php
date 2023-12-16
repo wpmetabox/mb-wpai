@@ -92,7 +92,7 @@ class MetaBoxHandler implements MetaBoxInterface {
 		foreach ( $this->fields as $field ) {
 			$field->parsingData = $this->parsingData;
 			$field->base_xpath  = $this->parsingData['xpath_prefix'] . $this->parsingData['import']['xpath'];
-			$field->xpath       = $field->field['binding'];
+			$field->xpath       = $field->field['binding'] ?? null;
 			$field->importData  = $import_data;
 
 			$field->import( $import_data, $args );
