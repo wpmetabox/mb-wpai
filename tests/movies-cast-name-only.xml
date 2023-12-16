@@ -1,47 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <movies>
-  <movie>
-    <title>The Matrix</title>
-    <description>A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.</description>
-    <thumbnail>matrix_thumbnail.jpg</thumbnail>
-    <casts>
-      <name>Keanu Reeves</name>
-      <name>Laurence Fishburne</name>
-    </casts>
-    <released>false</released>
-    <genres>
-      <genre>Action</genre>
-      <genre>Sci-Fi</genre>
-    </genres>
-  </movie>
-  <movie>
-    <title>Inception</title>
-    <description>A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.</description>
-    <thumbnail>inception_thumbnail.jpg</thumbnail>
-    <casts>
-        <name>Leonardo DiCaprio</name>
-        <name>Joseph Gordon-Levitt</name>
-    </casts>
-     <released>true</released>
-    <genres>
-      <genre>Action</genre>
-      <genre>Adventure</genre>
-      <genre>Sci-Fi</genre>
-    </genres>
-  </movie>
-  <movie>
-    <title>Interstellar</title>
-    <description>A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.</description>
-    <thumbnail>interstellar_thumbnail.jpg</thumbnail>
-    <casts>
-        <name>Matthew McConaughey</name>
-        <name>Anne Hathaway</name>
-    </casts>
-    <released>true</released>
-    <genres>
-      <genre>Adventure</genre>
-      <genre>Drama</genre>
-      <genre>Sci-Fi</genre>
-    </genres>
-  </movie>
+    <movie>
+        <title>The Matrix</title>
+        <description>A computer hacker learns from mysterious rebels about the true nature of his
+            reality and his role in the war against its controllers.</description>
+        <thumbnail>matrix_thumbnail.jpg</thumbnail>
+        <casts>
+            <name>Keanu Reeves</name>
+            <name>Laurence Fishburne</name>
+        </casts>
+        <released>false</released>
+        <color>#fff</color>
+        <released-date>2024-10-10 00:00:00</released-date>
+        <genres>
+            <genre>Action</genre>
+            <genre>Sci-Fi</genre>
+        </genres>
+    </movie>
+    <movie>
+        <title>Inception</title>
+        <description>A thief who steals corporate secrets through the use of dream-sharing
+            technology is given the inverse task of planting an idea into the mind of a CEO.</description>
+        <thumbnail>inception_thumbnail.jpg</thumbnail>
+        <color>#c00</color>
+        <casts>
+            <name>Leonardo DiCaprio</name>
+            <name>Joseph Gordon-Levitt</name>
+        </casts>
+        <released>true</released>
+        <released-date>2023-10-10 00:00:00</released-date>
+        <genres>
+            <genre>Action</genre>
+            <genre>Adventure</genre>
+            <genre>Sci-Fi</genre>
+        </genres>
+    </movie>
+    <movie>
+        <title>Interstellar</title>
+        <description>A team of explorers travel through a wormhole in space in an attempt to ensure
+            humanity's survival.</description>
+        <thumbnail>interstellar_thumbnail.jpg</thumbnail>
+        <color>#000</color>
+        <casts>
+            <name>Matthew McConaughey</name>
+            <name>Anne Hathaway</name>
+        </casts>
+        <released>true</released>
+        <released-date>2023-10-10 00:00:00</released-date>
+        <genres>
+            <genre>Adventure</genre>
+            <genre>Drama</genre>
+            <genre>Sci-Fi</genre>
+        </genres>
+    </movie>
 </movies>
