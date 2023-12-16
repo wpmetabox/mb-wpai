@@ -19,7 +19,6 @@ $current_field = $field_value;
         <div class="input sub_input">
             <div class="input">
                 <?php
-                    // @todo: remove this hard code
                     $tax_field = [
                         'id' => $field['_name'],
                         'name' => $field['_name'],

@@ -115,15 +115,15 @@ abstract class FieldHandler {
 	}
 
 	public function get_value_by_xpath( $xpath, $suffix = '' ) {
-		// add_filter( 'wp_all_import_multi_glue', function ($glue) {
-		// 	return '||';
-		// } );
+		add_filter( 'wp_all_import_multi_glue', function ($glue) {
+			return '||';
+		} );
 
 		$values = \XmlImportParser::factory( $this->parsingData['xml'], $this->base_xpath . $suffix, $xpath, $file )->parse();
 
-		// add_filter( 'wp_all_import_multi_glue', function ($glue) {
-		// 	return ',';
-		// } );
+		add_filter( 'wp_all_import_multi_glue', function ($glue) {
+			return ',';
+		} );
 
 		return $values;
 	}
