@@ -13,7 +13,7 @@ class FileHandler extends FieldHandler {
 
 		$parsingData = $this->parsingData;
 
-		$attachment_id = MetaBoxService::import_file(
+		$attachment = MetaBoxService::import_file(
 			$value,
 			$this->get_post_id(),
 			$parsingData['logger'],
@@ -23,6 +23,6 @@ class FileHandler extends FieldHandler {
 			$this->importData
 		);
 
-		return $attachment_id;
+		return $attachment['ID'];
 	}
 }

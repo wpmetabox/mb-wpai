@@ -123,7 +123,15 @@ final class MetaBoxService {
 			$fileName      = basename( $atch_url );
 		}
 
-		return PMXI_API::upload_image( $pid, $atch_url, $downloadFiles, $logger, true, $fileName, "files", $search_in_gallery, $importData['articleData'], $importData );
+		$attachment_id = PMXI_API::upload_image( $pid, $atch_url, $downloadFiles, $logger, true, $fileName, "files", $search_in_gallery, $importData['articleData'], $importData );
+
+        return [
+            'ID'    => $attachment_id,
+            'name'  => basename( $atch_url ),
+            'path'  => $atch_url,
+            'url'   => get_attached_file( $attachment_id ),
+            'title' => basename( $atch_url ),
+        ];
 	}
 
 	/**

@@ -4,13 +4,13 @@ namespace MetaBox\WPAI\Fields;
 
 class FileInputHandler extends FileHandler {
     public function get_value() {
-        $attachment_id = parent::get_value();
+        $attachment = parent::get_value();
 
-        if ( ! $attachment_id ) {
+        if ( ! $attachment ) {
             return;
         }
 
-        $attachment = get_post( $attachment_id );
+        $attachment = get_post( $attachment['ID'] );
 
         if ( ! $attachment ) {
             return;
