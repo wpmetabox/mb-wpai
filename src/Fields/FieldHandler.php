@@ -55,7 +55,8 @@ abstract class FieldHandler {
 		$field_name  = $this->field['_name'];
 		$field_value = $this->post['fields'][ $this->field['id'] ] ?? '';
         $field = $this->field;
-        $field['std'] = $field['std'] ?? $field_value;
+        
+        $field['std'] = $field_value;
         $handler = $this;
 
 		$view_path = $this->get_view_path( $this->field['type'] );
@@ -100,7 +101,6 @@ abstract class FieldHandler {
 
 		// 	return false;
 		// }
-
 		$value = $this->get_value();
 
 		MetaBoxService::set_meta( $this, $this->get_post_id(), $this->get_id(), $value );

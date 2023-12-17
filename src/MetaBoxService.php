@@ -91,6 +91,10 @@ final class MetaBoxService {
 	 * @return mixed|int|\WP_Error
 	 */
 	public static function import_file( $atch_url, $pid, $logger, $fast = false, $search_in_gallery = false, $search_in_files = false, $importData = [] ) {
+        // Clean up the URL, remove spaces and convert them to %20 (URL encoded space)
+        $atch_url = str_replace( ' ', '%20', $atch_url );
+        // Remove the query string from the URL
+        $atch_url = strtok( $atch_url, '?' );
 
 		// search file attachment by ID
 		if ( $search_in_gallery and is_numeric( $atch_url ) ) {
