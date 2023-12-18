@@ -27,5 +27,4 @@ class CheckboxHandler extends FieldHandler {
 			return $this->to_bool( $item );
 		}, $value );
 	}
-
 }

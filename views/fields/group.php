@@ -24,8 +24,8 @@ if ( ! is_array( $current_field ) ) {
 	<div class="input" style="margin-bottom: 10px;">
 		<div class="input">
 			<input type="radio" id="is_variable_<?= esc_attr( $field_name ) ?>_<?= esc_attr( $field['id'] ) ?>_no"
-				class="switcher variable_repeater_mode" name="<?= esc_attr( $field['_name'] ) ?>[is_variable]" value="no"
-				<?php echo 'yes' != $current_field['is_variable'] ? 'checked="checked"' : '' ?> />
+				class="switcher variable_repeater_mode" name="<?= esc_attr( $field['_name'] ) ?>[is_variable]"
+				value="no" <?php echo 'yes' != $current_field['is_variable'] ? 'checked="checked"' : '' ?> />
 			<label for="is_variable_<?= esc_attr( $field_name ) ?>_<?= esc_attr( $field['id'] ) ?>_no"
 				class="chooser_label">
 				<?php _e( 'Fixed Repeater Mode', 'mb-wpai' ) ?>
@@ -33,8 +33,8 @@ if ( ! is_array( $current_field ) ) {
 		</div>
 		<div class="input">
 			<input type="radio" id="is_variable_<?= esc_attr( $field_name ) ?>_<?= esc_attr( $field['id'] ) ?>_yes"
-				class="switcher variable_repeater_mode" name="<?= esc_attr( $field['_name'] ) ?>[is_variable]" value="yes"
-				<?php echo 'yes' == $current_field['is_variable'] ? 'checked="checked"' : '' ?> />
+				class="switcher variable_repeater_mode" name="<?= esc_attr( $field['_name'] ) ?>[is_variable]"
+				value="yes" <?php echo 'yes' == $current_field['is_variable'] ? 'checked="checked"' : '' ?> />
 			<label for="is_variable_<?= esc_attr( $field_name ) ?>_<?= esc_attr( $field['id'] ) ?>_yes"
 				class="chooser_label">
 				<?php _e( 'Variable Repeater Mode (XML)', 'mb-wpai' ) ?>
@@ -42,8 +42,8 @@ if ( ! is_array( $current_field ) ) {
 		</div>
 		<div class="input">
 			<input type="radio" id="is_variable_<?= esc_attr( $field_name ) ?>_<?= esc_attr( $field['id'] ) ?>_yes_csv"
-				class="switcher variable_repeater_mode" name="<?= esc_attr( $field['_name'] ) ?>[is_variable]" value="csv"
-				<?php echo 'csv' == $current_field['is_variable'] ? 'checked="checked"' : '' ?> />
+				class="switcher variable_repeater_mode" name="<?= esc_attr( $field['_name'] ) ?>[is_variable]"
+				value="csv" <?php echo 'csv' == $current_field['is_variable'] ? 'checked="checked"' : '' ?> />
 			<label for="is_variable_<?= esc_attr( $field_name ) ?>_<?= esc_attr( $field['id'] ) ?>_yes_csv"
 				class="chooser_label">
 				<?php _e( 'Variable Repeater Mode (CSV)', 'mb-wpai' ) ?>
@@ -54,7 +54,7 @@ if ( ! is_array( $current_field ) ) {
 			<input type="checkbox" value="1"
 				id="is_ignore_empties<?= esc_attr( $field_name ) ?>_<?= esc_attr( $field['id'] ) ?>"
 				name="<?= esc_attr( $field['_name'] ) ?>[is_ignore_empties]" <?php if ( ! empty( $current_field['is_ignore_empties'] ) )
-					  echo 'checked="checked'; ?> />
+						echo 'checked="checked'; ?> />
 			<label for="is_ignore_empties<?= esc_attr( $field_name ) ?>_<?= esc_attr( $field['id'] ) ?>">
 				<?php _e( 'Ignore blank fields', 'mb-wpai' ); ?>
 			</label>
