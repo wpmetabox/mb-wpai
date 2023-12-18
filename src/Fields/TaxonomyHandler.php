@@ -3,7 +3,6 @@
 namespace MetaBox\WPAI\Fields;
 
 use MetaBox\WPAI\Fields\FieldHandler;
-use MetaBox\WPAI\MetaBoxService;
 
 class TaxonomyHandler extends FieldHandler {
 	public function parse( $xpath, $parsingData, $args = [] ) {
@@ -95,23 +94,37 @@ class TaxonomyHandler extends FieldHandler {
             return;
         }
 
-		$this->xpath = $this->build_tree( $this->xpath );
-		$output      = $this->fill_tree( $this->xpath, $taxonomy );
-		$output      = $this->get_tree_values( $output, $this->get_post_index() );
+        if ($this->xpath['switcher_value'] && $this->xpath['switcher_value'] === 'static') {
+            $output = $this->xpath['static'];
+        } else {
+            $hierachy = $this->xpath['hierachy'];
+            if (!is_array($hierachy)) {
+                $hierachy = json_decode( $hierachy, true );
+            }
+            
+            $this->xpath['hierachy'] = $this->build_tree( $hierachy );
+            $output      = $this->fill_tree( $hierachy, $taxonomy );
+            $output      = $this->get_tree_values( $output, $this->get_post_index() );
+            $output = implode( ',', $output );
+        }
 
-		return implode( ',', $output );
+        return $output;
 	}
-
 
 	public function saved_post( $importData ) {
         if ( empty($this->xpath) || ! is_array( $this->xpath ) ) {
             return;
         }
-
+        
+        if (!is_array($this->xpath)) {
+            $this->xpath = json_decode( $this->xpath, true );
+        }
+        
 		$taxonomy = $this->field['taxonomy'][0];
 		$values   = explode( ',', $this->get_value() );
+        
 		$values   = array_filter( array_unique( $values ) );
-
+        
 		wp_set_post_terms( $this->get_post_id(), $values, $taxonomy );
 	}
 }
