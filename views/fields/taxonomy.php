@@ -7,11 +7,24 @@
  * @var string $current_multiple_value
  */
 $field_name = str_replace(['[',']'], '', $field_name);
-$current_field = $field_value;
+$current_field = is_array( $field['std'] ) ? $field['std'] : $field_value;
+
+if (!is_array($current_field)){
+    $current_field = [
+        'switcher_value' => $field_name['switcher_value'] ?? 'static',
+        'static' => $field_value['static'],
+        'hierachy' => $field_value['hierachy'] ?? '',
+        'delim' => ','
+    ];
+}
+
+$switcher_value = $current_field['switcher_value'] ?? 'static';
+
+echo $field['name'];
 ?>
 <div class="input">
     <div class="main_choise">
-        <input type="radio" id="is_multiple_field_value_<?= $field_name ?>_<?= $field['id'];?>_yes" class="switcher" name="is_multiple_field_value<?php echo $field_name; ?>[<?= $field['id'];?>]" value="yes" <?php echo 'no' != $current_is_multiple_field_value ? 'checked="checked"': '' ?>/>
+        <input type="radio" id="is_multiple_field_value_<?= $field_name ?>_<?= $field['id'];?>_yes" class="switcher" name="<?= $field['_name'] ?>[switcher_value]" value="static" <?= $switcher_value === 'static' ? 'checked="checked"': '' ?> />
         <label for="is_multiple_field_value_<?= $field_name ?>_<?= $field['id'];?>_yes" class="chooser_label"><?php _e("Select value for all records"); ?></label>
     </div>
     <div class="wpallimport-clear"></div>
@@ -19,13 +32,13 @@ $current_field = $field_value;
         <div class="input sub_input">
             <div class="input">
                 <?php
-                    $tax_field = [
+                    $tax_field = array_merge($field, [
                         'id' => $field['_name'],
-                        'name' => $field['_name'],
-                        'type' => 'taxonomy',
-                        'taxonomy' => $field['taxonomy'],
-                        'std' => $field_value,
-                    ];
+                        'field_name' => $field['_name'] . '[static]',
+                        'multiple' => false,
+                        'std' => $current_field['static'],
+                        'clone' => false,
+                    ]);                    
 
                     $tax_fields = \RW_Meta_Box::normalize_fields( [$tax_field] );
                     RWMB_Field::call('show', $tax_fields[0] , false );
@@ -37,7 +50,7 @@ $current_field = $field_value;
 <div class="clear"></div>
 <div class="input" style="overflow:hidden;">
     <div class="main_choise">
-        <input type="radio" id="is_multiple_field_value_<?= $field_name ?>_<?= $field['id'];?>_no" class="switcher" name="is_multiple_field_value<?php echo $field_name; ?>[<?= $field['id'];?>]" value="no" <?php echo 'no' == $current_is_multiple_field_value ? 'checked="checked"': '' ?>/>
+        <input type="radio" id="is_multiple_field_value_<?= $field_name ?>_<?= $field['id'];?>_no" class="switcher" name="<?= $field['_name'] ?>[switcher_value]" value="hierachy" <?= $switcher_value !== 'static' ? 'checked="checked"': '' ?> />
         <label for="is_multiple_field_value_<?= $field_name ?>_<?= $field['id'];?>_no" class="chooser_label"><?php _e('Set with XPath', 'mb-wpai' )?></label>
     </div>
     <div class="wpallimport-clear"></div>
@@ -50,14 +63,8 @@ $current_field = $field_value;
                             <div class="col2" style="clear: both;">
                                 <ol class="sortable no-margin">
                                     <?php
-                                    if (!is_array($current_field)){
-                                        $current_field = [
-                                            'value' => $current_field,
-                                            'delim' => ','
-                                        ];
-                                    }
                                     if ( ! empty($field_value) ):
-                                        $taxonomies_hierarchy = json_decode($field_value);
+                                        $taxonomies_hierarchy = json_decode($field_value['hierachy']);
 
                                         if ( ! empty($taxonomies_hierarchy) and is_array($taxonomies_hierarchy)): $i = 0; foreach ($taxonomies_hierarchy as $cat) { $i++;
                                             if ( is_null($cat->parent_id) or empty($cat->parent_id) )
@@ -96,8 +103,7 @@ $current_field = $field_value;
                                         </div>
                                     </li>
                                 </ol>
-                                <input type="hidden" class="hierarhy-output" name="<?= $field['_name'] ?>" value="<?= esc_attr($field_value) ?>"/>
-
+                                <input type="hidden" class="hierarhy-output" name="<?= $field['_name'] ?>[hierachy]" value="<?= esc_attr($current_field['hierachy']) ?>"/>
                                 <div class="input">
                                     <label for=""><?php _e('Separated by'); ?></label>
                                     <input

@@ -53,6 +53,7 @@ abstract class FieldHandler {
     public function view(): void {
         $field_type  = 'text';
 		$field_name  = $this->field['_name'];
+        
 		$field_value = $this->post['fields'][ $this->field['id'] ] ?? '';
         $field = $this->field;
         
