@@ -13,16 +13,16 @@ Then install this plugin as a normal WordPress plugin.
 ## To do
 - [x] Import from basic and html fields
 - [x] Import from upload fields
-- [x] Clonable fields
+- [x] Cloneable fields
 - [x] Group fields
     - [x] Same levels
     - [x] Different levels
 - [x] Users field
-- [ ] Taxonomy fields
-    - [ ] Select taxonomy
+- [x] Taxonomy fields
+    - [x] Select taxonomy
     - [x] Set with xpath
 - [x] XML Support
-- [ ] CSV Support
+- [x] CSV Support
 
 ## FAQ
 **Does it work with WP All Import free edition?** 
