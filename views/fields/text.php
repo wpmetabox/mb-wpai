@@ -5,8 +5,11 @@ $text_field = array_merge($field, [
     'field_name' => $field['_name'],
     'multiple' => false,
     'type' => 'text',
-    'clone' => false,
 ]);
+
+if (isset($field['clone']) && $field['clone']) {
+    $text_field['id'] = $field['_name'] . '[]';
+}
 
 $text_fields = \RW_Meta_Box::normalize_fields( [$text_field] );
 

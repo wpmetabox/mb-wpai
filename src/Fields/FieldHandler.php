@@ -164,22 +164,41 @@ abstract class FieldHandler {
 		return $this->field['id'];
 	}
 
+    public function get_values($xpaths, $post_index): array {
+        if (is_string($xpaths)) {
+            $xpaths = [$xpaths];
+        }
+
+        $values = [
+            $post_index => []
+        ];
+
+        foreach ( $xpaths as $xpath ) {
+            $values[$post_index][] = $this->get_value_by_xpath( $xpath )[$post_index];
+        }
+
+        return $values;
+    }
+
 	public function get_value() {
 		if ( ! $this->xpath ) {
 			return;
 		}
 
-		$values = $this->get_value_by_xpath( $this->xpath );
-		$values = $values[ $this->get_post_index()] ?? '';
-
-		$values = explode( ',', $values );
-		$values = $this->recursive_trim( $values );
-
-		$values = $this->returns_array() ? $values : $values[0] ?? '';
-
-		return $values;
+        if (!is_array($this->xpath)) {
+            $this->xpath = [$this->xpath];
+        }
+        
+		$values = $this->get_values($this->xpath, $this->get_post_index());
+		$values = $values[ $this->get_post_index()] ?? [];
+        
+        $values = array_map( function ( $value ) {
+            $v = explode( '||', $value );
+            return $this->recursive_trim( $v );
+        }, $values );
+        
+		return $values[0];
 	}
-
 
 	public function returns_array(): bool {
 		if ( $this->field['clone'] ) {
