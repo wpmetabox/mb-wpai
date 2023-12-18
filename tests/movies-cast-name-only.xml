@@ -16,6 +16,7 @@
             <genre>Action</genre>
             <genre>Sci-Fi</genre>
         </genres>
+        <related>inception</related>
     </movie>
     <movie>
         <title>Inception</title>
@@ -34,6 +35,7 @@
             <genre>Adventure</genre>
             <genre>Sci-Fi</genre>
         </genres>
+        <related>the-matrix</related>
     </movie>
     <movie>
         <title>Interstellar</title>
@@ -52,5 +54,6 @@
             <genre>Drama</genre>
             <genre>Sci-Fi</genre>
         </genres>
+        <related>the-matrix</related>
     </movie>
 </movies>
