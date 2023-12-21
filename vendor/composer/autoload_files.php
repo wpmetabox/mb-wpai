@@ -7,5 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'ab382a10c8511339af72dbf4f41802af' => $baseDir . '/helpers/functions.php',
-    'f1919987d1eb014ccfe0ee083d31753b' => $baseDir . '/helpers/mbai_is_acf_update_allowed.php',
+    '4da9e60c2a1de0e1fe9dcd44566c1d75' => $baseDir . '/helpers/pmai_is_mb_update_allowed.php',
 );

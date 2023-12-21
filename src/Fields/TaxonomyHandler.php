@@ -10,7 +10,7 @@ class TaxonomyHandler extends FieldHandler {
 
 		$this->xpath       = $xpath;
 		$this->parsingData = $parsingData;
-		$this->base_xpath  = $parsingData['xpath_prefix'] . $parsingData['import']['xpath'];
+		$this->base_xpath  = $parsingData['xpath_prefix'] . $parsingData['import']->xpath;
 	}
 
 	private function build_tree( array $elements, $parentId = null ) {

@@ -79,13 +79,10 @@ class MetaBoxHandler implements MetaBoxInterface {
 	}
 
 	public function parse( $parsingData ) {
-		// Convert to associated array to make it easier to work with
-		$parsingData = json_decode( json_encode( $parsingData ), true );
-		$bindings    = $parsingData['import']['options']['fields'] ?? [];
+		$bindings    = $parsingData['import']->options['fields'] ?? [];
 
         $this->fields = $this->add_binding_to_fields( $this->fields, $bindings ); 
 		$this->parsingData = $parsingData;
-		// file_put_contents(__DIR__ . '/parsingData.json', json_encode($parsingData, JSON_PRETTY_PRINT));
 	}
 
 	public function import( $import_data, $args = [] ) {

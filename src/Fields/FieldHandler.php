@@ -92,16 +92,18 @@ abstract class FieldHandler {
 		$field = $this->field;
 
 		$this->importData = array_merge( $importData, $args );
-
+		
 		$this->parsingData['logger'] and call_user_func( $this->parsingData['logger'], sprintf( __( '- Importing field `%s`', 'mb-wpai' ), $field['name'] ) );
 
-		// @todo: Handle update permission
-		// If update is not allowed
-		// if ( ! empty( $this->importData['articleData']['id'] ) && ! \pmai_is_acf_update_allowed( $this->importData['container_name'] . $field['name'], $this->parsingData['import']['options'], $this->parsingData['import']->id ) ) {
-		// 	$this->parsingData['logger'] && call_user_func( $this->parsingData['logger'], sprintf( __( '- Field `%s` is skipped attempted to import options', 'mb-wpai' ), $this->getFieldName() ) );
+		$field_name_dot = pmai_square_to_dot_notation( $field['_name'] );
+		$field_name_dot = str_replace('fields.', '', $field_name_dot);
 
-		// 	return false;
-		// }
+		if ( ! pmai_is_mb_update_allowed($field_name_dot, $this->parsingData['import']['options'])) {
+			$this->parsingData['logger'] && call_user_func( $this->parsingData['logger'], sprintf( __( '- Field `%s` is skipped attempted to import options', 'mb-wpai' ), $this->field['name'] ) );
+
+			return false;
+		}
+
 		$value = $this->get_value();
 
 		MetaBoxService::set_meta( $this, $this->get_post_id(), $this->get_id(), $value );

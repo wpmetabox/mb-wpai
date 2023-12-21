@@ -8,7 +8,7 @@ class ComposerStaticInit65c0eaf6ae3fa3aed47a69df34e1d5a5
 {
     public static $files = array (
         'ab382a10c8511339af72dbf4f41802af' => __DIR__ . '/../..' . '/helpers/functions.php',
-        'f1919987d1eb014ccfe0ee083d31753b' => __DIR__ . '/../..' . '/helpers/mbai_is_acf_update_allowed.php',
+        '4da9e60c2a1de0e1fe9dcd44566c1d75' => __DIR__ . '/../..' . '/helpers/pmai_is_mb_update_allowed.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -27,6 +27,31 @@ class ComposerStaticInit65c0eaf6ae3fa3aed47a69df34e1d5a5
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'MetaBox\\WPAI\\Fields\\CheckboxHandler' => __DIR__ . '/../..' . '/src/Fields/CheckboxHandler.php',
+        'MetaBox\\WPAI\\Fields\\CheckboxListHandler' => __DIR__ . '/../..' . '/src/Fields/CheckboxListHandler.php',
+        'MetaBox\\WPAI\\Fields\\FieldFactory' => __DIR__ . '/../..' . '/src/Fields/FieldFactory.php',
+        'MetaBox\\WPAI\\Fields\\FieldHandler' => __DIR__ . '/../..' . '/src/Fields/FieldHandler.php',
+        'MetaBox\\WPAI\\Fields\\FieldsetTextHandler' => __DIR__ . '/../..' . '/src/Fields/FieldsetTextHandler.php',
+        'MetaBox\\WPAI\\Fields\\FileAdvancedHandler' => __DIR__ . '/../..' . '/src/Fields/FileAdvancedHandler.php',
+        'MetaBox\\WPAI\\Fields\\FileHandler' => __DIR__ . '/../..' . '/src/Fields/FileHandler.php',
+        'MetaBox\\WPAI\\Fields\\FileInputHandler' => __DIR__ . '/../..' . '/src/Fields/FileInputHandler.php',
+        'MetaBox\\WPAI\\Fields\\FileUploadHandler' => __DIR__ . '/../..' . '/src/Fields/FileUploadHandler.php',
+        'MetaBox\\WPAI\\Fields\\GroupHandler' => __DIR__ . '/../..' . '/src/Fields/GroupHandler.php',
+        'MetaBox\\WPAI\\Fields\\ImageAdvancedHandler' => __DIR__ . '/../..' . '/src/Fields/ImageAdvancedHandler.php',
+        'MetaBox\\WPAI\\Fields\\ImageHandler' => __DIR__ . '/../..' . '/src/Fields/ImageHandler.php',
+        'MetaBox\\WPAI\\Fields\\ImageSelectHandler' => __DIR__ . '/../..' . '/src/Fields/ImageSelectHandler.php',
+        'MetaBox\\WPAI\\Fields\\ImageUploadHandler' => __DIR__ . '/../..' . '/src/Fields/ImageUploadHandler.php',
+        'MetaBox\\WPAI\\Fields\\KeyValueHandler' => __DIR__ . '/../..' . '/src/Fields/KeyValueHandler.php',
+        'MetaBox\\WPAI\\Fields\\PostHandler' => __DIR__ . '/../..' . '/src/Fields/PostHandler.php',
+        'MetaBox\\WPAI\\Fields\\SwitchHandler' => __DIR__ . '/../..' . '/src/Fields/SwitchHandler.php',
+        'MetaBox\\WPAI\\Fields\\TaxonomyAdvancedHandler' => __DIR__ . '/../..' . '/src/Fields/TaxonomyAdvancedHandler.php',
+        'MetaBox\\WPAI\\Fields\\TaxonomyHandler' => __DIR__ . '/../..' . '/src/Fields/TaxonomyHandler.php',
+        'MetaBox\\WPAI\\Fields\\TextHandler' => __DIR__ . '/../..' . '/src/Fields/TextHandler.php',
+        'MetaBox\\WPAI\\Fields\\UserHandler' => __DIR__ . '/../..' . '/src/Fields/UserHandler.php',
+        'MetaBox\\WPAI\\MetaBoxService' => __DIR__ . '/../..' . '/src/MetaBoxService.php',
+        'MetaBox\\WPAI\\MetaBoxes\\MetaBoxFactory' => __DIR__ . '/../..' . '/src/MetaBoxes/MetaBoxFactory.php',
+        'MetaBox\\WPAI\\MetaBoxes\\MetaBoxHandler' => __DIR__ . '/../..' . '/src/MetaBoxes/MetaBoxHandler.php',
+        'MetaBox\\WPAI\\MetaBoxes\\MetaBoxInterface' => __DIR__ . '/../..' . '/src/MetaBoxes/MetaBoxInterface.php',
         'PMAI_Admin_Import' => __DIR__ . '/../..' . '/controllers/admin/import.php',
         'PMAI_Compatibility' => __DIR__ . '/../..' . '/classes/compatibility.php',
         'PMAI_Config' => __DIR__ . '/../..' . '/classes/config.php',

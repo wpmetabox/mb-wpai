@@ -27,7 +27,7 @@ class FileAdvancedHandler extends FieldHandler {
                 $file,
                 $this->get_post_id(),
                 $parsingData['logger'],
-                $parsingData['import']['options']['is_fast_mode'],
+                $parsingData['import']->options['is_fast_mode'],
                 true,
                 true,
                 $this->importData

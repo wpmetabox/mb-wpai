@@ -12,7 +12,7 @@ class GroupHandler extends FieldHandler {
 
 		$this->xpath       = $xpath;
 		$this->parsingData = $parsingData;
-		$this->base_xpath  = $parsingData['xpath_prefix'] . $parsingData['import']['xpath'];
+		$this->base_xpath  = $parsingData['xpath_prefix'] . $parsingData['import']->xpath;
 	}
 
     public function get_tree_value(array $xpath, $post_index) {

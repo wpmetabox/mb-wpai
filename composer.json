@@ -10,7 +10,7 @@
     ],
     "files": [
       "helpers/functions.php",
-      "helpers/mbai_is_acf_update_allowed.php"
+      "helpers/pmai_is_mb_update_allowed.php"
     ]
   }
 }
