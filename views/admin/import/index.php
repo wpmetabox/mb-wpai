@@ -37,7 +37,7 @@
 							<?php
 							else:
 								?>
-                                <p><strong><?php _e( "Please create meta boxes.", 'mb-wpai' ); ?></strong></p>
+                                <p><strong><?php _e( 'Please create meta boxes.', 'mb-wpai' ); ?></strong></p>
 							<?php
 							endif;
 							?>
