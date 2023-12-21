@@ -93,12 +93,12 @@ abstract class FieldHandler {
 
 		$this->importData = array_merge( $importData, $args );
 
-		$this->parsingData['logger'] and call_user_func( $this->parsingData['logger'], sprintf( __( '- Importing field `%s`', 'mbai' ), $field['name'] ) );
+		$this->parsingData['logger'] and call_user_func( $this->parsingData['logger'], sprintf( __( '- Importing field `%s`', 'mb-wpai' ), $field['name'] ) );
 
 		// @todo: Handle update permission
 		// If update is not allowed
 		// if ( ! empty( $this->importData['articleData']['id'] ) && ! \pmai_is_acf_update_allowed( $this->importData['container_name'] . $field['name'], $this->parsingData['import']['options'], $this->parsingData['import']->id ) ) {
-		// 	$this->parsingData['logger'] && call_user_func( $this->parsingData['logger'], sprintf( __( '- Field `%s` is skipped attempted to import options', 'mbai' ), $this->getFieldName() ) );
+		// 	$this->parsingData['logger'] && call_user_func( $this->parsingData['logger'], sprintf( __( '- Field `%s` is skipped attempted to import options', 'mb-wpai' ), $this->getFieldName() ) );
 
 		// 	return false;
 		// }

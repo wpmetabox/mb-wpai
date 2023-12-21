@@ -64,7 +64,7 @@ if ( ! class_exists( 'PMAI_Updater' ) ) {
 		public function plugin_row_meta( $links, $file ) {
 			if ( $file == $this->name ) {
 				$row_meta = [
-					'changelog' => '<a href="' . admin_url( 'plugin-install.php?tab=plugin-information&plugin=wpai-acf-add-on&section=changelog&TB_iframe=true&width=600&height=800' ) . '" class="thickbox open-plugin-details-modal" title="' . esc_attr( __( 'View WP All Import - ACF Add-On Pro Changelog', 'mbai' ) ) . '">' . __( 'Changelog', 'mbai' ) . '</a>',
+					'changelog' => '<a href="' . admin_url( 'plugin-install.php?tab=plugin-information&plugin=wpai-acf-add-on&section=changelog&TB_iframe=true&width=600&height=800' ) . '" class="thickbox open-plugin-details-modal" title="' . esc_attr( __( 'View WP All Import - ACF Add-On Pro Changelog', 'mb-wpai' ) ) . '">' . __( 'Changelog', 'mb-wpai' ) . '</a>',
 				];
 
 				return array_merge( $links, $row_meta );

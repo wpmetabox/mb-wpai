@@ -1,7 +1,7 @@
 <div class="wpallimport-collapsed closed pmai_options">
     <div class="wpallimport-content-section">
         <div class="wpallimport-collapsed-header">
-            <h3><?php _e( 'Meta Box Add-On', 'mbai' ); ?></h3>
+            <h3><?php _e( 'Meta Box Add-On', 'mb-wpai' ); ?></h3>
         </div>
         <div class="wpallimport-collapsed-content" style="padding: 0;">
             <div class="wpallimport-collapsed-content-inner">
@@ -9,7 +9,7 @@
                     <tr>
                         <td colspan="3">
 							<?php if ( ! empty( $meta_boxes ) ): ?>
-                                <p><strong><?php _e( "Please choose your meta box.", 'mbai' ); ?></strong></p>
+                                <p><strong><?php _e( "Please choose your meta box.", 'mb-wpai' ); ?></strong></p>
                                 <ul>
 									<?php
 									foreach ( $meta_boxes as $id => $meta_box ) {
@@ -37,7 +37,7 @@
 							<?php
 							else:
 								?>
-                                <p><strong><?php _e( "Please create meta boxes.", 'mbai' ); ?></strong></p>
+                                <p><strong><?php _e( "Please create meta boxes.", 'mb-wpai' ); ?></strong></p>
 							<?php
 							endif;
 							?>

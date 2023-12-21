@@ -36,7 +36,7 @@ class PMAI_Import_Record extends PMAI_Model_Record {
 		] );
 		kses_init(); // do not perform special filtering for imported content
 
-		$parsingData['chunk'] == 1 and $parsingData['logger'] and call_user_func( $parsingData['logger'], __( 'Composing meta box...', 'mbai' ) );
+		$parsingData['chunk'] == 1 and $parsingData['logger'] and call_user_func( $parsingData['logger'], __( 'Composing meta box...', 'mb-wpai' ) );
 
 		if ( ! empty( $parsingData['import']->options['meta_box'] ) ) {
 			$metaboxGroups = $parsingData['import']->options['meta_box'];
@@ -75,7 +75,7 @@ class PMAI_Import_Record extends PMAI_Model_Record {
 	 * @param $importData [pid, i, import, articleData, xml, is_cron, xpath_prefix]
 	 */
 	public function import( $importData ) {
-		$importData['logger'] and call_user_func( $importData['logger'], __( '<strong>Metabox ADD-ON:</strong>', 'mbai' ) );
+		$importData['logger'] and call_user_func( $importData['logger'], __( '<strong>Metabox ADD-ON:</strong>', 'mb-wpai' ) );
 
 		foreach ( $this->metaboxes as $mb ) {
 			$mb->import( $importData );

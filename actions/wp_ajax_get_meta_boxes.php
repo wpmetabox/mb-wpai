@@ -8,7 +8,7 @@ use MetaBox\WPAI\MetaBoxes\MetaBoxFactory;
 function pmai_wp_ajax_get_meta_boxes(): void {
 
 	if ( ! current_user_can( PMXI_Plugin::$capabilities ) ) {
-		wp_send_json_error( [ 'html' => __( 'Security check', 'mbai' ) ] );
+		wp_send_json_error( [ 'html' => __( 'Security check', 'mb-wpai' ) ] );
 	}
 
 	ob_start();
@@ -16,7 +16,7 @@ function pmai_wp_ajax_get_meta_boxes(): void {
 	$meta_boxes = PMXI_Plugin::$session->meta_boxes;
 
 	if ( ! isset( $_GET['meta_box'] ) || ! isset( $meta_boxes[ $_GET['meta_box'] ] ) ) {
-		wp_send_json_error( [ 'html' => __( 'Meta Box does not exist', 'mbai' ) ] );
+		wp_send_json_error( [ 'html' => __( 'Meta Box does not exist', 'mb-wpai' ) ] );
 	}
 
 	$selected_meta_box = $meta_boxes[ $_GET['meta_box'] ];

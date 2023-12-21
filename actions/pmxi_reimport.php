@@ -62,25 +62,25 @@ function pmai_pmxi_reimport( $entry, $post ) {
         <input type="hidden" name="is_update_acf" value="0"/>
         <input type="checkbox" id="is_update_acf_<?= $entry; ?>" name="is_update_acf"
                value="1" <?= $post['is_update_acf'] ? 'checked="checked"' : '' ?> class="switcher"/>
-        <label for="is_update_acf_<?= $entry; ?>"><?php _e( 'Advanced Custom Fields', 'mbai' ) ?></label>
+        <label for="is_update_acf_<?= $entry; ?>"><?php _e( 'Advanced Custom Fields', 'mb-wpai' ) ?></label>
         <div class="switcher-target-is_update_acf_<?= $entry; ?>" style="padding-left:17px;">
             <div class="input">
                 <input type="radio" id="update_mb_logic_full_update_<?= $entry; ?>" name="update_mb_logic"
                        value="full_update" <?= ( "full_update" == $post['update_mb_logic'] ) ? 'checked="checked"' : '' ?>
                        class="switcher"/>
-                <label for="update_mb_logic_full_update_<?= $entry; ?>"><?php _e( 'Update all ACF fields', 'mbai' ) ?></label>
+                <label for="update_mb_logic_full_update_<?= $entry; ?>"><?php _e( 'Update all ACF fields', 'mb-wpai' ) ?></label>
             </div>
             <div class="input">
                 <input type="radio" id="update_mb_logic_mapped_<?= $entry; ?>" name="update_mb_logic"
                        value="mapped" <?= ( "mapped" == $post['update_mb_logic'] ) ? 'checked="checked"' : '' ?>
                        class="switcher"/>
-                <label for="update_mb_logic_mapped_<?= $entry; ?>"><?php _e( 'Update only mapped ACF groups', 'mbai' ) ?></label>
+                <label for="update_mb_logic_mapped_<?= $entry; ?>"><?php _e( 'Update only mapped ACF groups', 'mb-wpai' ) ?></label>
             </div>
             <div class="input">
                 <input type="radio" id="update_mb_logic_only_<?= $entry; ?>" name="update_mb_logic"
                        value="only" <?= ( "only" == $post['update_mb_logic'] ) ? 'checked="checked"' : '' ?>
                        class="switcher"/>
-                <label for="update_mb_logic_only_<?= $entry; ?>"><?php _e( 'Update only these ACF fields, leave the rest alone', 'mbai' ) ?></label>
+                <label for="update_mb_logic_only_<?= $entry; ?>"><?php _e( 'Update only these ACF fields, leave the rest alone', 'mb-wpai' ) ?></label>
                 <div class="switcher-target-update_mb_logic_only_<?= $entry; ?> pmxi_choosen"
                      style="padding-left:17px;">
 
@@ -97,7 +97,7 @@ function pmai_pmxi_reimport( $entry, $post ) {
                 <input type="radio" id="update_mb_logic_all_except_<?= $entry; ?>" name="update_mb_logic"
                        value="all_except" <?= ( "all_except" == $post['update_mb_logic'] ) ? 'checked="checked"' : '' ?>
                        class="switcher"/>
-                <label for="update_mb_logic_all_except_<?= $entry; ?>"><?php _e( 'Leave these ACF fields alone, update all other ACF fields', 'mbai' ) ?></label>
+                <label for="update_mb_logic_all_except_<?= $entry; ?>"><?php _e( 'Leave these ACF fields alone, update all other ACF fields', 'mb-wpai' ) ?></label>
                 <div class="switcher-target-update_mb_logic_all_except_<?= $entry; ?> pmxi_choosen"
                      style="padding-left:17px;">
 
@@ -114,5 +114,3 @@ function pmai_pmxi_reimport( $entry, $post ) {
     </div>
 	<?php
 }
-
-?>

@@ -162,8 +162,8 @@ final class PMAI_Plugin {
 	 * @return void
 	 */
 	public function load_plugin_textdomain() {
-		$locale = apply_filters( 'plugin_locale', get_locale(), 'mbai' );
-		load_plugin_textdomain( 'mbai', false, dirname( plugin_basename( __FILE__ ) ) . '/i18n/languages' );
+		$locale = apply_filters( 'plugin_locale', get_locale(), 'mb-wpai' );
+		load_plugin_textdomain( 'mb-wpai', false, dirname( plugin_basename( __FILE__ ) ) . '/i18n/languages' );
 	}
 
 	/**
