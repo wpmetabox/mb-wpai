@@ -298,7 +298,7 @@ final class PMAI_Plugin {
 			'is_multiple_field_value' => [],
 			'multiple_value'          => [],
 			'fields_delimiter'        => [],
-			'is_update_acf'           => 1,
+			'is_update_mb'           => 1,
 			'update_mb_logic'        => 'full_update',
 			'mb_field_list'          => [],
 			'mb_only_list'           => [],
