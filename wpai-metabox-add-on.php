@@ -81,11 +81,8 @@ final class PMAI_Plugin {
 		}
 
 		$plugins = get_site_option( 'active_sitewide_plugins' );
-		if ( isset( $plugins[ plugin_basename( self::FILE ) ] ) ) {
-			return true;
-		}
 
-		return false;
+		return ( isset( $plugins[ plugin_basename( self::FILE ) ] ) );
 	}
 
 	public function isPermalinks(): bool {
@@ -287,10 +284,10 @@ final class PMAI_Plugin {
 	}
 
 	/**
-	 *  Init all available ACF fields.
+	 *  Init all available MB fields
 	 */
-	public static function get_available_acf_fields() {
-		return [ 'name', 'email', 'phone', 'address1', 'address2', 'character' ];
+	public static function get_available_mb_fields() {
+		return pmai_get_all_mb_fields();
 	}
 
 	public static function get_default_import_options() {

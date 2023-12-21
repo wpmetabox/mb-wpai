@@ -24,11 +24,11 @@ echo $field['name'];
 ?>
 <div class="input">
     <div class="main_choise">
-        <input type="radio" id="is_multiple_field_value_<?= $field_name ?>_<?= $field['id'];?>_yes" class="switcher" name="<?= $field['_name'] ?>[switcher_value]" value="static" <?= $switcher_value === 'static' ? 'checked="checked"': '' ?> />
-        <label for="is_multiple_field_value_<?= $field_name ?>_<?= $field['id'];?>_yes" class="chooser_label"><?php _e("Select value for all records"); ?></label>
+        <input type="radio" id="is_multiple_field_value_<?= esc_attr($field_name) ?>_<?= esc_attr($field['id'])?>_yes" class="switcher" name="<?= $field['_name'] ?>[switcher_value]" value="static" <?= $switcher_value === 'static' ? 'checked="checked"': '' ?> />
+        <label for="is_multiple_field_value_<?= esc_attr($field_name) ?>_<?= esc_attr($field['id'])?>_yes" class="chooser_label"><?php _e("Select value for all records"); ?></label>
     </div>
     <div class="wpallimport-clear"></div>
-    <div class="switcher-target-is_multiple_field_value_<?= $field_name ?>_<?= $field['id'];?>_yes">
+    <div class="switcher-target-is_multiple_field_value_<?= esc_attr($field_name) ?>_<?= esc_attr($field['id'])?>_yes">
         <div class="input sub_input">
             <div class="input">
                 <?php
@@ -50,11 +50,11 @@ echo $field['name'];
 <div class="clear"></div>
 <div class="input" style="overflow:hidden;">
     <div class="main_choise">
-        <input type="radio" id="is_multiple_field_value_<?= $field_name ?>_<?= $field['id'];?>_no" class="switcher" name="<?= $field['_name'] ?>[switcher_value]" value="hierachy" <?= $switcher_value !== 'static' ? 'checked="checked"': '' ?> />
-        <label for="is_multiple_field_value_<?= $field_name ?>_<?= $field['id'];?>_no" class="chooser_label"><?php _e('Set with XPath', 'mb-wpai' )?></label>
+        <input type="radio" id="is_multiple_field_value_<?= esc_attr($field_name) ?>_<?= esc_attr($field['id'])?>_no" class="switcher" name="<?= $field['_name'] ?>[switcher_value]" value="hierachy" <?= $switcher_value !== 'static' ? 'checked="checked"': '' ?> />
+        <label for="is_multiple_field_value_<?= esc_attr($field_name) ?>_<?= esc_attr($field['id'])?>_no" class="chooser_label"><?php _e('Set with XPath', 'mb-wpai' )?></label>
     </div>
     <div class="wpallimport-clear"></div>
-    <div class="switcher-target-is_multiple_field_value_<?= $field_name ?>_<?= $field['id'];?>_no">
+    <div class="switcher-target-is_multiple_field_value_<?= esc_attr($field_name) ?>_<?= esc_attr($field['id'])?>_no">
         <div class="input sub_input">
             <div class="input">
                 <table class="pmai_taxonomy post_taxonomy">
@@ -110,7 +110,7 @@ echo $field['name'];
                                     type="text"
                                         style="width:5%; text-align:center; padding-left: 25px;"
                                         value="<?php echo (!empty($current_field['delim'])) ? esc_attr( $current_field['delim'] ) : ',';?>"
-                                            name="<?= $field_name . '[delim]' ?>"
+                                            name="<?= esc_attr($field_name) . '[delim]' ?>"
                                         class="small rad4">
                                 </div>
                                 <div class="delim">

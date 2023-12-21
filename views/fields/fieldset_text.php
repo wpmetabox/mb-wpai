@@ -10,4 +10,3 @@ $fieldset_text_field = array_merge($field, [
 $fieldset_text_fields = \RW_Meta_Box::normalize_fields( [$fieldset_text_field] );
 
 RWMB_Field::call('show', $fieldset_text_fields[0] , false );
-?>
