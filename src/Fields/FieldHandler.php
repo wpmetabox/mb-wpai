@@ -197,7 +197,7 @@ abstract class FieldHandler {
             return $this->recursive_trim( $v );
         }, $values );
         
-		return $values[0];
+		return $this->returns_array() ? $values[0] : $values[0][0];
 	}
 
 	public function returns_array(): bool {

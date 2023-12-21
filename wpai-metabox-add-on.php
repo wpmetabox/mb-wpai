@@ -299,10 +299,10 @@ final class PMAI_Plugin {
 			'multiple_value'          => [],
 			'fields_delimiter'        => [],
 			'is_update_acf'           => 1,
-			'update_acf_logic'        => 'full_update',
-			'acf_list'                => [],
-			'acf_only_list'           => [],
-			'acf_except_list'         => [],
+			'update_mb_logic'        => 'full_update',
+			'mb_field_list'          => [],
+			'mb_only_list'           => [],
+			'mb_except_list'         => [],
 		];
 	}
 }

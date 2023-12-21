@@ -58,56 +58,56 @@ function pmai_pmxi_reimport( $entry, $post ) {
 	}
 	?>
     <div class="input">
-        <input type="hidden" name="acf_list" value="0"/>
+        <input type="hidden" name="mb_field_list" value="0"/>
         <input type="hidden" name="is_update_acf" value="0"/>
         <input type="checkbox" id="is_update_acf_<?= $entry; ?>" name="is_update_acf"
                value="1" <?= $post['is_update_acf'] ? 'checked="checked"' : '' ?> class="switcher"/>
         <label for="is_update_acf_<?= $entry; ?>"><?php _e( 'Advanced Custom Fields', 'mbai' ) ?></label>
         <div class="switcher-target-is_update_acf_<?= $entry; ?>" style="padding-left:17px;">
             <div class="input">
-                <input type="radio" id="update_acf_logic_full_update_<?= $entry; ?>" name="update_acf_logic"
-                       value="full_update" <?= ( "full_update" == $post['update_acf_logic'] ) ? 'checked="checked"' : '' ?>
+                <input type="radio" id="update_mb_logic_full_update_<?= $entry; ?>" name="update_mb_logic"
+                       value="full_update" <?= ( "full_update" == $post['update_mb_logic'] ) ? 'checked="checked"' : '' ?>
                        class="switcher"/>
-                <label for="update_acf_logic_full_update_<?= $entry; ?>"><?php _e( 'Update all ACF fields', 'mbai' ) ?></label>
+                <label for="update_mb_logic_full_update_<?= $entry; ?>"><?php _e( 'Update all ACF fields', 'mbai' ) ?></label>
             </div>
             <div class="input">
-                <input type="radio" id="update_acf_logic_mapped_<?= $entry; ?>" name="update_acf_logic"
-                       value="mapped" <?= ( "mapped" == $post['update_acf_logic'] ) ? 'checked="checked"' : '' ?>
+                <input type="radio" id="update_mb_logic_mapped_<?= $entry; ?>" name="update_mb_logic"
+                       value="mapped" <?= ( "mapped" == $post['update_mb_logic'] ) ? 'checked="checked"' : '' ?>
                        class="switcher"/>
-                <label for="update_acf_logic_mapped_<?= $entry; ?>"><?php _e( 'Update only mapped ACF groups', 'mbai' ) ?></label>
+                <label for="update_mb_logic_mapped_<?= $entry; ?>"><?php _e( 'Update only mapped ACF groups', 'mbai' ) ?></label>
             </div>
             <div class="input">
-                <input type="radio" id="update_acf_logic_only_<?= $entry; ?>" name="update_acf_logic"
-                       value="only" <?= ( "only" == $post['update_acf_logic'] ) ? 'checked="checked"' : '' ?>
+                <input type="radio" id="update_mb_logic_only_<?= $entry; ?>" name="update_mb_logic"
+                       value="only" <?= ( "only" == $post['update_mb_logic'] ) ? 'checked="checked"' : '' ?>
                        class="switcher"/>
-                <label for="update_acf_logic_only_<?= $entry; ?>"><?php _e( 'Update only these ACF fields, leave the rest alone', 'mbai' ) ?></label>
-                <div class="switcher-target-update_acf_logic_only_<?= $entry; ?> pmxi_choosen"
+                <label for="update_mb_logic_only_<?= $entry; ?>"><?php _e( 'Update only these ACF fields, leave the rest alone', 'mbai' ) ?></label>
+                <div class="switcher-target-update_mb_logic_only_<?= $entry; ?> pmxi_choosen"
                      style="padding-left:17px;">
 
                     <span class="hidden choosen_values"><?php if ( ! empty( $all_existing_acf ) ) {
 							echo implode( ',', $all_existing_acf );
 						} ?></span>
                     <input class="choosen_input"
-                           value="<?php if ( ! empty( $post['acf_list'] ) and "only" == $post['update_acf_logic'] ) {
-						       echo implode( ',', $post['acf_list'] );
-					       } ?>" type="hidden" name="acf_only_list"/>
+                           value="<?php if ( ! empty( $post['mb_field_list'] ) and "only" == $post['update_mb_logic'] ) {
+						       echo implode( ',', $post['mb_field_list'] );
+					       } ?>" type="hidden" name="mb_only_list"/>
                 </div>
             </div>
             <div class="input">
-                <input type="radio" id="update_acf_logic_all_except_<?= $entry; ?>" name="update_acf_logic"
-                       value="all_except" <?= ( "all_except" == $post['update_acf_logic'] ) ? 'checked="checked"' : '' ?>
+                <input type="radio" id="update_mb_logic_all_except_<?= $entry; ?>" name="update_mb_logic"
+                       value="all_except" <?= ( "all_except" == $post['update_mb_logic'] ) ? 'checked="checked"' : '' ?>
                        class="switcher"/>
-                <label for="update_acf_logic_all_except_<?= $entry; ?>"><?php _e( 'Leave these ACF fields alone, update all other ACF fields', 'mbai' ) ?></label>
-                <div class="switcher-target-update_acf_logic_all_except_<?= $entry; ?> pmxi_choosen"
+                <label for="update_mb_logic_all_except_<?= $entry; ?>"><?php _e( 'Leave these ACF fields alone, update all other ACF fields', 'mbai' ) ?></label>
+                <div class="switcher-target-update_mb_logic_all_except_<?= $entry; ?> pmxi_choosen"
                      style="padding-left:17px;">
 
                     <span class="hidden choosen_values"><?php if ( ! empty( $all_existing_acf ) ) {
 							echo implode( ',', $all_existing_acf );
 						} ?></span>
                     <input class="choosen_input"
-                           value="<?php if ( ! empty( $post['acf_list'] ) and "all_except" == $post['update_acf_logic'] ) {
-						       echo implode( ',', $post['acf_list'] );
-					       } ?>" type="hidden" name="acf_except_list"/>
+                           value="<?php if ( ! empty( $post['mb_field_list'] ) and "all_except" == $post['update_mb_logic'] ) {
+						       echo implode( ',', $post['mb_field_list'] );
+					       } ?>" type="hidden" name="mb_except_list"/>
                 </div>
             </div>
         </div>

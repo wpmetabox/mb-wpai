@@ -20,7 +20,7 @@ function pmai_is_acf_update_allowed( $cur_meta_key, $options ) {
 		return apply_filters( 'pmai_is_acf_update_allowed', false, $cur_meta_key, $options );
 	}
 
-	if ( $options['is_update_acf'] && $options['update_acf_logic'] == 'full_update' ) {
+	if ( $options['is_update_acf'] && $options['update_mb_logic'] == 'full_update' ) {
 		return apply_filters( 'pmai_is_acf_update_allowed', true, $cur_meta_key, $options );
 	}
 
@@ -29,12 +29,12 @@ function pmai_is_acf_update_allowed( $cur_meta_key, $options ) {
 	if ( $acf and version_compare( $acf->settings['version'], '5.0.0' ) >= 0 ) {
 
 		// Update only these ACF, leave the rest alone
-		if ( $options['update_all_data'] == 'no' and $options['is_update_acf'] and $options['update_acf_logic'] == 'only' ) {
+		if ( $options['update_all_data'] == 'no' and $options['is_update_acf'] and $options['update_mb_logic'] == 'only' ) {
 
 			$is_acf_update_allowed = false;
 
-			if ( ! empty( $options['acf_list'] ) and is_array( $options['acf_list'] ) ) {
-				foreach ( $options['acf_list'] as $key => $acf_field ) {
+			if ( ! empty( $options['mb_field_list'] ) and is_array( $options['mb_field_list'] ) ) {
+				foreach ( $options['mb_field_list'] as $key => $acf_field ) {
 					$tmp_field  = explode( " ", $acf_field );
 					$field_name = trim( array_shift( $tmp_field ), "[]" );
 					if ( $cur_meta_key == $field_name or $cur_meta_key == "_" . $field_name or preg_match( '%' . $field_name . '_[0-9]{1,}_%', $cur_meta_key ) or strpos( $cur_meta_key, '_' . $field_name . '_' ) === 0 or preg_match( '%.*_[0-9]{1,}_' . $field_name . '$%', $cur_meta_key ) ) {
@@ -49,10 +49,10 @@ function pmai_is_acf_update_allowed( $cur_meta_key, $options ) {
 		}
 
 		// Leave these ACF alone, update all other ACF
-		if ( $options['update_all_data'] == 'no' and $options['is_update_acf'] and $options['update_acf_logic'] == 'all_except' ) {
+		if ( $options['update_all_data'] == 'no' and $options['is_update_acf'] and $options['update_mb_logic'] == 'all_except' ) {
 
-			if ( ! empty( $options['acf_list'] ) and is_array( $options['acf_list'] ) ) {
-				foreach ( $options['acf_list'] as $key => $acf_field ) {
+			if ( ! empty( $options['mb_field_list'] ) and is_array( $options['mb_field_list'] ) ) {
+				foreach ( $options['mb_field_list'] as $key => $acf_field ) {
 					$acf_field_parts = explode( " ", $acf_field );
 					$field_name      = trim( array_shift( $acf_field_parts ), "[]" );
 					if ( $cur_meta_key == $field_name or $cur_meta_key == "_" . $field_name or preg_match( '%' . $field_name . '_[0-9]{1,}_%', $cur_meta_key ) or strpos( $cur_meta_key, '_' . $field_name . '_' ) === 0 or preg_match( '%.*_[0-9]{1,}_' . $field_name . '$%', $cur_meta_key ) ) {
@@ -63,7 +63,7 @@ function pmai_is_acf_update_allowed( $cur_meta_key, $options ) {
 		}
 
 		// Update only mapped ACF fields
-		if ( $options['update_all_data'] == 'no' and $options['is_update_acf'] and $options['update_acf_logic'] == 'mapped' ) {
+		if ( $options['update_all_data'] == 'no' and $options['is_update_acf'] and $options['update_mb_logic'] == 'mapped' ) {
 
 			$mapped_acf = $options['acf'];
 
@@ -97,10 +97,10 @@ function pmai_is_acf_update_allowed( $cur_meta_key, $options ) {
 	} else {
 
 		// Update only these ACF, leave the rest alone
-		if ( $options['update_all_data'] == 'no' and $options['is_update_acf'] and $options['update_acf_logic'] == 'only' ) {
+		if ( $options['update_all_data'] == 'no' and $options['is_update_acf'] and $options['update_mb_logic'] == 'only' ) {
 
-			if ( ! empty( $options['acf_list'] ) and is_array( $options['acf_list'] ) ) {
-				foreach ( $options['acf_list'] as $key => $acf_field ) {
+			if ( ! empty( $options['mb_field_list'] ) and is_array( $options['mb_field_list'] ) ) {
+				foreach ( $options['mb_field_list'] as $key => $acf_field ) {
 					$field_parts = explode( '---', $acf_field );
 					$parts_temp  = explode( " ", $field_parts[0] );
 					$field_name  = trim( array_shift( $parts_temp ), "[]" );
@@ -120,10 +120,10 @@ function pmai_is_acf_update_allowed( $cur_meta_key, $options ) {
 		}
 
 		// Leave these ACF alone, update all other ACF
-		if ( $options['update_all_data'] == 'no' and $options['is_update_acf'] and $options['update_acf_logic'] == 'all_except' ) {
+		if ( $options['update_all_data'] == 'no' and $options['is_update_acf'] and $options['update_mb_logic'] == 'all_except' ) {
 
-			if ( ! empty( $options['acf_list'] ) and is_array( $options['acf_list'] ) ) {
-				foreach ( $options['acf_list'] as $key => $acf_field ) {
+			if ( ! empty( $options['mb_field_list'] ) and is_array( $options['mb_field_list'] ) ) {
+				foreach ( $options['mb_field_list'] as $key => $acf_field ) {
 					$field_parts      = explode( '---', $acf_field );
 					$field_parts_name = explode( " ", $field_parts[0] );
 					$field_name       = trim( array_shift( $field_parts_name ), "[]" );
@@ -140,7 +140,7 @@ function pmai_is_acf_update_allowed( $cur_meta_key, $options ) {
 		}
 
 		// Update only mapped ACF fields
-		if ( $options['update_all_data'] == 'no' and $options['is_update_acf'] and $options['update_acf_logic'] == 'mapped' ) {
+		if ( $options['update_all_data'] == 'no' and $options['is_update_acf'] and $options['update_mb_logic'] == 'mapped' ) {
 
 			$mapped_acf = $options['acf'];
 
