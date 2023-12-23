@@ -118,7 +118,7 @@ if ( ! is_array( $current_field ) ) {
 													<div class="inner input">
 														<?php
 														$sub_field->field['_name'] = $handler->field['_name'] . '[rows][' . $index . '][' . $sub_field->field['id'] . ']';
-														$sub_field->field['std']   = $row[ $sub_field->field['id'] ] ?? '';
+														$sub_field->field['std']  = $row[ $sub_field->field['id'] ] ?? '';
 														$sub_field->view();
 														?>
 													</div>

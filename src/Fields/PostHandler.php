@@ -12,8 +12,7 @@ class PostHandler extends FieldHandler {
         if ( ! is_array( $post_ids ) ) {
             $post_ids = [ $post_ids ];
         }
-
-
+        
          // Search for posts by id or slug  
         $posts_by_ids = get_posts( [
             'post_type' => $this->field['post_type'] ?? 'post',

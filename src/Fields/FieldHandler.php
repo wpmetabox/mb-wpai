@@ -18,9 +18,9 @@ abstract class FieldHandler {
 
 	public $base_xpath = '';
 
-    public $parent;
+	public $parent;
 
-    public array $fields = [];
+	public array $fields = [];
 
 	public ?MetaBoxHandler $meta_box = null;
 
@@ -33,32 +33,32 @@ abstract class FieldHandler {
 		$this->field    = $field;
 		$this->post     = $post;
 
-        $this->init_children_fields();
+		$this->init_children_fields();
 	}
 
-    private function init_children_fields(): void {
-        if ( ! isset( $this->field['fields'] ) ) {
-            return;
-        }
+	private function init_children_fields(): void {
+		if ( ! isset( $this->field['fields'] ) ) {
+			return;
+		}
 
-        foreach ( $this->field['fields'] as $sub_field ) {
-            $sub_field['_name'] = $this->field['_name'] . '[' . $sub_field['id'] . ']';
-            $field = FieldFactory::create( $sub_field, $this->post, $this->meta_box );
-            $field->parent = $this;
+		foreach ( $this->field['fields'] as $sub_field ) {
+			$sub_field['_name'] = $this->field['_name'] . '[' . $sub_field['id'] . ']';
+			$field              = FieldFactory::create( $sub_field, $this->post, $this->meta_box );
+			$field->parent      = $this;
 
-            $this->fields[] = $field;
-        }
-    }
+			$this->fields[] = $field;
+		}
+	}
 
-    public function view(): void {
-        $field_type  = 'text';
-		$field_name  = $this->field['_name'];
-        
-		$field_value = $this->post['fields'][ $this->field['id'] ] ?? '';
-        $field = $this->field;
-        
-        $field['std'] = $field_value;
-        $handler = $this;
+	public function view(): void {
+		$field_type = 'text';
+		$field_name = $this->field['_name'];
+
+		$field_value  = $this->post['fields'][ $this->field['id'] ] ?? '';
+		$field        = $this->field;
+		$field['std'] = $field['std'] ?? $field_value;
+
+		$handler = $this;
 
 		$view_path = $this->get_view_path( $this->field['type'] );
 
@@ -67,17 +67,17 @@ abstract class FieldHandler {
 		}
 
 		include $view_path;
-    }
+	}
 
 	private function get_view_path( string $field_type ): ?string {
 		$matches = [ 
 			'taxonomy' => 'taxonomy',
 			'group' => 'group',
-            'fieldset_text' => 'fieldset_text',
-            'key_value' => 'key_value',
+			'fieldset_text' => 'fieldset_text',
+			'key_value' => 'key_value',
 		];
 
-        $field_type = $matches[ $field_type ] ?? 'text';
+		$field_type = $matches[ $field_type ] ?? 'text';
 
 		return PMAI_ROOT_DIR . '/views/fields/' . $field_type . '.php';
 	}
@@ -92,13 +92,13 @@ abstract class FieldHandler {
 		$field = $this->field;
 
 		$this->importData = array_merge( $importData, $args );
-		
-		$this->parsingData['logger'] and call_user_func( $this->parsingData['logger'], sprintf( __( '- Importing field `%s`', 'mb-wpai' ), $field['name'] ) );
+
+		$this->parsingData['logger'] and call_user_func( $this->parsingData['logger'], sprintf( __( '- Importing field `%s`', 'mb-wpai' ), $field['id'] ) );
 
 		$field_name_dot = pmai_square_to_dot_notation( $field['_name'] );
-		$field_name_dot = str_replace('fields.', '', $field_name_dot);
+		$field_name_dot = str_replace( 'fields.', '', $field_name_dot );
 
-		if ( ! pmai_is_mb_update_allowed($field_name_dot, $this->parsingData['import']['options'])) {
+		if ( ! pmai_is_mb_update_allowed( $field_name_dot, $this->parsingData['import']['options'] ) ) {
 			$this->parsingData['logger'] && call_user_func( $this->parsingData['logger'], sprintf( __( '- Field `%s` is skipped attempted to import options', 'mb-wpai' ), $this->field['name'] ) );
 
 			return false;
@@ -127,6 +127,13 @@ abstract class FieldHandler {
 		add_filter( 'wp_all_import_multi_glue', function ($glue) {
 			return ',';
 		} );
+
+		if ( $this->returns_array() ) {
+			$values = array_map( function ($value) {
+				$v = explode( '||', $value );
+				return $this->recursive_trim( $v );
+			}, $values );
+		}
 
 		return $values;
 	}
@@ -166,54 +173,52 @@ abstract class FieldHandler {
 		return $this->field['id'];
 	}
 
-    public function get_values($xpaths, $post_index): array {
-        if (is_string($xpaths)) {
-            $xpaths = [$xpaths];
-        }
+	public function get_values( $xpaths, $post_index ): array {
+		$values = [];
 
-        $values = [
-            $post_index => []
-        ];
+		foreach ( $xpaths as $xpath ) {
+			$xpath_values = $this->get_value_by_xpath( $xpath )[ $post_index ];
 
-        foreach ( $xpaths as $xpath ) {
-            $values[$post_index][] = $this->get_value_by_xpath( $xpath )[$post_index];
-        }
+			if ( is_array( $xpath_values ) ) {
+				$values = array_merge( $values, $xpath_values );
+			} else {
+				$values[] = $xpath_values;
+			}
+		}
 
-        return $values;
-    }
+		return $values;
+	}
 
 	public function get_value() {
 		if ( ! $this->xpath ) {
 			return;
 		}
 
-        if (!is_array($this->xpath)) {
-            $this->xpath = [$this->xpath];
-        }
-        
-		$values = $this->get_values($this->xpath, $this->get_post_index());
-		$values = $values[ $this->get_post_index()] ?? [];
-        
-        $values = array_map( function ( $value ) {
-            $v = explode( '||', $value );
-            return $this->recursive_trim( $v );
-        }, $values );
-        
-		return $this->returns_array() ? $values[0] : $values[0][0];
+		if ( ! is_array( $this->xpath ) ) {
+			$this->xpath = [ $this->xpath ];
+		}
+
+		$values = $this->get_values( $this->xpath, $this->get_post_index() );
+
+		return $this->returns_array() ? $values : $values[0];
 	}
 
-	public function returns_array(): bool {
-		if ( $this->field['clone'] ) {
+	public function returns_array( $field = null ): bool {
+		if ( ! $field ) {
+			$field = $this->field;
+		}
+
+		if ( $field['clone'] ) {
 			return true;
 		}
 
-        if ($this->field['multiple']) {
-            return true;
-        }
+		if ( $field['multiple'] ) {
+			return true;
+		}
 
 		$multiple_type = [ 'checkbox_list', 'group' ];
 
-		return in_array( $this->field['type'], $multiple_type ) ?? false;
+		return in_array( $field['type'], $multiple_type ) ?? false;
 	}
 
 	/**

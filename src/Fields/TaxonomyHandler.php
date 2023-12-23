@@ -57,7 +57,7 @@ class TaxonomyHandler extends FieldHandler {
 			$values = $this->get_value_by_xpath( $node['xpath'] );
 
 			foreach ( $values as $i => $value ) {
-				$term_id            = $this->get_or_create_term( $value, $taxonomy, $parent['values'][ $i ] ?? null );
+				$term_id              = $this->get_or_create_term( $value, $taxonomy, $parent['values'][ $i ] ?? null );
 				$node['values'][ $i ] = $term_id;
 			}
 
@@ -87,44 +87,44 @@ class TaxonomyHandler extends FieldHandler {
 	}
 
 	public function get_value() {
-		$output      = [];
-		$taxonomy    = $this->field['taxonomy'][0];
-        
-        if ( ! $taxonomy || !is_array( $this->xpath ) ) {
-            return;
-        }
+		$output   = [];
+		$taxonomy = $this->field['taxonomy'][0];
 
-        if ($this->xpath['switcher_value'] && $this->xpath['switcher_value'] === 'static') {
-            $output = $this->xpath['static'];
-        } else {
-            $hierachy = $this->xpath['hierachy'];
-            if (!is_array($hierachy)) {
-                $hierachy = json_decode( $hierachy, true );
-            }
-            
-            $this->xpath['hierachy'] = $this->build_tree( $hierachy );
-            $output      = $this->fill_tree( $hierachy, $taxonomy );
-            $output      = $this->get_tree_values( $output, $this->get_post_index() );
-            $output = implode( ',', $output );
-        }
+		if ( ! $taxonomy || ! is_array( $this->xpath ) ) {
+			return;
+		}
 
-        return $output;
+		if ( $this->xpath['switcher_value'] && $this->xpath['switcher_value'] === 'static' ) {
+			$output = $this->xpath['static'];
+		} else {
+			$hierachy = $this->xpath['hierachy'];
+			if ( ! is_array( $hierachy ) ) {
+				$hierachy = json_decode( $hierachy, true );
+			}
+
+			$this->xpath['hierachy'] = $this->build_tree( $hierachy );
+			$output                  = $this->fill_tree( $hierachy, $taxonomy );
+			$output                  = $this->get_tree_values( $output, $this->get_post_index() );
+			$output                  = implode( ',', $output );
+		}
+
+		return $output;
 	}
 
 	public function saved_post( $importData ) {
-        if ( empty($this->xpath) || ! is_array( $this->xpath ) ) {
-            return;
-        }
-        
-        if (!is_array($this->xpath)) {
-            $this->xpath = json_decode( $this->xpath, true );
-        }
-        
+		if ( empty( $this->xpath ) || ! is_array( $this->xpath ) ) {
+			return;
+		}
+
+		if ( ! is_array( $this->xpath ) ) {
+			$this->xpath = json_decode( $this->xpath, true );
+		}
+
 		$taxonomy = $this->field['taxonomy'][0];
 		$values   = explode( ',', $this->get_value() );
-        
-		$values   = array_filter( array_unique( $values ) );
-        
+
+		$values = array_filter( array_unique( $values ) );
+
 		wp_set_post_terms( $this->get_post_id(), $values, $taxonomy );
 	}
 }
