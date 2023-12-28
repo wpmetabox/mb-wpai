@@ -42,7 +42,6 @@ class GroupHandler extends FieldHandler {
 						$value = $this->get_tree_value( $bindings );
 					} else {
 						$value = $field_handler->get_value();
-						$value = $value[0];
 					}
 
 					$output[ $i ][ $field_id ] = $value;

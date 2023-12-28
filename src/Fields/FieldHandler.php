@@ -141,12 +141,12 @@ abstract class FieldHandler {
 			$xpath_values = $this->get_value_by_xpath( $xpath, $post_index );
 			
 			if ( is_array( $xpath_values ) ) {
-				$values[] = array_merge( $values, $xpath_values );
+				$values = array_merge( $values, $xpath_values );
 			} else {
 				$values[] = $xpath_values;
 			}
 		}
-		
+
 		return $values;
 	}
 
@@ -158,7 +158,8 @@ abstract class FieldHandler {
 		}
 
 		$values = $this->get_values( $xpath, $this->get_post_index() );
-		
+	
+
 		return $this->returns_array() ? $values : $values[0];
 	}
 

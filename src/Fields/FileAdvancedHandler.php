@@ -5,10 +5,8 @@ use MetaBox\WPAI\MetaBoxService;
 
 class FileAdvancedHandler extends FieldHandler {
 	public function get_value() {
-        $xpath = $this->field['_wpai']['xpath'];
-
 		$value = parent::get_value();
-
+        
         if ( ! $value ) {
             return;
         }
@@ -17,7 +15,15 @@ class FileAdvancedHandler extends FieldHandler {
         $parsingData = $this->parsingData;
 
         foreach ( $value as $clone_index => $files ) {
+            if (empty($files)) {
+                continue;
+            }
+            
             foreach ( $files as $file ) {
+                if (empty($file)) {
+                    continue;
+                }
+                
                 $attachment = MetaBoxService::import_file(
                     $file,
                     $this->get_post_id(),
