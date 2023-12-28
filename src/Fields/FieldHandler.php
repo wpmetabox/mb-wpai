@@ -73,18 +73,18 @@ abstract class FieldHandler {
 
 	public function get_value_by_xpath( string $xpath, $post_index = null ) {
 		$post_index = $post_index ?? $this->get_post_index();
-		
-		if (!str_contains($xpath, '{') && !str_contains($xpath, '}')) {
-			return [$xpath];
+
+		if ( ! str_contains( $xpath, '{' ) && ! str_contains( $xpath, '}' ) ) {
+			return [ $xpath ];
 		}
 
 		add_filter( 'wp_all_import_multi_glue', function ($glue) {
 			return '||';
 		} );
-		
-		$values = \XmlImportParser::factory( $this->parsingData['xml'], $this->base_xpath, $xpath, $file )->parse()[$post_index];
-		
-		if ( str_contains ( $values, '||' ) ) {
+
+		$values = \XmlImportParser::factory( $this->parsingData['xml'], $this->base_xpath, $xpath, $file )->parse()[ $post_index ];
+
+		if ( str_contains( $values, '||' ) ) {
 			$values = explode( '||', $values );
 		}
 
@@ -136,15 +136,19 @@ abstract class FieldHandler {
 
 	public function get_values( $xpaths, $post_index ): array {
 		$values = [];
-		
+
 		foreach ( $xpaths as $xpath ) {
-			$xpath_values = $this->get_value_by_xpath( $xpath, $post_index );
-			
-			if ( is_array( $xpath_values ) ) {
-				$values = array_merge( $values, $xpath_values );
+			if ( strpos( $xpath, '{' ) > -1 && strpos( $xpath, '}' ) > -1 ) {
+				$xpath_values = $this->get_value_by_xpath( $xpath, $post_index );
 			} else {
-				$values[] = $xpath_values;
+				$xpath_values = [[$xpath]];
 			}
+
+			if ( ! is_array( $xpath_values ) ) {
+				$xpath_values = [ $xpath_values ];
+			}
+
+			$values = array_merge( $values, $xpath_values );
 		}
 
 		return $values;
@@ -159,7 +163,6 @@ abstract class FieldHandler {
 
 		$values = $this->get_values( $xpath, $this->get_post_index() );
 	
-
 		return $this->returns_array() ? $values : $values[0];
 	}
 
@@ -176,7 +179,17 @@ abstract class FieldHandler {
 			return true;
 		}
 
-		$multiple_type = [ 'checkbox_list', 'group' ];
+		$multiple_type = [ 
+			'checkbox_list', 'group', 'taxonomy', 
+			'taxonomy_advanced', 'post', 'user', 
+			'file', 
+			'file_advanced',
+			'file_upload',
+			'image',
+			'image_upload',
+			'image_advanced',
+			'video',
+		];
 
 		return in_array( $field['type'], $multiple_type ) ?? false;
 	}

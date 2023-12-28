@@ -10,7 +10,7 @@ class CheckboxHandler extends FieldHandler {
 	public function get_value() {
 		$value = parent::get_value();
 		$value = $this->to_bool( $value );
-
+		
 		return $value;
 	}
 

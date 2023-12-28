@@ -5,14 +5,6 @@ namespace MetaBox\WPAI\Fields;
 use MetaBox\WPAI\Fields\FieldHandler;
 
 class TaxonomyHandler extends FieldHandler {
-	public function parse( $xpath, $parsingData, $args = [] ) {
-		$xpath = json_decode( $xpath, true );
-
-		$this->xpath       = $xpath;
-		$this->parsingData = $parsingData;
-		$this->base_xpath  = $parsingData['xpath_prefix'] . $parsingData['import']->xpath;
-	}
-
 	private function build_tree( array $elements, $parentId = null ) {
 		$branch = [];
 
@@ -87,44 +79,29 @@ class TaxonomyHandler extends FieldHandler {
 	}
 
 	public function get_value() {
-		$output   = [];
-		$taxonomy = $this->field['taxonomy'][0];
+		$value = parent::get_value();
+		$output = [];
 
-		if ( ! $taxonomy || ! is_array( $this->xpath ) ) {
+		if ( ! is_array( $value ) ) {
 			return;
 		}
 
-		if ( $this->xpath['switcher_value'] && $this->xpath['switcher_value'] === 'static' ) {
-			$output = $this->xpath['static'];
-		} else {
-			$hierachy = $this->xpath['hierachy'];
-			if ( ! is_array( $hierachy ) ) {
-				$hierachy = json_decode( $hierachy, true );
+		$taxonomy = $this->field['taxonomy'][0];
+		
+		foreach ( $value as $term ) {
+			$term_id = $this->get_or_create_term( $term, $taxonomy );
+			if ( ! is_wp_error( $term_id ) ) {
+				$output[] = $term_id;
 			}
-
-			$this->xpath['hierachy'] = $this->build_tree( $hierachy );
-			$output                  = $this->fill_tree( $hierachy, $taxonomy );
-			$output                  = $this->get_tree_values( $output, $this->get_post_index() );
-			$output                  = implode( ',', $output );
 		}
 
 		return $output;
 	}
 
 	public function saved_post( $importData ) {
-		if ( empty( $this->xpath ) || ! is_array( $this->xpath ) ) {
-			return;
-		}
-
-		if ( ! is_array( $this->xpath ) ) {
-			$this->xpath = json_decode( $this->xpath, true );
-		}
-
 		$taxonomy = $this->field['taxonomy'][0];
-		$values   = explode( ',', $this->get_value() );
-
-		$values = array_filter( array_unique( $values ) );
-
+		$values = array_filter( array_unique( $this->get_value() ) );
+		
 		wp_set_post_terms( $this->get_post_id(), $values, $taxonomy );
 	}
 }

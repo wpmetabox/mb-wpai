@@ -12,7 +12,7 @@ class MetaBoxHandler implements MetaBoxInterface {
 
 	public \RW_Meta_Box $meta_box;
 
-	public $fields = [];
+	public $refs = [];
 
 	public $parsingData = [];
 
@@ -28,15 +28,15 @@ class MetaBoxHandler implements MetaBoxInterface {
 		$this->post     = $post;
 	}
 
-	public function add_refs( $fields, $parent = []) {
+	public function add_refs( $fields, $parent = [] ) {
 		foreach ( $fields as $index => $field ) {
-			$field['reference'] = isset($parent['reference']) ? $parent['reference'] . '.' . $field['id'] : $field['id'];
+			$field['reference'] = isset( $parent['reference'] ) ? $parent['reference'] . '.' . $field['id'] : $field['id'];
 
-			if (isset ($field['fields'])) {
+			if ( isset( $field['fields'] ) ) {
 				$field['fields'] = $this->add_refs( $field['fields'], $field );
 			}
 
-			$fields[$index] = $field;
+			$fields[ $index ] = $field;
 		}
 
 		return $fields;
@@ -106,40 +106,30 @@ class MetaBoxHandler implements MetaBoxInterface {
 
 	public function import( $import_data, $args = [] ) {
 		$binding_fields = $this->parsingData['import']->options['fields'] ?? [];
-		
-		foreach ( $binding_fields as $field_id => $value ) {
-			$xpaths = $value['xpath'] ?? [''];
-			$reference = $value['reference'];
-			$options = $value['options'] ?? [];
 
-			if (!empty($xpaths) && !empty($reference)) {
+		foreach ( $binding_fields as $field_id => $value ) {
+			$xpaths    = $value['xpath'] ?? [ '' ];
+			$reference = $value['reference'];
+			$options   = $value['options'] ?? [];
+
+			if ( ! empty( $xpaths ) && ! empty( $reference ) ) {
 				// Find field by reference id (dot notation)
 				$field = $this->find_field( $this->meta_box->meta_box['fields'], $reference );
 				// Create field instance to handle the import
 				if ( $field ) {
-					$field['_wpai'] = $value;
-					$field = FieldFactory::create($field, $this->post, $this);
+					$field['_wpai']     = $value;
+					$field              = FieldFactory::create( $field, $this->post, $this );
 					$field->parsingData = $this->parsingData;
 					$field->base_xpath  = $this->parsingData['xpath_prefix'] . $this->parsingData['import']['xpath'];
-					$field->import($import_data, $args);
+					$field->import( $import_data, $args );
+					$this->refs[ $reference ] = $field;
 				}
-
-				// Call import method
 			}
-		}
-
-		foreach ( $this->fields as $field ) {
-			$field->parsingData = $this->parsingData;
-			$field->base_xpath  = $this->parsingData['xpath_prefix'] . $this->parsingData['import']['xpath'];
-			$field->xpath       = $field->field['binding'] ?? null;
-			$field->importData  = $import_data;
-
-			$field->import( $import_data, $args );
 		}
 	}
 
-	private function find_field ( $fields, string $reference ) {
-		
+	private function find_field( $fields, string $reference ) {
+
 		foreach ( $fields as $field ) {
 			if ( $field['reference'] === $reference ) {
 				return $field;
@@ -157,9 +147,21 @@ class MetaBoxHandler implements MetaBoxInterface {
 	}
 
 	public function saved_post( $import_data ) {
-		foreach ( $this->fields as $field ) {
-			$field->parsingData = $this->parsingData;
-			$field->saved_post( $import_data );
+		$binding_fields = $this->parsingData['import']->options['fields'] ?? [];
+
+		foreach ( $binding_fields as $field_id => $value ) {
+			$xpaths    = $value['xpath'] ?? [ '' ];
+			$reference = $value['reference'];
+
+			if ( ! empty( $xpaths ) && ! empty( $reference ) ) {
+				$field = $this->refs[ $reference ] ?? null;
+
+				if (!$field) {
+					continue;
+				}
+
+				$field->saved_post( $import_data );
+			}
 		}
 	}
 }
