@@ -8,10 +8,6 @@ class CheckboxHandler extends FieldHandler {
 	 * @return null|bool|bool[]
 	 */
 	public function get_value() {
-		if ( ! $this->xpath ) {
-			return;
-		}
-
 		$value = parent::get_value();
 		$value = $this->to_bool( $value );
 

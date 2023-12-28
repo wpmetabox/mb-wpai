@@ -33,53 +33,7 @@ abstract class FieldHandler {
 		$this->field    = $field;
 		$this->post     = $post;
 
-		$this->init_children_fields();
-	}
-
-	private function init_children_fields(): void {
-		if ( ! isset( $this->field['fields'] ) ) {
-			return;
-		}
-
-		foreach ( $this->field['fields'] as $sub_field ) {
-			$sub_field['_name'] = $this->field['_name'] . '[' . $sub_field['id'] . ']';
-			$field              = FieldFactory::create( $sub_field, $this->post, $this->meta_box );
-			$field->parent      = $this;
-
-			$this->fields[] = $field;
-		}
-	}
-
-	public function view(): void {
-		$field_type = 'text';
-		$field_name = $this->field['_name'];
-
-		$field_value  = $this->post['fields'][ $this->field['id'] ] ?? '';
-		$field        = $this->field;
-		$field['std'] = $field['std'] ?? $field_value;
-
-		$handler = $this;
-
-		$view_path = $this->get_view_path( $this->field['type'] );
-
-		if ( ! file_exists( $view_path ) || ! $view_path ) {
-			return;
-		}
-
-		include $view_path;
-	}
-
-	private function get_view_path( string $field_type ): ?string {
-		$matches = [ 
-			'taxonomy' => 'taxonomy',
-			'group' => 'group',
-			'fieldset_text' => 'fieldset_text',
-			'key_value' => 'key_value',
-		];
-
-		$field_type = $matches[ $field_type ] ?? 'text';
-
-		return PMAI_ROOT_DIR . '/views/fields/' . $field_type . '.php';
+		// $this->init_children_fields();
 	}
 
 	/**
@@ -95,10 +49,10 @@ abstract class FieldHandler {
 
 		$this->parsingData['logger'] and call_user_func( $this->parsingData['logger'], sprintf( __( '- Importing field `%s`', 'mb-wpai' ), $field['id'] ) );
 
-		$field_name_dot = pmai_square_to_dot_notation( $field['_name'] );
+		$field_name_dot = $this->field['reference'];
 		$field_name_dot = str_replace( 'fields.', '', $field_name_dot );
 
-		if ( ! pmai_is_mb_update_allowed( $field_name_dot, $this->parsingData['import']['options'] ) ) {
+		if ( ! pmai_is_mb_update_allowed( $field_name_dot, $this->parsingData['import']->options ) ) {
 			$this->parsingData['logger'] && call_user_func( $this->parsingData['logger'], sprintf( __( '- Field `%s` is skipped attempted to import options', 'mb-wpai' ), $this->field['name'] ) );
 
 			return false;
@@ -117,23 +71,30 @@ abstract class FieldHandler {
 	public function saved_post( $importData ) {
 	}
 
-	public function get_value_by_xpath( $xpath, $suffix = '' ) {
+	public function get_value_by_xpath( string $xpath, $post_index = null ) {
+		$post_index = $post_index ?? $this->get_post_index();
+		
+		if (!str_contains($xpath, '{') && !str_contains($xpath, '}')) {
+			return [$xpath];
+		}
+
 		add_filter( 'wp_all_import_multi_glue', function ($glue) {
 			return '||';
 		} );
+		
+		$values = \XmlImportParser::factory( $this->parsingData['xml'], $this->base_xpath, $xpath, $file )->parse()[$post_index];
+		
+		if ( str_contains ( $values, '||' ) ) {
+			$values = explode( '||', $values );
+		}
 
-		$values = \XmlImportParser::factory( $this->parsingData['xml'], $this->base_xpath . $suffix, $xpath, $file )->parse();
+		if ( is_string( $values ) ) {
+			$values = [ $values ];
+		}
 
 		add_filter( 'wp_all_import_multi_glue', function ($glue) {
 			return ',';
 		} );
-
-		if ( $this->returns_array() ) {
-			$values = array_map( function ($value) {
-				$v = explode( '||', $value );
-				return $this->recursive_trim( $v );
-			}, $values );
-		}
 
 		return $values;
 	}
@@ -175,31 +136,29 @@ abstract class FieldHandler {
 
 	public function get_values( $xpaths, $post_index ): array {
 		$values = [];
-
+		
 		foreach ( $xpaths as $xpath ) {
-			$xpath_values = $this->get_value_by_xpath( $xpath )[ $post_index ];
-
+			$xpath_values = $this->get_value_by_xpath( $xpath, $post_index );
+			
 			if ( is_array( $xpath_values ) ) {
-				$values = array_merge( $values, $xpath_values );
+				$values[] = array_merge( $values, $xpath_values );
 			} else {
 				$values[] = $xpath_values;
 			}
 		}
-
+		
 		return $values;
 	}
 
 	public function get_value() {
-		if ( ! $this->xpath ) {
-			return;
+		$xpath = $this->field['_wpai']['xpath'];
+
+		if ( ! is_array( $xpath ) ) {
+			$xpath = [ $xpath ];
 		}
 
-		if ( ! is_array( $this->xpath ) ) {
-			$this->xpath = [ $this->xpath ];
-		}
-
-		$values = $this->get_values( $this->xpath, $this->get_post_index() );
-
+		$values = $this->get_values( $xpath, $this->get_post_index() );
+		
 		return $this->returns_array() ? $values : $values[0];
 	}
 
@@ -245,7 +204,7 @@ abstract class FieldHandler {
 	public function get_import_option( string $option ) {
 		$importData = $this->get_import_data();
 
-		return $importData['import']['options'][ $option ] ?? null;
+		return $importData['import']->options[ $option ] ?? null;
 	}
 
 	/**
@@ -254,7 +213,7 @@ abstract class FieldHandler {
 	public function getImportType() {
 		$importData = $this->get_import_data();
 
-		return $importData['import']['options']['custom_type'];
+		return $importData['import']->options['custom_type'];
 	}
 
 	/**
@@ -263,7 +222,7 @@ abstract class FieldHandler {
 	public function getTaxonomyType() {
 		$importData = $this->get_import_data();
 
-		return $importData['import']['options']['taxonomy_type'];
+		return $importData['import']->options['taxonomy_type'];
 	}
 
 	/**

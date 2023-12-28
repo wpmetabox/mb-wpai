@@ -56,8 +56,19 @@ abstract class PMAI_Controller_Admin extends PMAI_Controller {
 		if ( is_rtl() ) {
 			wp_enqueue_style( 'rwmb-rtl', RWMB_CSS_URL . 'style-rtl.css', [], RWMB_VER );
 		}
+
 		wp_enqueue_script( 'rwmb', RWMB_JS_URL . 'script.js', [ 'jquery' ], RWMB_VER, true );
         wp_enqueue_script( 'rwmb-clone', RWMB_JS_URL . 'clone.js', [ 'jquery-ui-sortable' ], time(), true );
+		
+		wp_enqueue_style( 'rwmb-group', plugin_dir_url('') . 'meta-box-group/group.css', [], time() );
+		wp_enqueue_script( 'rwmb-group', plugin_dir_url('') . 'meta-box-group/group.js', [ 'jquery', 'underscore' ], time(), true );
+		wp_localize_script( 'rwmb-group', 'RWMB_Group', [
+			'confirmRemove' => __( 'Are you sure you want to remove this group?', 'meta-box-group' ),
+			'on'            => __( 'On', 'meta-box-group' ),
+			'off'           => __( 'Off', 'meta-box-group' ),
+			'yes'           => __( 'Yes', 'meta-box-group' ),
+			'no'            => __( 'No', 'meta-box-group' ),
+		] );
 	}
 
 	/**

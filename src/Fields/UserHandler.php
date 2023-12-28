@@ -13,23 +13,28 @@ class UserHandler extends FieldHandler {
 		$value = parent::get_value();
 
 		if ( ! is_array( $value ) ) {
-			$value = [ $value ];
+			return;
 		}
 
-		$user_ids = [];
+		$output = [];
 
-		foreach ( $value as $v ) {
-			foreach ( $by as $column ) {
-				$user = get_user_by( $column, $v );
+		foreach ( $value as $clone_index => $users ) {
+			foreach ( $users as $user ) {
+				if ( ! $user ) {
+					continue;
+				}
 
-				if ( ! empty( $user ) ) {
-					$user_ids[] = $user->ID;
+				foreach ( $by as $column ) {
+					$userObject = get_user_by( $column, $user );
+
+					if ( $userObject ) {
+						$output[ $clone_index ][] = $userObject->ID;
+						break;
+					}
 				}
 			}
 		}
-
-        $user_ids = array_unique( $user_ids );
-
-        return $this->returns_array() ? $user_ids : reset( $user_ids );
+	
+        return $this->field['clone'] ? $output : $output[0];
 	}
 }

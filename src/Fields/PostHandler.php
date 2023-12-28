@@ -4,7 +4,7 @@ namespace MetaBox\WPAI\Fields;
 class PostHandler extends FieldHandler {
 	public function get_value() {
         $post_ids = parent::get_value();
-
+        
         if ( ! $post_ids ) {
             return;
         }

@@ -15,135 +15,144 @@ class GroupHandler extends FieldHandler {
 		$this->base_xpath  = $parsingData['xpath_prefix'] . $parsingData['import']->xpath;
 	}
 
-	public function get_tree_value( array $xpath, $post_index ) {
-		$output = [];
-       
-		foreach ( $xpath as $field_name => $xpath ) {
-			if ( empty( $xpath ) ) {
-				continue;
-			}
-           
-			if ( is_array( $xpath ) ) {
-				$output[ $field_name ] = $this->get_tree_value( $xpath, $post_index );
-			}
-
-			if ( is_string( $xpath ) ) {
-                if (is_numeric($field_name)) {
-                    $output = $this->get_value_by_xpath( $xpath )[ $post_index ];
-                } else {
-                    $output[ $field_name ] = $this->get_value_by_xpath( $xpath )[ $post_index ];
-				
-                    $field                 = $this->get_field_info( $field_name, $this->field );
-                    
-                    if ( ! $this->returns_array( $field ) ) {
-                        $output[ $field_name ] = $output[ $field_name ][0];
-                    }
-                }
-			}
+	private function get_tree_value( $xpath, $parent = [] ) {
+		if ( ! is_array( $xpath ) ) {
+			$xpath = [ $xpath ];
 		}
 
-		return $output;
-	}
-
-	public function get_value() {
-        if ( ! is_array( $this->xpath ) ) {
-			return;
-		}
-        
-		$this->xpath = $this->build_xpath_tree( $this->xpath );
-        
-		$values = [];
-
-		foreach ( $this->xpath['posts'] as $post_index => $xpaths ) {
-			$values[ $post_index ] = $this->get_tree_value( $xpaths, $post_index );
-		}
-        
-		$values = $values[ $this->get_post_index()] ?? $values;
-        
-		if ( $this->returns_array() ) {
-			return $values;
-		}
-        
-		return $values[0];
-	}
-
-	private function recursive_xpath( $xpath, $count, $post_index ) {
 		$output = [];
 
-		// Clone xpath based on the count
-		$foreach = $this->get_string_between( $xpath['foreach'] );
-        $prepend = $xpath['is_variable'] !== 'no';
-        
-		for ( $i = 1; $i <= $count; $i++ ) {
-			foreach ( $xpath['rows'] as $clone_index => $group ) {
-				if ( $clone_index === 'ROWNUMBER' ) {
-					continue;
-				}
+		foreach ( $xpath as $group ) {
+			$foreach = $this->get_value_by_xpath( $group['foreach'] );
 
-				foreach ( $group as $field_name => $real_xpath ) {
-					if ( empty( $real_xpath ) ) {
+			for ( $i = 0; $i < count( $foreach ); $i++ ) {
+				foreach ( $group as $field_id => $bindings ) {
+					if ( $field_id === 'foreach' ) {
 						continue;
 					}
 
-					if ( is_string( $real_xpath ) ) {
-                        $binded_xpath = $real_xpath;
-
-                        if ($prepend) {
-                            $real_xpath           = $this->get_string_between( $real_xpath );
-                            $suffix               = $real_xpath !== '' ? "[{$real_xpath}]" : '';
-                            $binded_xpath         = "{{$foreach}[{$i}]" . $suffix . '}';
-                        }
-
-						$group[ $field_name ] = $binded_xpath;
+					$field = $this->get_field_info( $field_id );
+					$field_handler = $this->init_sub_field( $field, $this->field, $bindings );
+					
+					if ( ! $field ) {
+						continue;
 					}
 
-					if ( is_array( $real_xpath ) ) {
-						if ( isset( $real_xpath['foreach'] ) ) {
-							$real_xpath_foreach    = $this->get_string_between( $real_xpath['foreach'] );
-							$suffix                = $real_xpath_foreach !== '' ? "[{$real_xpath_foreach}]" : '';
-							$binded_xpath          = "{$foreach}[{$i}]" . $suffix;
-							$real_xpath['foreach'] = '{' . $binded_xpath . '}';
-							$posts_value           = $this->get_value_by_xpath( $real_xpath['foreach'] );
-							$rows_count            = count( $posts_value[ $post_index ] );
-							$group_value           = $this->recursive_xpath( $real_xpath, $rows_count, $post_index );
-							$group[ $field_name ]  = $group_value;
-						} else {
-                            $binded_xpath = $real_xpath;
-
-                            if ($prepend) {
-                                $real_xpath           = $this->get_string_between( $real_xpath[0] );
-                                $suffix               = $real_xpath !== '' ? "[{$real_xpath}]" : '';
-                                $binded_xpath         = "{{$foreach}[{$i}]" . $suffix . '}';
-                            }
-
-							$group[ $field_name ] = $binded_xpath;
-						}
+					if ( $field['type'] === 'group' ) {
+						$value = $this->get_tree_value( $bindings );
+					} else {
+						$value = $field_handler->get_value();
+						$value = $value[0];
 					}
+
+					$output[ $i ][ $field_id ] = $value;
+					// If contains *, then we assign all values to the field, otherwise we assign each value to the field
+					// if ( str_contains( $xpath, '*' ) ) {
+					// 	$output[ $i ][ $field_id ] = $value;
+					// } else {
+					// 	for ( $i = 0; $i < count( $value ); $i++ ) {
+					// 		$output[ $i ][ $field_id ][] = $value[ $i ];
+					// 	}
+					// }
 				}
-
-				$output[ $i ] = $group;
 			}
 		}
 
 		return $output;
 	}
 
-	private function build_xpath_tree( array $xpath ) {
-		if (empty($xpath['foreach'])) {
-            for ( $i = 0; $i < 3; $i++ ) {
-                $xpath['posts'][ $i ] = $this->recursive_xpath( $xpath, 1, $i );
-            }
-        } else {
-            $post_values = $this->get_value_by_xpath( $xpath['foreach'] );
-            
-            $xpath['posts'] = [];
+	private function init_sub_field( $field, $parent, $bindings ) {
+		$field['_wpai']['xpath'] = $bindings;
 
-            foreach ( $post_values as $post_index => $values ) {
-                $xpath['posts'][ $post_index ] = $this->recursive_xpath( $xpath, count( $values ), $post_index );
-            }
-        }
-        
+		// Create field instance to handle the import
+		$field              = FieldFactory::create( $field, $this->post, $this->meta_box );
+		$field->parsingData = $this->parsingData;
+		$field->base_xpath  = $this->parsingData['xpath_prefix'] . $this->parsingData['import']['xpath'];
+		$field->importData  = $this->importData;
+
+		return $field;
+	}
+
+	public function get_value() {	
+		$xpath  = $this->field['_wpai']['xpath'];
+		$xpath  = $this->normalize_xpath( $xpath );
+
+		$output = $this->get_tree_value( $xpath );
+
+		$output = $this->sanitize( $output, $this->field );
+
+		return $output;
+	}
+
+	private function normalize_xpath( array $xpath, $parent = null ) {
+		foreach ( $xpath as $clone_index => $group ) {
+			foreach ( $group as $field_id => $field_xpaths ) {
+				if ( $field_id === 'foreach' ) {
+					continue;
+				}
+
+				foreach ( $field_xpaths as $field_clone_index => $value ) {
+					if ( is_array( $value ) ) {
+						$value['foreach'] = $this->expand_xpath( $value['foreach'], $xpath[ $clone_index ] );
+						$value = $this->normalize_xpath( [$value], $xpath[ $clone_index ] );
+						$value = $value[0];
+					} else if ( is_string( $value ) ) {
+						$value = $this->expand_xpath( $value, $xpath[ $clone_index ] );
+					}
+					$xpath[ $clone_index ][ $field_id ][ $field_clone_index ] = $value;
+				}
+			}
+		}
+
 		return $xpath;
+	}
+
+	private function expand_xpath( $xpath, $parent = [] ) {
+		$value         = $this->get_string_between( $xpath );
+		$foreach_value = $this->get_string_between( $parent['foreach'] );
+
+		if ( $value === '' ) {
+			$value = $foreach_value;
+		} else if ( $foreach_value !== '' ) {
+			$value = "{$foreach_value}{$value}";
+		}
+
+		$value = str_replace( '.', '/', $value );
+		$value = trim( $value,'/');
+		$value = "{{$value}}";
+
+		return $value;
+	}
+
+	private function sanitize( $groups, $parent = [] ) {
+		$output = [];
+
+		foreach ( $groups as $index => $group ) {
+			foreach ( $group as $field_id => $value ) {
+				$field_info = $this->get_field_info( $field_id, $parent );
+
+				if ( ! $field_info ) {
+					continue;
+				}
+
+				if ( $field_info['type'] === 'group' ) {
+					$value = $this->sanitize( $value, $field_info );
+				}
+
+				if ( ! $field_info['clone'] ) {
+					$value = $value[0];
+				}
+
+				$output[ $index ][ $field_id ] = $value;
+			}
+
+			// If the group is not cloneable, then we only need the first value
+			if ( ! $parent['clone'] ) {
+				break;
+			}
+		}
+
+		return $output;
 	}
 
 	private function get_string_between( $string ) {
@@ -168,7 +177,11 @@ class GroupHandler extends FieldHandler {
 		return $str;
 	}
 
-	private function get_field_info( $field_id, $parent ) {
+	private function get_field_info( $field_id, $parent = false ) {
+		if ( ! $parent ) {
+			$parent = $this->field;
+		}
+
 		foreach ( $parent['fields'] as $field ) {
 			if ( $field['id'] === $field_id ) {
 				return $field;
