@@ -3,7 +3,7 @@
 $wpai_attr = $field['_wpai'];
 $id = 'fields[' . $field['id'] . '][xpath]';
 
-$fieldset_text_field = array_merge( $field, [ 
+$background_field = array_merge( $field, [ 
 	'id' => $id,
 	'field_name' => $id,
 	// 'type' => 'text',
@@ -11,8 +11,8 @@ $fieldset_text_field = array_merge( $field, [
 	'std' => $wpai_attr['xpath'],
 ] );
 
-$fieldset_text_fields = \RW_Meta_Box::normalize_fields( [ $fieldset_text_field ] );
-RWMB_Field::call( 'show', $fieldset_text_fields[0], false );
+$background_fields = \RW_Meta_Box::normalize_fields( [ $background_field ] );
+RWMB_Field::call( 'show', $background_fields[0], false );
 ?>
 <input type="hidden" name="fields[<?= esc_attr( $field['id'] ) ?>][reference]" value="<?= esc_attr($wpai_attr['reference']) ?>" />
 <input type="hidden" name="fields[<?= esc_attr( $field['id'] ) ?>][options]" value="[]" />

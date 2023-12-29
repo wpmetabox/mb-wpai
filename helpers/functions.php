@@ -81,3 +81,32 @@ function pmai_square_to_dot_notation( $field ) {
 
     return $field;
 }
+
+
+function get_segment( $string ) {
+    $segments = explode( '/', $string );
+    
+    for ($i = 0; $i < count($segments); $i++) {
+        if (strpos($segments[$i], '[.') !== false) {
+            return $i;
+        }
+    }
+
+    return false;
+}
+
+
+function array_deep( $array, $deepness ) {
+    while ( $deepness > 0 ) {
+        $new_array = [];
+
+        foreach ( $array as $element ) {
+            $new_array[] = [$element];
+        }
+
+        $array = $new_array;
+        $deepness--;
+    }
+
+    return $array;
+}

@@ -6,8 +6,13 @@ $id = 'fields[' . $field['id'] . '][xpath]';
 function pmai_add_repeater_field( $group ) {
 	foreach ( $group['fields'] as $index => $field ) {
 		if ( $field['type'] === 'group' ) {
+			$field['clone'] = true;
 			$group['fields'][ $index ] = pmai_add_repeater_field( $field );
 		} else {
+			// For every field type, we just need to create a simple text field with no attributes
+			$field['type'] = 'text';
+			// $field['field_name'] = $field['id'];
+			$field['multiple'] = false; // force single value for file, checkbox_list, select, radio...
 			$group['fields'][ $index ] = $field;
 		}
 	}
@@ -28,6 +33,7 @@ $group_field = $field;
 $group_field['id'] = $id;
 $group_field['field_name'] = $id;
 $group_field['std'] = $group_field['_wpai']['xpath'];
+$group_field['clone'] = true;
 $group_field = pmai_add_repeater_field( $group_field );
 
 $group_fields = \RW_Meta_Box::normalize_fields( [ $group_field ] );

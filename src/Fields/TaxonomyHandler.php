@@ -88,20 +88,37 @@ class TaxonomyHandler extends FieldHandler {
 
 		$taxonomy = $this->field['taxonomy'][0];
 		
-		foreach ( $value as $term ) {
-			$term_id = $this->get_or_create_term( $term, $taxonomy );
-			if ( ! is_wp_error( $term_id ) ) {
-				$output[] = $term_id;
+		foreach ( $value as $clone_index => $term ) {
+			if ( is_string( $term ) ) {
+				$term_id = $this->get_or_create_term( $term, $taxonomy );
+				$output[0][] = $term_id;
+			} else {
+				foreach ( $term as $s ) {
+					$term_id = $this->get_or_create_term( $s, $taxonomy );
+					if ( ! is_wp_error( $term_id ) ) {
+						$output[$clone_index][] = $term_id;
+					}
+				}
 			}
 		}
-
+		
 		return $output;
 	}
 
 	public function saved_post( $importData ) {
 		$taxonomy = $this->field['taxonomy'][0];
-		$values = array_filter( array_unique( $this->get_value() ) );
 		
-		wp_set_post_terms( $this->get_post_id(), $values, $taxonomy );
+		$values = $this->get_value();
+
+		foreach ( $values as $clone_index => $term_ids ) {
+			if ( ! is_array( $term_ids ) ) {
+				wp_set_post_terms( $this->get_post_id(), $term_ids, $taxonomy );
+				continue;
+			}
+
+			foreach ( $term_ids as $term_id ) {
+				wp_set_post_terms( $this->get_post_id(), $term_id, $taxonomy );
+			}
+		}
 	}
 }

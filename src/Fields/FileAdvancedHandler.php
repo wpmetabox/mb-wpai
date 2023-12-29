@@ -18,12 +18,16 @@ class FileAdvancedHandler extends FieldHandler {
 			if ( empty( $files ) ) {
 				continue;
 			}
-			
+
+			if ( is_string( $files ) ) {
+				$files = [ $files ];
+			}
+
 			foreach ( $files as $file ) {
 				if ( empty( $file ) ) {
 					continue;
 				}
-				
+
 				$attachment = MetaBoxService::import_file(
 					$file,
 					$this->get_post_id(),

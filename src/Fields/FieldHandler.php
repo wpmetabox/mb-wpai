@@ -59,7 +59,7 @@ abstract class FieldHandler {
 		}
 
 		$value = $this->get_value();
-
+		
 		MetaBoxService::set_meta( $this, $this->get_post_id(), $this->get_id(), $value );
 
 		return true;
@@ -81,13 +81,13 @@ abstract class FieldHandler {
 		add_filter( 'wp_all_import_multi_glue', function ($glue) {
 			return '||';
 		} );
-
+		
 		$values = \XmlImportParser::factory( $this->parsingData['xml'], $this->base_xpath, $xpath, $file )->parse()[ $post_index ];
-
+		
 		if ( str_contains( $values, '||' ) ) {
 			$values = explode( '||', $values );
 		}
-
+		
 		if ( is_string( $values ) ) {
 			$values = [ $values ];
 		}
@@ -137,20 +137,28 @@ abstract class FieldHandler {
 	public function get_values( $xpaths, $post_index ): array {
 		$values = [];
 
-		foreach ( $xpaths as $xpath ) {
+		foreach ( $xpaths as $index => $xpath ) {
 			if ( strpos( $xpath, '{' ) > -1 && strpos( $xpath, '}' ) > -1 ) {
 				$xpath_values = $this->get_value_by_xpath( $xpath, $post_index );
 			} else {
-				$xpath_values = [[$xpath]];
+				// if it isn't template, then return the string
+				$xpath_values = [$xpath];
 			}
-
+			
 			if ( ! is_array( $xpath_values ) ) {
 				$xpath_values = [ $xpath_values ];
+			}
+			
+			// Now we put the $values to the right segment
+			$segments = get_segment( $xpath );
+
+			if ($segments !== false) {
+				$xpath_values = array_deep( $xpath_values, $segments );
 			}
 
 			$values = array_merge( $values, $xpath_values );
 		}
-
+		
 		return $values;
 	}
 
@@ -162,7 +170,7 @@ abstract class FieldHandler {
 		}
 
 		$values = $this->get_values( $xpath, $this->get_post_index() );
-	
+		
 		return $this->returns_array() ? $values : $values[0];
 	}
 
@@ -189,6 +197,9 @@ abstract class FieldHandler {
 			'image_upload',
 			'image_advanced',
 			'video',
+			'fieldset_text',
+			'sidebar',
+			'autocomplete',
 		];
 
 		return in_array( $field['type'], $multiple_type ) ?? false;

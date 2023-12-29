@@ -80,6 +80,8 @@ class MetaBoxHandler implements MetaBoxInterface {
 			'group' => 'group',
 			'fieldset_text' => 'fieldset_text',
 			'key_value' => 'key_value',
+			'text_list' => 'text_list',
+			'background' => 'background',
 		];
 
 		$field_type = $matches[ $field_type ] ?? 'text';
@@ -99,8 +101,6 @@ class MetaBoxHandler implements MetaBoxInterface {
 	}
 
 	public function parse( $parsingData ) {
-		// $bindings = $parsingData['import']->options['fields'] ?? [];
-		// ddd($parsingData);
 		$this->parsingData = $parsingData;
 	}
 
@@ -129,7 +129,6 @@ class MetaBoxHandler implements MetaBoxInterface {
 	}
 
 	private function find_field( $fields, string $reference ) {
-
 		foreach ( $fields as $field ) {
 			if ( $field['reference'] === $reference ) {
 				return $field;
@@ -156,7 +155,7 @@ class MetaBoxHandler implements MetaBoxInterface {
 			if ( ! empty( $xpaths ) && ! empty( $reference ) ) {
 				$field = $this->refs[ $reference ] ?? null;
 
-				if (!$field) {
+				if ( ! $field) {
 					continue;
 				}
 

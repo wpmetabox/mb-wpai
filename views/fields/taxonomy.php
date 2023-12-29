@@ -9,6 +9,7 @@ $taxonomy_field['field_name'] = $id;
 $taxonomy_field['std'] = $taxonomy_field['_wpai']['xpath'];
 $taxonomy_field['taxonomy'] = $taxonomy_field['taxonomy'] ?? 'category';
 $taxonomy_field['type'] = 'text';
+$taxonomy_field['multiple'] = false; // force single value for file, checkbox_list, select, radio...
 $taxonomy_field['placeholder'] = 'Enter a taxonomy term';
 
 $taxonomy_fields = \RW_Meta_Box::normalize_fields( [ $taxonomy_field ] );
