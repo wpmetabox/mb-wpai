@@ -38,11 +38,7 @@ class FieldsetTextHandler extends FieldHandler {
     }
 
     public function get_value() {
-		$xpath = $this->field['_wpai']['xpath'];
-
-		if ( ! is_array( $xpath ) ) {
-			$xpath = [ $xpath ];
-		}
+		$xpath = $this->get_xpaths();
 
         $value = $this->get_recursive_value( $xpath );
         

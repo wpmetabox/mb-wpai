@@ -1,7 +1,7 @@
 <?php
 // For every field type, we just need to create a simple text field with no attributes
 $wpai_attr = $field['_wpai'];
-$id = 'fields[' . $field['id'] . '][xpath]';
+$id = $field['_id'] ?? 'fields[' . $field['id'] . '][xpath]';
 
 $background_field = array_merge( $field, [ 
 	'id' => $id,

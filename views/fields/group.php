@@ -1,45 +1,43 @@
 <?php
+/**
+ * @var $handler
+ * @var $field
+ */
 // For every field type, we just need to create a simple text field with no attributes
-$wpai_attr = $field['_wpai'];
-$id = 'fields[' . $field['id'] . '][xpath]';
-
-function pmai_add_repeater_field( $group ) {
-	foreach ( $group['fields'] as $index => $field ) {
-		if ( $field['type'] === 'group' ) {
-			$field['clone'] = true;
-			$group['fields'][ $index ] = pmai_add_repeater_field( $field );
-		} else {
-			// For every field type, we just need to create a simple text field with no attributes
-			$field['type'] = 'text';
-			// $field['field_name'] = $field['id'];
-			$field['multiple'] = false; // force single value for file, checkbox_list, select, radio...
-			$group['fields'][ $index ] = $field;
-		}
-	}
-
-	$group['fields'] = array_merge( [ 
-		[ 
-			'id' => 'foreach',
-			'type' => 'text',
-			'name' => 'For each',
-			'field_name' => 'foreach',
-		],
-	], $group['fields']);
-
-	return $group;
-}
-
-$group_field = $field;
-$group_field['id'] = $id;
-$group_field['field_name'] = $id;
-$group_field['std'] = $group_field['_wpai']['xpath'];
-$group_field['clone'] = true;
-$group_field = pmai_add_repeater_field( $group_field );
-
-$group_fields = \RW_Meta_Box::normalize_fields( [ $group_field ] );
-RWMB_Field::call( 'show', $group_fields[0], false );
+$wpai_attr    = $field['_wpai'];
+$field['_id'] = $field['_id'] ?? 'fields[' . $field['id'] . '][xpath]';
 ?>
-<input type="hidden" name="fields[<?= esc_attr( $field['id'] ) ?>][reference]"
-	value="<?= esc_attr( $wpai_attr['reference'] ) ?>" />
-<input type="hidden" name="fields[<?= esc_attr( $field['id'] ) ?>][options]"
-	value="<?= esc_attr( $wpai_attr['options'] ) ?>" />
+<div class="rwmb-field rwmb-group-wrapper  rwmb-group-non-cloneable">
+	<div class="rwmb-label">
+		<label>
+			<?= esc_html( $field['name'] ) ?>
+		</label>
+	</div>
+	<div class="rwmb-input">
+		<div class="rwmb-field">
+			<div class="rwmb-label">
+				<label>For each</label>
+			</div>
+			<div class="rwmb-input">
+				<input type="text" name="<?= esc_attr( $field['_id'] ) ?>[foreach]"
+					value="<?= esc_attr( $wpai_attr['xpath']['foreach'] ) ?>" />
+			</div>
+		</div>
+
+		<?php
+		foreach ( $field['fields'] as $child ) {
+			$child['_id']   = $field['_id'] . '[' . $child['id'] . ']';
+			$child['std']   = $wpai_attr['xpath'][ $child['id'] ] ?? '';
+			$child['_wpai'] = [ 
+				'xpath' => $wpai_attr['xpath'][ $child['id'] ] ?? '',
+			];
+
+			$handler->render_field( $child );
+		}
+		?>
+	</div>
+	<input type="hidden" name="fields[<?= esc_attr( $field['id'] ) ?>][reference]"
+		value="<?= esc_attr( $wpai_attr['reference'] ) ?>" />
+	<input type="hidden" name="fields[<?= esc_attr( $field['id'] ) ?>][options]"
+		value="<?= esc_attr( $wpai_attr['options'] ) ?>" />
+</div>

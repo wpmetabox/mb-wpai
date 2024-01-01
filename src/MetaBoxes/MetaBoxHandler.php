@@ -57,14 +57,17 @@ class MetaBoxHandler implements MetaBoxInterface {
 	}
 
 	public function render_field( array $field ): void {
-		$wpai_attr = $this->post['fields'][ $field['id'] ] ?? [ 
-			'xpath' => null,
-			'options' => [],
-			'reference' => $field['id'],
-		];
+		if ( ! isset( $field['_wpai'] ) ) {
+			$wpai_attr = $this->post['fields'][ $field['id'] ] ?? [ 
+				'xpath' => null,
+				'options' => [],
+				'reference' => $field['id'],
+			];
 
-		$field['_wpai'] = $wpai_attr;
+			$field['_wpai'] = $wpai_attr;
+		}
 
+		$handler   = $this;
 		$view_path = $this->get_view_path( $field['type'] );
 
 		if ( ! file_exists( $view_path ) || ! $view_path ) {
@@ -155,7 +158,7 @@ class MetaBoxHandler implements MetaBoxInterface {
 			if ( ! empty( $xpaths ) && ! empty( $reference ) ) {
 				$field = $this->refs[ $reference ] ?? null;
 
-				if ( ! $field) {
+				if ( ! $field ) {
 					continue;
 				}
 

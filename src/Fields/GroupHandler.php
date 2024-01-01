@@ -10,54 +10,18 @@ class GroupHandler extends FieldHandler {
 	private function get_tree_value( $xpath, $parent = [] ) {
 		$output = [];
 
-		foreach ( $xpath as $group ) {
-			if ( empty( $group['foreach'] ) ) {
-				$foreach = [ 0 ];
-			} else {
-				$foreach = $this->get_value_by_xpath( $group['foreach'] );
-			}
+		foreach ( $xpath as $clone_index => $group ) {
+			foreach ( $group as $field_id => $value ) {
 
-			for ( $i = 0; $i < count( $foreach ); $i++ ) {
-				foreach ( $group as $field_id => $bindings ) {
+				$field = $this->get_field_info( $field_id, $parent );
 
-					if ( $field_id === 'foreach' ) {
-						continue;
-					}
-
-					$field         = $this->get_field_info( $field_id );
-					$field_handler = $this->init_sub_field( $field, $this->field, $bindings );
-
-					if ( ! $field ) {
-						continue;
-					}
-
-					if ( $field['type'] === 'group' ) {
-						$value = $this->get_tree_value( $bindings );
-					} else {
-						$value = $field_handler->get_value();
-					}
-
-					if ( empty( $value ) ) {
-						continue;
-					}
-
-					if ( is_string( $bindings ) ) {
-						$bindings = [ $bindings ];
-					}
-
-					// move the value to the right segment
-					foreach ( $bindings as $cindex => $cxpath ) {
-						if ( is_string($cxpath) && ! str_contains( $cxpath, '[.' ) ) {
-							$output[0][ $field_id ] = $value;
-						} else {
-							if ( is_array( $value ) ) {
-								for ( $i = 0; $i < count( $value ); $i++ ) {
-									$output[ $i ][ $field_id ] = $value[ $i ];
-								}
-							}
-						}
-					}
+				if ( ! $field ) {
+					continue;
 				}
+
+				$field_handler = $this->init_sub_field( $field, $parent, $value );
+				$value = $field_handler->get_value();
+				$output[ $clone_index ][ $field_id ] = $value;
 			}
 		}
 
@@ -68,22 +32,74 @@ class GroupHandler extends FieldHandler {
 		$field['_wpai']['xpath'] = $bindings;
 
 		// Create field instance to handle the import
-		$field                                    = FieldFactory::create( $field, $this->post, $this->meta_box );
-		$field->parsingData                       = $this->parsingData;
-		$field->base_xpath                        = $this->parsingData['xpath_prefix'] . $this->parsingData['import']['xpath'];
-		$field->importData                        = $this->importData;
-		
+		$field              = FieldFactory::create( $field, $this->post, $this->meta_box );
+		$field->parsingData = $this->parsingData;
+		$field->base_xpath  = $this->parsingData['xpath_prefix'] . $this->parsingData['import']['xpath'];
+		$field->importData  = $this->importData;
+
 		$this->refs[ $field->field['reference'] ] = $field;
 		return $field;
 	}
 
 	public function get_value() {
-		$xpath = $this->field['_wpai']['xpath'];
-
-		$xpath  = $this->normalize_xpath( $xpath, $xpath );
-		$output = $this->get_tree_value( $xpath );
+		$xpaths = $this->get_xpaths();
 		
-		return $this->field['clone'] ? $output : $output[0];
+		// Normalize xpaths
+		if ( isset( $xpaths['foreach'] ) ) {
+			$xpaths = $this->build_xpaths_tree( $xpaths );
+		}
+
+		$output = $this->get_tree_value( $xpaths );
+	
+		return $this->field['clone'] ? $output : $output[0] ?? [];
+	}
+
+	private function build_xpaths_tree( $xpath, $parent = [] ) {
+		$tree = [];
+
+		if (empty($xpath['foreach'])) {
+			return $tree;
+		}
+
+		$rows       = $this->get_value_by_xpath( $xpath['foreach'] );
+		$rows_count = count( $rows );
+
+		for ( $i = 0; $i < $rows_count; $i++ ) {
+			foreach ( $xpath as $field_id => $value ) {
+				if ( $field_id === 'foreach' ) {
+					continue;
+				}
+			
+				if ( is_string( $value ) ) {
+					$value = [ $value ];
+				}
+
+				if ( isset( $value['foreach'] ) ) {
+					$value['foreach'] = $this->expand_xpath( $value['foreach'], $xpath['foreach'], $i+1, true );
+					$value                   = $this->build_xpaths_tree( $value, $xpath );
+
+					$tree[ $i ][ $field_id ] = $value;
+					continue;
+				}
+
+				foreach ( $value as $clone_index => $v_xpath ) {
+					if (is_string($v_xpath)) {
+						$value[ $clone_index ] = $this->expand_xpath( $v_xpath, $xpath['foreach'], $i+1 );
+					}
+
+					if (is_array($v_xpath)) {
+						// key-value field
+						foreach ( $v_xpath as $key => $v ) {
+							$value[ $clone_index ][ $key ] = $this->expand_xpath( $v, $xpath['foreach'], $i+1 );
+						}
+					}
+				}
+
+				$tree[ $i ][ $field_id ] = $value;
+			}
+		}
+
+		return $tree;
 	}
 
 	private function normalize_xpath( array $array, $parent = null ) {
@@ -129,23 +145,39 @@ class GroupHandler extends FieldHandler {
 		return $output;
 	}
 
-	private function expand_xpath( $xpath, $parent = [] ) {
-		$value         = $this->get_string_between( $xpath );
-		$foreach_value = $this->get_string_between( $parent['foreach'] ?? '' );
+	function expand_xpath( $string, $xpath = '', $append_index = '', $xpath_if_empty = false ): ?string {
+		$xpath  = trim( $xpath );
+		$string = trim( $string );
 
-		if ( $value === '' ) {
-			$value = $foreach_value;
-		} else if ( $foreach_value !== '' ) {
-			$value = "{$foreach_value}{$value}";
+		$xpath = str_replace( '{', '', $xpath );
+		$xpath = str_replace( '}', '', $xpath );
+
+		$string = str_replace( '{', '', $string );
+		$string = str_replace( '}', '', $string );
+		$string = str_replace( '.', './', $string );
+
+		if ( $append_index !== '' ) {
+			$xpath .= "[{$append_index}]";
 		}
 
-		$value = str_replace( '.', '/', $value );
-		$value = trim( $value, '/' );
-		$value = str_replace( '[/]', '[.]', $value );
+		if ( empty( $string ) ) {
+			if ( $xpath_if_empty ) {
+				return '{' . $xpath . '}';
+			}
 
-		$value = "{{$value}}";
+			return null;
+		}
 
-		return $value;
+		$output = '{';
+
+		if ( ! empty( $xpath ) ) {
+			$output .= $xpath . '/';
+		}
+
+		$output .= $string . '}';
+		$output = str_replace('/}', '}', $output);
+
+		return $output;
 	}
 
 	private function sanitize( $groups, $parent = [] ) {

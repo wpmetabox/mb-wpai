@@ -59,7 +59,7 @@ abstract class FieldHandler {
 		}
 
 		$value = $this->get_value();
-		
+
 		MetaBoxService::set_meta( $this, $this->get_post_id(), $this->get_id(), $value );
 
 		return true;
@@ -68,10 +68,11 @@ abstract class FieldHandler {
 	/**
 	 * @param $importData
 	 */
-	public function saved_post( $importData ) {
+	public function saved_post($importData) {
+		//
 	}
 
-	public function get_value_by_xpath( string $xpath, $post_index = null ) {
+	public function get_value_by_xpath( string $xpath, $post_index = null ): ?array {
 		$post_index = $post_index ?? $this->get_post_index();
 
 		if ( ! str_contains( $xpath, '{' ) && ! str_contains( $xpath, '}' ) ) {
@@ -81,13 +82,13 @@ abstract class FieldHandler {
 		add_filter( 'wp_all_import_multi_glue', function ($glue) {
 			return '||';
 		} );
-		
+
 		$values = \XmlImportParser::factory( $this->parsingData['xml'], $this->base_xpath, $xpath, $file )->parse()[ $post_index ];
-		
+
 		if ( str_contains( $values, '||' ) ) {
 			$values = explode( '||', $values );
 		}
-		
+
 		if ( is_string( $values ) ) {
 			$values = [ $values ];
 		}
@@ -134,44 +135,56 @@ abstract class FieldHandler {
 		return $this->field['id'];
 	}
 
-	public function get_values( $xpaths, $post_index ): array {
-		$values = [];
+	public function get_values( $xpaths, $post_index = null ): array {
+		$post_index = $post_index ?? $this->get_post_index();
+		$values     = [];
 
 		foreach ( $xpaths as $index => $xpath ) {
 			if ( strpos( $xpath, '{' ) > -1 && strpos( $xpath, '}' ) > -1 ) {
 				$xpath_values = $this->get_value_by_xpath( $xpath, $post_index );
 			} else {
 				// if it isn't template, then return the string
-				$xpath_values = [$xpath];
+				$xpath_values = [ $xpath ];
 			}
-			
-			if ( ! is_array( $xpath_values ) ) {
-				$xpath_values = [ $xpath_values ];
-			}
-			
-			// Now we put the $values to the right segment
-			$segments = get_segment( $xpath );
 
-			if ($segments !== false) {
-				$xpath_values = array_deep( $xpath_values, $segments );
-			}
+			$xpath_values = $this->move_values_to_segment( $xpath, $xpath_values );
 
 			$values = array_merge( $values, $xpath_values );
 		}
-		
+
 		return $values;
 	}
 
-	public function get_value() {
-		$xpath = $this->field['_wpai']['xpath'];
+	private function move_values_to_segment( $xpath, $xpath_values ) {
+		// Now we put the $values to the right segment
+		$segments = get_segment( $xpath );
 
-		if ( ! is_array( $xpath ) ) {
-			$xpath = [ $xpath ];
+		if ( $segments !== false ) {
+			$xpath_values = array_deep( $xpath_values, $segments );
 		}
 
-		$values = $this->get_values( $xpath, $this->get_post_index() );
-		
+		return $xpath_values;
+	}
+
+	public function get_value() {
+		$xpaths = $this->get_xpaths();
+
+		$values = $this->get_values( $xpaths );
+
 		return $this->returns_array() ? $values : $values[0];
+	}
+
+	/**
+	 * Get the xpaths of the field
+	 * 
+	 * @return string[]
+	 */
+	public function get_xpaths(): array {
+		$xpath = $this->field['_wpai']['xpath'];
+
+		$xpath = is_array( $xpath ) ? $xpath : [ $xpath ];
+
+		return $xpath;
 	}
 
 	public function returns_array( $field = null ): bool {
@@ -188,9 +201,9 @@ abstract class FieldHandler {
 		}
 
 		$multiple_type = [ 
-			'checkbox_list', 'group', 'taxonomy', 
-			'taxonomy_advanced', 'post', 'user', 
-			'file', 
+			'checkbox_list', 'group', 'taxonomy',
+			'taxonomy_advanced', 'post', 'user',
+			'file',
 			'file_advanced',
 			'file_upload',
 			'image',

@@ -8,12 +8,15 @@
       <cast>
         <name>Keanu Reeves</name>
         <character>Neo</character>
-        <photo>keanu_reeves.jpg</photo>
+        <nationality>US</nationality>
+        <photo>https://i0.wp.com/metabox.io/wp-content/themes/rooster/images/online-generator.png?quality=100</photo>
+        <photo>https://i0.wp.com/metabox.io/wp-content/themes/rooster/images/customization.png?quality=100</photo>
       </cast>
       <cast>
         <name>Laurence Fishburne</name>
         <character>Morpheus</character>
-        <photo>laurence_fishburne.jpg</photo>
+        <photo>https://i0.wp.com/metabox.io/wp-content/themes/rooster/images/online-generator.png?quality=100</photo>
+        <photo>https://i0.wp.com/metabox.io/wp-content/themes/rooster/images/customization.png?quality=100</photo>
       </cast>
     </casts>
   </movie>
@@ -25,12 +28,16 @@
       <cast>
         <name>Leonardo DiCaprio</name>
         <character>Cobb</character>
-        <photo>leonardo_dicaprio.jpg</photo>
+        <nationality>US</nationality>
+        <photo>https://i0.wp.com/metabox.io/wp-content/themes/rooster/images/online-generator.png?quality=100</photo>
+        <photo>https://i0.wp.com/metabox.io/wp-content/themes/rooster/images/customization.png?quality=100</photo>
       </cast>
       <cast>
         <name>Joseph Gordon-Levitt</name>
         <character>Arthur</character>
-        <photo>joseph_gordon_levitt.jpg</photo>
+        <nationality>US</nationality>
+        <photo>https://i0.wp.com/metabox.io/wp-content/themes/rooster/images/online-generator.png?quality=100</photo>
+        <photo>https://i0.wp.com/metabox.io/wp-content/themes/rooster/images/customization.png?quality=100</photo>
       </cast>
     </casts>
   </movie>
@@ -42,12 +49,20 @@
       <cast>
         <name>Matthew McConaughey</name>
         <character>Cooper</character>
-        <photo>matthew_mcconaughey.jpg</photo>
+        <nationality>Vietnam</nationality>
+        <photo>https://i0.wp.com/metabox.io/wp-content/themes/rooster/images/online-generator.png?quality=100</photo>
+        <photo>https://i0.wp.com/metabox.io/wp-content/themes/rooster/images/customization.png?quality=100</photo>
       </cast>
       <cast>
         <name>Anne Hathaway</name>
         <character>Brand</character>
-        <photo>anne_hathaway.jpg</photo>
+        <photo>https://i0.wp.com/metabox.io/wp-content/themes/rooster/images/online-generator.png?quality=100</photo>
+        <photo>https://i0.wp.com/metabox.io/wp-content/themes/rooster/images/customization.png?quality=100</photo>
+        <tags>
+          <tag>First</tag>
+          <tag>Second</tag>
+          <tag>Third</tag>
+        </tags>
       </cast>
     </casts>
   </movie>
