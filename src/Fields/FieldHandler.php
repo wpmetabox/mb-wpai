@@ -167,8 +167,19 @@ abstract class FieldHandler {
 	public function get_value() {
 		$xpaths = $this->get_xpaths();
 		$values = $this->get_values( $xpaths );
+		
+		if ( $this->returns_array() ) {
+			$values = array_map( [ $this, 'recursive_trim' ], $values );
+		} else {
+			$values = array_map( [ $this, 'recursive_trim' ], $values );
+			$values = array_filter( $values );
 
-		return $this->returns_array() ? $values : $values[0] ?? null;
+			while ( is_array( $values ) ) {
+				$values = array_shift( $values );
+			}
+		}
+		
+		return $values;
 	}
 
 	/**

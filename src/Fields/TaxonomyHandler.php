@@ -80,6 +80,7 @@ class TaxonomyHandler extends FieldHandler {
 
 	public function get_value() {
 		$value = parent::get_value();
+		
 		$output = [];
 
 		if ( ! is_array( $value ) ) {
@@ -112,12 +113,12 @@ class TaxonomyHandler extends FieldHandler {
 
 		foreach ( $values as $clone_index => $term_ids ) {
 			if ( ! is_array( $term_ids ) ) {
-				wp_set_post_terms( $this->get_post_id(), $term_ids, $taxonomy );
+				wp_set_post_terms( $this->get_post_id(), $term_ids, $taxonomy, true );
 				continue;
 			}
 
 			foreach ( $term_ids as $term_id ) {
-				wp_set_post_terms( $this->get_post_id(), $term_id, $taxonomy );
+				wp_set_post_terms( $this->get_post_id(), $term_id, $taxonomy, true );
 			}
 		}
 	}

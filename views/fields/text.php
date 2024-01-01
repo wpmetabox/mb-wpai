@@ -14,5 +14,4 @@ $text_field = array_merge( $field, [
 $text_fields = \RW_Meta_Box::normalize_fields( [ $text_field ] );
 RWMB_Field::call( 'show', $text_fields[0], false );
 ?>
-<input type="hidden" name="fields[<?= esc_attr( $field['id'] ) ?>][reference]" value="<?= esc_attr($wpai_attr['reference']) ?>" />
-<input type="hidden" name="fields[<?= esc_attr( $field['id'] ) ?>][options]" value="[]" />
+<input type="hidden" name="fields[<?= esc_attr( $field['id'] ) ?>][reference]" value="<?= esc_attr($wpai_attr['reference'] ?? '') ?>" />

@@ -37,7 +37,5 @@ $field['_id'] = $field['_id'] ?? 'fields[' . $field['id'] . '][xpath]';
 		?>
 	</div>
 	<input type="hidden" name="fields[<?= esc_attr( $field['id'] ) ?>][reference]"
-		value="<?= esc_attr( $wpai_attr['reference'] ) ?>" />
-	<input type="hidden" name="fields[<?= esc_attr( $field['id'] ) ?>][options]"
-		value="<?= esc_attr( $wpai_attr['options'] ) ?>" />
+		value="<?= esc_attr( $wpai_attr['reference'] ?? '' ) ?>" />
 </div>
