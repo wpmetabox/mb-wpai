@@ -6,14 +6,14 @@ use MetaBox\WPAI\MetaBoxService;
 class FileAdvancedHandler extends FieldHandler {
 	public function get_value() {
 		$value = parent::get_value();
-
+		
 		if ( ! $value ) {
 			return;
 		}
 
 		$attachments = [];
 		$parsingData = $this->parsingData;
-
+		
 		foreach ( $value as $clone_index => $files ) {
 			if ( empty( $files ) ) {
 				continue;

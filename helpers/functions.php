@@ -83,12 +83,12 @@ function pmai_square_to_dot_notation( $field ) {
 }
 
 
-function get_segment( $string ) {
+function pmai_get_segment( $string ) {
     $segments = explode( '/', $string );
     
     for ($i = 0; $i < count($segments); $i++) {
         if (strpos($segments[$i], '[.') !== false) {
-            return $i;
+            return count($segments) - $i - 1;
         }
     }
 
@@ -96,7 +96,7 @@ function get_segment( $string ) {
 }
 
 
-function array_deep( $array, $deepness ) {
+function pmai_array_deep( $array, $deepness ) {
     while ( $deepness > 0 ) {
         $new_array = [];
 

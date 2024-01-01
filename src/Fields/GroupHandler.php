@@ -18,7 +18,8 @@ class GroupHandler extends FieldHandler {
 				if ( ! $field ) {
 					continue;
 				}
-
+				
+				
 				$field_handler = $this->init_sub_field( $field, $parent, $value );
 				$value = $field_handler->get_value();
 				$output[ $clone_index ][ $field_id ] = $value;
@@ -30,7 +31,7 @@ class GroupHandler extends FieldHandler {
 
 	private function init_sub_field( $field, $parent, $bindings ) {
 		$field['_wpai']['xpath'] = $bindings;
-
+		
 		// Create field instance to handle the import
 		$field              = FieldFactory::create( $field, $this->post, $this->meta_box );
 		$field->parsingData = $this->parsingData;
@@ -38,6 +39,7 @@ class GroupHandler extends FieldHandler {
 		$field->importData  = $this->importData;
 
 		$this->refs[ $field->field['reference'] ] = $field;
+
 		return $field;
 	}
 
@@ -155,6 +157,7 @@ class GroupHandler extends FieldHandler {
 		$string = str_replace( '{', '', $string );
 		$string = str_replace( '}', '', $string );
 		$string = str_replace( '.', './', $string );
+		$string = str_replace('./]', '.]', 	$string );
 
 		if ( $append_index !== '' ) {
 			$xpath .= "[{$append_index}]";

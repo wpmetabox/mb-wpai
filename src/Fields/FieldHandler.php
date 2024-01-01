@@ -139,39 +139,36 @@ abstract class FieldHandler {
 		$post_index = $post_index ?? $this->get_post_index();
 		$values     = [];
 
-		foreach ( $xpaths as $index => $xpath ) {
+		foreach ( $xpaths as $clone_index => $xpath ) {
+			if (empty($xpath)) {
+				continue;
+			}
+
 			if ( strpos( $xpath, '{' ) > -1 && strpos( $xpath, '}' ) > -1 ) {
 				$xpath_values = $this->get_value_by_xpath( $xpath, $post_index );
 			} else {
 				// if it isn't template, then return the string
 				$xpath_values = [ $xpath ];
 			}
-
-			$xpath_values = $this->move_values_to_segment( $xpath, $xpath_values );
-
-			$values = array_merge( $values, $xpath_values );
+			
+			$segments = pmai_get_segment( $xpath );
+		
+			if ( $segments !== false ) {
+				$xpath_values = pmai_array_deep( $xpath_values, $segments );
+				$values = array_merge( $values, $xpath_values );
+			} else {
+				$values[$clone_index] = $xpath_values;
+			}
 		}
 
 		return $values;
 	}
 
-	private function move_values_to_segment( $xpath, $xpath_values ) {
-		// Now we put the $values to the right segment
-		$segments = get_segment( $xpath );
-
-		if ( $segments !== false ) {
-			$xpath_values = array_deep( $xpath_values, $segments );
-		}
-
-		return $xpath_values;
-	}
-
 	public function get_value() {
 		$xpaths = $this->get_xpaths();
-
 		$values = $this->get_values( $xpaths );
 
-		return $this->returns_array() ? $values : $values[0];
+		return $this->returns_array() ? $values : $values[0] ?? null;
 	}
 
 	/**
@@ -181,7 +178,7 @@ abstract class FieldHandler {
 	 */
 	public function get_xpaths(): array {
 		$xpath = $this->field['_wpai']['xpath'];
-
+		
 		$xpath = is_array( $xpath ) ? $xpath : [ $xpath ];
 
 		return $xpath;

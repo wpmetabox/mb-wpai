@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<products>
+    <product>
+        <title>Product 1</title>
+        <description>Description for product 1</description>
+        <thumbnail>https://i0.wp.com/metabox.io/wp-content/themes/rooster/images/online-generator.png?quality=100</thumbnail>
+        <categories>
+            <category>Category 1</category>
+            <category>Category 2</category>
+        </categories>
+        <released_date>2022-01-01</released_date>
+        <is_released>true</is_released>
+        <variants>
+            <variant>
+                <color>Red</color>
+                <sku>SKU1</sku>
+                <photos>
+                    <photo>https://i0.wp.com/metabox.io/wp-content/themes/rooster/images/customization.png?quality=100</photo>
+                    <photo>https://i0.wp.com/metabox.io/wp-content/themes/rooster/images/developer-friendly.png?quality=100</photo>
+                </photos>
+                <reviews>
+                    <review>
+                        <author>John Doe</author>
+                        <content>Review content 1</content>
+                        <rating>5</rating>
+                        <meta>
+                            <review_date>2022-01-01</review_date>
+                            <published>false</published>
+                        </meta>
+                    </review>
+                    <review>
+                        <author>Jane Doe</author>
+                        <content>Review content 2</content>
+                        <rating>4</rating>
+                        <meta>
+                            <review_date>2023-03-03</review_date>
+                            <published>true</published>
+                        </meta>
+                    </review>
+                </reviews>
+            </variant>
+            <variant>
+                <color>Blue</color>
+                <sku>SKU2</sku>
+                <photos>
+                    <photo>https://i0.wp.com/metabox.io/wp-content/themes/rooster/images/customization.png?quality=100</photo>
+                    <photo>https://i0.wp.com/metabox.io/wp-content/themes/rooster/images/developer-friendly.png?quality=100</photo>
+                </photos>
+                <reviews>
+                    <review>
+                        <author>John Doe</author>
+                        <content>Review content 1</content>
+                        <rating>5</rating>
+                        <meta>
+                            <review_date>2022-01-01</review_date>
+                            <published>false</published>
+                        </meta>
+                    </review>
+                </reviews>
+            </variant>
+        </variants>
+    </product>
+    <product>
+        <title>Product 2</title>
+        <description>Description for product 2</description>
+        <thumbnail>https://i0.wp.com/metabox.io/wp-content/uploads/2017/05/Helper-Function-Now-Works-for-Term-Meta-User-Meta-and-Settings-Page-1.png</thumbnail>
+        <categories>
+            <category>Category 1</category>
+            <category>Category 2</category>
+        </categories>
+        <released_date>2022-01-01</released_date>
+        <is_released>true</is_released>
+        <variants>
+            <variant>
+                <color>Red</color>
+                <sku>SKU1</sku>
+                <photos>
+                    <photo>https://i0.wp.com/metabox.io/wp-content/uploads/2017/05/Helper-Function-Now-Works-for-Term-Meta-User-Meta-and-Settings-Page-1.png</photo>
+                    <photo>https://i0.wp.com/metabox.io/wp-content/uploads/2017/04/Settings-Page.png</photo>
+                </photos>
+                <reviews>
+                    <review>
+                        <author>John Doe</author>
+                        <content>Review content 1</content>
+                        <rating>5</rating>
+                        <meta>
+                            <review_date>2022-01-01</review_date>
+                            <published>false</published>
+                        </meta>
+                    </review>
+                    <review>
+                        <author>Jane Doe</author>
+                        <content>Review content 2</content>
+                        <rating>4</rating>
+                        <meta>
+                            <review_date>2023-03-03</review_date>
+                            <published>true</published>
+                        </meta>
+                    </review>
+                </reviews>
+            </variant>
+            <variant>
+                <color>Blue</color>
+                <sku>SKU2</sku>
+                <photos>
+                    <photo>https://i0.wp.com/metabox.io/wp-content/uploads/2017/05/Helper-Function-Now-Works-for-Term-Meta-User-Meta-and-Settings-Page-1.png</photo>
+                    <photo>https://i0.wp.com/metabox.io/wp-content/uploads/2017/04/Settings-Page.png</photo>
+                </photos>
+                <reviews>
+                    <review>
+                        <author>John Doe</author>
+                        <content>Review content 1</content>
+                        <rating>5</rating>
+                        <meta>
+                            <review_date>2022-01-01</review_date>
+                            <published>false</published>
+                        </meta>
+                    </review>
+                    <review>
+                        <author>Jane Doe</author>
+                        <content>Review content 2</content>
+                        <rating>4</rating>
+                        <meta>
+                            <review_date>2023-03-03</review_date>
+                            <published>true</published>
+                        </meta>
+                    </review>
+                </reviews>
+            </variant>
+        </variants>
+    </product>
+    <product>
+        <title>Product 3</title>
+        <description>Description for product 3</description>
+        <thumbnail>https://i0.wp.com/metabox.io/wp-content/uploads/2017/04/Settings-Page.png</thumbnail>
+        <categories>
+            <category>Category 3</category>
+            <category>Category 4</category>
+        </categories>
+        <released_date>2022-01-01</released_date>
+        <is_released>true</is_released>
+        <variants>
+            <variant>
+                <color>Red</color>
+                <sku>SKU1</sku>
+                <photos>
+                    <photo>https://i0.wp.com/metabox.io/wp-content/uploads/2017/04/Group.png</photo>
+                    <photo>https://i0.wp.com/metabox.io/wp-content/uploads/2017/04/Include-Exclude.png</photo>
+                </photos>
+
+                <reviews>
+                    <review>
+                        <author>John Doe</author>
+                        <content>Review content 1</content>
+                        <rating>5</rating>
+                        <meta>
+                            <review_date>2022-01-01</review_date>
+                            <published>false</published>
+                        </meta>
+                    </review>
+                    <review>
+                        <author>Jane Doe</author>
+                        <content>Review content 2</content>
+                        <rating>4</rating>
+                        <meta>
+                            <review_date>2023-03-03</review_date>
+                            <published>true</published>
+                        </meta>
+                    </review>
+                </reviews>
+            </variant>
+        </variants>
+    </product>
+</products>
