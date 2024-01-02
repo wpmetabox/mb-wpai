@@ -11,14 +11,19 @@ class UserHandler extends FieldHandler {
 	public function get_value() {
 		$by    = [ 'login', 'slug', 'email', 'id' ];
 		$value = parent::get_value();
-
+		
 		if ( ! is_array( $value ) ) {
 			return;
 		}
 
 		$output = [];
-
+		
 		foreach ( $value as $clone_index => $users ) {
+			if ( ! is_array( $users ) ) {
+				$users       = $value;
+				$clone_index = 0;
+			}
+
 			foreach ( $users as $user ) {
 				if ( ! $user ) {
 					continue;
@@ -35,6 +40,6 @@ class UserHandler extends FieldHandler {
 			}
 		}
 	
-        return $this->field['clone'] ? $output : $output[0];
+        return $this->field['clone'] ? $output : reset( $output );
 	}
 }
