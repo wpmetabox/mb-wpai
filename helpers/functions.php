@@ -110,3 +110,10 @@ function pmai_array_deep( $array, $deepness ) {
 
     return $array;
 }
+
+function pmai_get_template_strings( $string ) {
+    $matches = [];
+    preg_match_all( '/{[^}]*}/', $string, $matches );
+    
+    return $matches[0];
+}

@@ -13,12 +13,12 @@ class FileInputHandler extends FileHandler {
         $output = [];
 
         foreach ($attachment as $clone_index => $ids) {
-            foreach ($ids as $id) {
+            foreach ($ids as $i => $id) {
                 if ( ! $id ) {
                     continue;
                 }
                 
-                $output[$clone_index] = get_post( $id )->guid;
+                $output[$i] = get_post( $id )->guid;
             }
         }
 

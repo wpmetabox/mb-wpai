@@ -21,8 +21,9 @@ class FileAdvancedHandler extends FieldHandler {
 
 			if ( is_string( $files ) ) {
 				$files = [ $files ];
+				$clone_index = 0;
 			}
-
+			
 			foreach ( $files as $file ) {
 				if ( empty( $file ) ) {
 					continue;

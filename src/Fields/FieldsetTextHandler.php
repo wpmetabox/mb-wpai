@@ -2,46 +2,56 @@
 
 namespace MetaBox\WPAI\Fields;
 
-class FieldsetTextHandler extends FieldHandler {
-    private function recursive_explode( $array ) {
-        $result = [];
-        foreach ( $array as $key => $value ) {
-            if ( is_array( $value ) ) {
-                $result[ $key ] = $this->recursive_explode( $value );
-            } else {
-                if ( strpos( $value, '||' ) !== false ) {
-                    $value = explode( '||', $value );
-                }
+class FieldsetTextHandler extends KeyValueHandler {
 
-                $result[ $key ] = $value;
+
+	public function get_value() {
+		$xpaths = $this->get_xpaths();
+		$xpaths = $this->build_xpaths_tree( $xpaths );
+
+        $values = [];
+
+		foreach ( $xpaths as $clone_index => $row ) {
+            foreach ($row as $column => $xpath) {
+                $values[$clone_index][$column] = $this->get_value_by_xpath($xpath);
             }
+		}
+
+        $output = [];
+        foreach ($values as $index => $row) {
+            $output = array_merge($output, $this->convert_array($row));
         }
 
+		return $this->field['clone'] ? $output : $output[0] ?? null;
+	}
+
+    private function convert_array($array) {
+        $result = [];
+        $keys = array_keys($array);
+    
+        foreach ($array as $key => $values) {
+            foreach ($values as $index => $value) {
+                foreach ($keys as $k) {
+                    $result[$index][$k] = $array[$k][$index] ?? null;
+                }
+            }
+        }
+    
         return $result;
     }
 
-    private function get_recursive_value( $xpath ) {
-        $value = [];
+	private function build_xpaths_tree( $xpath ) {
+		$tree = [];
 
-        foreach ( $xpath as $sub_field => $sub_xpath ) {
-            if (is_array($sub_xpath)) {
-                $sub_field_value = $this->get_recursive_value( $sub_xpath );
-                $value[$sub_field] = $sub_field_value ?? [];
-            } else {
-                $sub_field_value = $this->get_value_by_xpath( $sub_xpath );
-                $sub_field_value = $this->recursive_explode( $sub_field_value );
-                $value[$sub_field] = $sub_field_value[0] ?? [];
-            }
-        }
+		foreach ( $xpath as $clone_index => $sub_xpath ) {
+			if ( is_string( $sub_xpath ) ) {
+				$clone_index = 0;
+				$sub_xpath   = $xpath;
+			}
 
-        return $value;
-    }
+			$tree[ $clone_index ] = $sub_xpath;
+		}
 
-    public function get_value() {
-		$xpath = $this->get_xpaths();
-
-        $value = $this->get_recursive_value( $xpath );
-        
-		return $this->field['clone'] ? $value : $value[0];
+		return $tree;
 	}
 }

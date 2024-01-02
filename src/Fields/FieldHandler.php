@@ -68,36 +68,57 @@ abstract class FieldHandler {
 	/**
 	 * @param $importData
 	 */
-	public function saved_post($importData) {
+	public function saved_post( $importData ) {
 		//
 	}
 
 	public function get_value_by_xpath( string $xpath, $post_index = null ): ?array {
 		$post_index = $post_index ?? $this->get_post_index();
 
-		if ( ! str_contains( $xpath, '{' ) && ! str_contains( $xpath, '}' ) ) {
-			return [ $xpath ];
-		}
-
 		add_filter( 'wp_all_import_multi_glue', function ($glue) {
 			return '||';
 		} );
 
-		$values = \XmlImportParser::factory( $this->parsingData['xml'], $this->base_xpath, $xpath, $file )->parse()[ $post_index ];
+		$templates = pmai_get_template_strings( $xpath );
 
-		if ( str_contains( $values, '||' ) ) {
-			$values = explode( '||', $values );
-		}
+		$output = [ $xpath ];
 
-		if ( is_string( $values ) ) {
-			$values = [ $values ];
+		if ( ! empty( $templates ) ) {
+			$output = [];
+			$value_template = [];
+
+			foreach ( $templates as $template ) {
+				$values = \XmlImportParser::factory( $this->parsingData['xml'], $this->base_xpath, $template, $file )->parse()[ $post_index ];
+
+				if ( str_contains( $values, '||' ) ) {
+					$values = explode( '||', $values );
+				}
+
+				if ( is_string( $values ) ) {
+					$values = [ $values ];
+				}
+
+				$value_template[ $template ] = $values;
+			}
+
+			// Get the first element of the array
+			$first_element = reset( $value_template );
+
+			// Build the array based on nums of the first element
+			for ( $i = 0; $i < count( $first_element ); $i++ ) {
+				$pairs = [];
+				foreach ( $value_template as $template => $value ) {
+					$pairs[ $template ] = $value[ $i ] ?? '';
+				}
+				$output[] = strtr( $xpath, $pairs );
+			}
 		}
 
 		add_filter( 'wp_all_import_multi_glue', function ($glue) {
 			return ',';
 		} );
 
-		return $values;
+		return $output;
 	}
 
 	/**
@@ -140,25 +161,19 @@ abstract class FieldHandler {
 		$values     = [];
 
 		foreach ( $xpaths as $clone_index => $xpath ) {
-			if (empty($xpath)) {
+			if ( empty( $xpath ) ) {
 				continue;
 			}
 
-			if ( strpos( $xpath, '{' ) > -1 && strpos( $xpath, '}' ) > -1 ) {
-				$xpath_values = $this->get_value_by_xpath( $xpath, $post_index );
-			} else {
-				// if it isn't template, then return the string
-				$xpath_values = [ $xpath ];
-			}
-			
+			$xpath_values = $this->get_value_by_xpath( $xpath, $post_index );
+
 			$segments = pmai_get_segment( $xpath );
-		
+			
 			if ( $segments !== false ) {
 				$xpath_values = pmai_array_deep( $xpath_values, $segments );
-				$values = array_merge( $values, $xpath_values );
-			} else {
-				$values[$clone_index] = $xpath_values;
 			}
+
+			$values = array_merge( $values, $xpath_values );
 		}
 
 		return $values;
@@ -166,19 +181,18 @@ abstract class FieldHandler {
 
 	public function get_value() {
 		$xpaths = $this->get_xpaths();
-		$values = $this->get_values( $xpaths );
 		
-		if ( $this->returns_array() ) {
-			$values = array_map( [ $this, 'recursive_trim' ], $values );
-		} else {
-			$values = array_map( [ $this, 'recursive_trim' ], $values );
+		$values = $this->get_values( $xpaths );
+		$values = array_map( [ $this, 'recursive_trim' ], $values );
+		
+		if ( ! $this->returns_array() ) {
 			$values = array_filter( $values );
-
+			
 			while ( is_array( $values ) ) {
 				$values = array_shift( $values );
 			}
 		}
-		
+
 		return $values;
 	}
 
@@ -189,7 +203,6 @@ abstract class FieldHandler {
 	 */
 	public function get_xpaths(): array {
 		$xpath = $this->field['_wpai']['xpath'];
-		
 		$xpath = is_array( $xpath ) ? $xpath : [ $xpath ];
 
 		return $xpath;
