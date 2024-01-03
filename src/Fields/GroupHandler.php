@@ -9,22 +9,23 @@ class GroupHandler extends FieldHandler {
 
 	private function get_tree_value( $xpath, $parent = [] ) {
 		$output = [];
-
+		
 		foreach ( $xpath as $clone_index => $group ) {
 			foreach ( $group as $field_id => $value ) {
-
+				
 				$field = $this->get_field_info( $field_id, $parent );
-
+				
 				if ( ! $field ) {
 					continue;
 				}
 
 				$field_handler                       = $this->init_sub_field( $field, $parent, $value );
 				$value                               = $field_handler->get_value();
+				
 				$output[ $clone_index ][ $field_id ] = $value;
 			}
 		}
-
+		
 		return $output;
 	}
 
@@ -42,15 +43,29 @@ class GroupHandler extends FieldHandler {
 		return $field;
 	}
 
+	private function is_normalized( $xpath ) {
+		return is_array($xpath) && isset($xpath[0]) && ! array_key_exists( 'foreach', $xpath[0] );
+	}
+
 	public function get_value() {
 		$xpaths = $this->get_xpaths();
 		
-		// Normalize xpaths
-		if ( array_key_exists( 'foreach', $xpaths ) ) {
-			$xpaths = $this->build_xpaths_tree( $xpaths );
+		if ( empty( $xpaths ) ) {
+			return null;
 		}
-		
-		$output = $this->get_tree_value( $xpaths );
+
+		if ( ! $this->is_normalized($xpaths)) {
+			$output = [];
+
+			foreach ($xpaths as $xpath) {
+				$xpath_tree = $this->build_xpaths_tree( $xpath );
+				$output = array_merge( $output, $xpath_tree );
+			}
+			
+			$output = $this->get_tree_value( $output );
+		} else {
+			$output = $this->get_tree_value( $xpaths );
+		}
 
 		return $this->field['clone'] ? $output : $output[0] ?? [];
 	}
@@ -119,7 +134,8 @@ class GroupHandler extends FieldHandler {
 		}
 		
 		$output = str_replace( '{.', '{' . $xpath_value . '/', $string );
-	
+		$output = str_replace( '/}', '}', $output );
+
 		return $output;
 	}
 
