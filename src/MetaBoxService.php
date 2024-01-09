@@ -72,7 +72,13 @@ final class MetaBoxService {
 				if ( $attch ) {
 					$logger and call_user_func( $logger, sprintf( __( 'Existing file was found by Filename `%s`...', 'wp_all_import_plugin' ), basename( $atch_url ) ) );
 
-					return $attch->ID;
+					return [
+						'ID'    => $attch->ID,
+						'name'  => basename( $atch_url ),
+						'path'  => $atch_url,
+						'url'   => get_attached_file( $attch->ID ),
+						'title' => basename( $atch_url ),
+					];
 				}
 			}
 
