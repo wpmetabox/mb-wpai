@@ -20,19 +20,26 @@ class PMAI_Admin_Import extends PMAI_Controller_Admin {
 		$this->render();
 	}
 
-	private function remove_closure( array $meta_boxes ): array {
-		foreach ( $meta_boxes as $index => $meta_box ) {
-			foreach ( $meta_box->meta_box['fields'] as $field_index => $field ) {
-				foreach ( $field as $key => $value ) {
-					if ( is_callable( $value ) && ! is_string( $value ) ) {
-						unset( $meta_box->meta_box['fields'][ $field_index ][ $key ] );
-					}
-				}
-			}
+    private function remove_closure_from_array( array $array ) {
+        foreach ( $array as $key => $value ) {
+            if ( is_callable( $value ) && ! is_string( $value ) ) {
+                unset( $array[ $key ] );
+            }
 
-			$meta_boxes[ $index ] = $meta_box;
-		}
+            if ( is_array( $value ) ) {
+                $array[ $key ] = $this->remove_closure_from_array( $value );
+            }
+        }
 
-		return $meta_boxes;
-	}
+        return $array;
+    }
+
+    private function remove_closure( array $meta_boxes ): array {
+        foreach ( $meta_boxes as $index => $meta_box ) {
+            $meta_box->meta_box = $this->remove_closure_from_array( $meta_box->meta_box );
+            $meta_boxes[ $index ] = $meta_box;
+        }
+
+        return $meta_boxes;
+    }
 }
