@@ -47,5 +47,5 @@ $clone        = $field['clone'] ?? false;
 		<?php endif; ?>
 	</div>
 	<input type="hidden" name="fields[<?= esc_attr( $field['id'] ) ?>][reference]"
-		value="<?= esc_attr( $wpai_attr['reference'] ?? '' ) ?>" />
+		value="<?= esc_attr( $field['reference'] ?? '' ) ?>" />
 </div>

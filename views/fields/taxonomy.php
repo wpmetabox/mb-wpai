@@ -16,4 +16,4 @@ $taxonomy_fields = \RW_Meta_Box::normalize_fields( [ $taxonomy_field ] );
 RWMB_Field::call( 'show', $taxonomy_fields[0], false );
 ?>
 <input type="hidden" name="fields[<?= esc_attr( $field['id'] ) ?>][reference]"
-	value="<?= esc_attr( $wpai_attr['reference'] ?? '' ) ?>" />
+	value="<?= esc_attr( $field['reference'] ?? '' ) ?>" />

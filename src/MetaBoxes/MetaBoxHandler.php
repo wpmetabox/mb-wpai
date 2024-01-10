@@ -61,7 +61,6 @@ class MetaBoxHandler implements MetaBoxInterface {
 			$wpai_attr = $this->post['fields'][ $field['id'] ] ?? [
 				'xpath'     => null,
 				'options'   => [],
-				'reference' => $field['id'],
 			];
 
 			$field['_wpai'] = $wpai_attr;
