@@ -225,6 +225,11 @@ URL: {.url} (same as {photos/photo/url} but scoped to the group)
 - You are not limited to only direct children xml nodes but also any level inside the group fields. For example: `{.meta/orientation/width}` also works.
 - You can also use other features like concatenation, cloneable syntax... with sub-fields.
 
+## Known issues
+- When you clone a group, the later group xpath maybe override the previous group xpath when you save the first time. 
+You'll need to save the import again to fix it. This is due to group.js file currently doesn't work well outside of the post edit screen. 
+We'll fix it in the next version.
+
 ## FAQ
 **Does it work with WP All Import free edition?** 
 Yes, it does.
