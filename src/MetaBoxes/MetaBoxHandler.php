@@ -61,10 +61,12 @@ class MetaBoxHandler implements MetaBoxInterface {
 			$wpai_attr = $this->post['fields'][ $field['id'] ] ?? [
 				'xpath'     => null,
 				'options'   => [],
+				'reference' => $field['reference'] ?? '',
 			];
 
 			$field['_wpai'] = $wpai_attr;
 		}
+
 
 		$handler   = $this;
 		$view_path = $this->get_view_path( $field['type'] );
@@ -115,8 +117,10 @@ class MetaBoxHandler implements MetaBoxInterface {
 			$options   = $value['options'] ?? [];
 
 			if ( ! empty( $xpaths ) && ! empty( $reference ) ) {
+
 				// Find field by reference id (dot notation)
 				$field = $this->find_field( $this->meta_box->meta_box['fields'], $reference );
+				
 				// Create field instance to handle the import
 				if ( $field ) {
 					$field['_wpai']     = $value;

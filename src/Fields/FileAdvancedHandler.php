@@ -10,6 +10,10 @@ class FileAdvancedHandler extends FieldHandler {
 		if ( ! $value ) {
 			return;
 		}
+		
+		if ( is_string( $value ) ) {
+			$value = [ $value ];
+		}
 
 		$attachments = [];
 		$parsingData = $this->parsingData;

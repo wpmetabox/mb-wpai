@@ -59,7 +59,7 @@ class GroupHandler extends FieldHandler {
 
 			foreach ( $xpaths as $xpath ) {
 				$xpath_tree = $this->build_xpaths_tree( $xpath );
-				$output     = array_merge( $output, $xpath_tree );
+				$output = array_merge( $output, $xpath_tree );
 			}
 
 			$output = $this->get_tree_value( $output );
@@ -97,21 +97,29 @@ class GroupHandler extends FieldHandler {
 					$tree[ $i ][ $field_id ] = $value;
 					continue;
 				}
+				$output = [];
 
 				foreach ( $value as $clone_index => $v_xpath ) {
 					if ( is_string( $v_xpath ) ) {
-						$value[ $clone_index ] = $this->expand_xpath( $v_xpath, $xpath['foreach'], $i + 1 );
+						$output[ $clone_index ] = $this->expand_xpath( $v_xpath, $xpath['foreach'] ?? '', $i + 1 );
 					}
 
 					if ( is_array( $v_xpath ) ) {
+						// nested group
+						if ( isset( $v_xpath['foreach'] ) ) {
+							$v_xpath['foreach'] = $this->expand_xpath( $v_xpath['foreach'], $xpath['foreach'], $i + 1, true );
+							$output             = array_merge( $output, $this->build_xpaths_tree( $v_xpath ) );
+							continue;
+						}
+
 						// key-value field
 						foreach ( $v_xpath as $key => $v ) {
-							$value[ $clone_index ][ $key ] = $this->expand_xpath( $v, $xpath['foreach'], $i + 1 );
+							$output = $this->expand_xpath( $v, $xpath['foreach'] ?? '', $i + 1 );
 						}
 					}
 				}
 
-				$tree[ $i ][ $field_id ] = $value;
+				$tree[ $i ][ $field_id ] = $output;
 			}
 		}
 
@@ -151,8 +159,8 @@ class GroupHandler extends FieldHandler {
 		}
 
 		$ini += strlen( $start );
-		$len  = strpos( $string, $end, $ini ) - $ini;
-		$str  = substr( $string, $ini, $len );
+		$len = strpos( $string, $end, $ini ) - $ini;
+		$str = substr( $string, $ini, $len );
 
 		if ( $str === '.' ) {
 			return '';
