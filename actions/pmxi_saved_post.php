@@ -9,7 +9,7 @@ function pmai_pmxi_saved_post( $pid ) {
 	if ( function_exists( 'mb_revision_init' ) ) {
 		$revision = mb_revision_init();
 
-		if ($revision) {
+		if ( $revision ) {
 			$revision->copy_fields_to_revision( $pid );
 		}
 	}

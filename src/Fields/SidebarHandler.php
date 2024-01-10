@@ -7,9 +7,9 @@ namespace MetaBox\WPAI\Fields;
  * to extends from FieldHandler class instead of SidebarHandler
  */
 class SidebarHandler extends FieldHandler {
-    public function get_value() {
-        $value = parent::get_value();
+	public function get_value() {
+		$value = parent::get_value();
 
-        return $this->field['clone'] ? $value : $value[0];
-    }
+		return $this->field['clone'] ? $value : $value[0];
+	}
 }

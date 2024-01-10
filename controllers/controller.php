@@ -97,5 +97,4 @@ abstract class PMAI_Controller {
 			$this->render( 'controller/error.php' );
 		}
 	}
-
 }

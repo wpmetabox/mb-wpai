@@ -22,7 +22,7 @@ class PMAI_Import_Record extends PMAI_Model_Record {
 		parent::__construct( $data );
 
 		$this->setTable( PMXI_Plugin::getInstance()
-		                            ->getTablePrefix() . 'imports' );
+		->getTablePrefix() . 'imports' );
 	}
 
 	/**

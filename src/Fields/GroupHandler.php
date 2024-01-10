@@ -9,23 +9,23 @@ class GroupHandler extends FieldHandler {
 
 	private function get_tree_value( $xpath, $parent = [] ) {
 		$output = [];
-		
+
 		foreach ( $xpath as $clone_index => $group ) {
 			foreach ( $group as $field_id => $value ) {
-				
+
 				$field = $this->get_field_info( $field_id, $parent );
-				
+
 				if ( ! $field ) {
 					continue;
 				}
 
-				$field_handler                       = $this->init_sub_field( $field, $parent, $value );
-				$value                               = $field_handler->get_value();
-				
+				$field_handler = $this->init_sub_field( $field, $parent, $value );
+				$value         = $field_handler->get_value();
+
 				$output[ $clone_index ][ $field_id ] = $value;
 			}
 		}
-		
+
 		return $output;
 	}
 
@@ -44,24 +44,24 @@ class GroupHandler extends FieldHandler {
 	}
 
 	private function is_normalized( $xpath ) {
-		return is_array($xpath) && isset($xpath[0]) && ! array_key_exists( 'foreach', $xpath[0] );
+		return is_array( $xpath ) && isset( $xpath[0] ) && ! array_key_exists( 'foreach', $xpath[0] );
 	}
 
 	public function get_value() {
 		$xpaths = $this->get_xpaths();
-		
+
 		if ( empty( $xpaths ) ) {
 			return null;
 		}
 
-		if ( ! $this->is_normalized($xpaths)) {
+		if ( ! $this->is_normalized( $xpaths ) ) {
 			$output = [];
 
-			foreach ($xpaths as $xpath) {
+			foreach ( $xpaths as $xpath ) {
 				$xpath_tree = $this->build_xpaths_tree( $xpath );
-				$output = array_merge( $output, $xpath_tree );
+				$output     = array_merge( $output, $xpath_tree );
 			}
-			
+
 			$output = $this->get_tree_value( $output );
 		} else {
 			$output = $this->get_tree_value( $xpaths );
@@ -74,7 +74,7 @@ class GroupHandler extends FieldHandler {
 		$tree = [];
 
 		$rows_count = 1;
-		
+
 		if ( ! empty( $xpath['foreach'] ) ) {
 			$rows       = $this->get_value_by_xpath( $xpath['foreach'] );
 			$rows_count = count( $rows );
@@ -82,7 +82,7 @@ class GroupHandler extends FieldHandler {
 
 		for ( $i = 0; $i < $rows_count; $i++ ) {
 			foreach ( $xpath as $field_id => $value ) {
-				if ( $field_id === 'foreach' || empty ( $value ) ) {
+				if ( $field_id === 'foreach' || empty( $value ) ) {
 					continue;
 				}
 
@@ -120,19 +120,19 @@ class GroupHandler extends FieldHandler {
 
 	private function expand_xpath( $string, $xpath = '', $append_index = '', $xpath_if_empty = false ): ?string {
 		$xpath_value = $this->get_string_between( $xpath );
-		
+
 		if ( $append_index !== '' ) {
 			$xpath_value .= "[{$append_index}]";
 		}
-	
+
 		if ( empty( $string ) ) {
 			if ( $xpath_if_empty ) {
 				return '{' . $xpath_value . '}';
 			}
-	
+
 			return null;
 		}
-		
+
 		$output = str_replace( '{.', '{' . $xpath_value . '/', $string );
 		$output = str_replace( '/}', '}', $output );
 
@@ -142,22 +142,22 @@ class GroupHandler extends FieldHandler {
 	private function get_string_between( $string ) {
 		$start = '{';
 		$end   = '}';
-	
+
 		$string = ' ' . $string;
 		$ini    = strpos( $string, $start );
-	
+
 		if ( $ini == 0 ) {
 			return '';
 		}
-	
+
 		$ini += strlen( $start );
-		$len = strpos( $string, $end, $ini ) - $ini;
-		$str = substr( $string, $ini, $len );
-	
+		$len  = strpos( $string, $end, $ini ) - $ini;
+		$str  = substr( $string, $ini, $len );
+
 		if ( $str === '.' ) {
 			return '';
 		}
-	
+
 		return $str;
 	}
 

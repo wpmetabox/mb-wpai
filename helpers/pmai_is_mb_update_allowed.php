@@ -53,6 +53,5 @@ function pmai_is_mb_update_allowed( $cur_meta_key, $options ) {
 		return pmai_is_field_included( $cur_meta_key, $mapped_mb );
 	}
 
-
 	return false;
 }

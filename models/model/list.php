@@ -48,7 +48,7 @@ class PMAI_Model_List extends PMAI_Model {
 	 */
 	public function setColumns( $columns ) {
 		is_array( $columns ) or $columns = func_get_args();
-		$this->what = implode( ', ', $columns );
+		$this->what                      = implode( ', ', $columns );
 
 		return $this;
 	}
@@ -58,11 +58,11 @@ class PMAI_Model_List extends PMAI_Model {
 	 * When 1st parameter is an array, it's expected to be an associative array of field => value pairs to read data by
 	 * When 2nd parameter is a scalar, it's expected to be a field name and second parameter - it's value
 	 *
-	 * @param ?string|array $field
-	 * @param mixed[optional] $value
+	 * @param ?string|array    $field
+	 * @param mixed[optional]  $value
 	 * @param string[optional] $orderBy Ordering rule
-	 * @param int[optional] $page Paging paramter used to limit number of records returned
-	 * @param int[optional] $perPage Page size when paging parameter is used (20 by default)
+	 * @param int[optional]    $page Paging paramter used to limit number of records returned
+	 * @param int[optional]    $perPage Page size when paging parameter is used (20 by default)
 	 *
 	 * @return PMAI_Model_List
 	 */
@@ -75,20 +75,20 @@ class PMAI_Model_List extends PMAI_Model {
 			$value   = null;
 		}
 		! is_null( $perPage ) or $perPage = 20; // set default value for page length
-		$page = intval( $page );
+		$page                             = intval( $page );
 
-		$sql = "FROM $this->table ";
+		$sql  = "FROM $this->table ";
 		$sql .= implode( ' ', $this->joined );
 		if ( ! is_null( $field ) ) {
-			$sql .= " WHERE " . $this->buildWhere( $field, $value );
+			$sql .= ' WHERE ' . $this->buildWhere( $field, $value );
 		}
 		if ( ! is_null( $groupBy ) ) {
 			$sql .= " GROUP BY $groupBy";
 		}
 		is_null( $orderBy ) and $orderBy = implode( ', ', $this->primary ); // default sort order is by primary key
-		$sql .= " ORDER BY $orderBy";
+		$sql                            .= " ORDER BY $orderBy";
 		if ( $page > 0 ) {
-			$sql = "SELECT SQL_CALC_FOUND_ROWS $this->what $sql LIMIT " . intval( ( $page - 1 ) * $perPage ) . ", " . intval( $perPage );
+			$sql = "SELECT SQL_CALC_FOUND_ROWS $this->what $sql LIMIT " . intval( ( $page - 1 ) * $perPage ) . ', ' . intval( $perPage );
 		} else {
 			$sql = "SELECT $this->what $sql";
 		}
@@ -118,16 +118,16 @@ class PMAI_Model_List extends PMAI_Model {
 	/**
 	 * Count records in table
 	 *
-	 * @param string|array $field
+	 * @param string|array    $field
 	 * @param mixed[optional] $value
 	 *
 	 * @return int
 	 */
 	public function countBy( $field = null, $value = null ) {
-		$sql = "SELECT COUNT(*) FROM $this->table ";
+		$sql  = "SELECT COUNT(*) FROM $this->table ";
 		$sql .= implode( ' ', $this->joined );
 		if ( ! is_null( $field ) ) {
-			$sql .= " WHERE " . $this->buildWhere( $field, $value );
+			$sql .= ' WHERE ' . $this->buildWhere( $field, $value );
 		}
 
 		return intval( $this->wpdb->get_var( $sql ) );
@@ -145,7 +145,7 @@ class PMAI_Model_List extends PMAI_Model {
 	 * Converts elements to instances of specifield class. If includeFields are provided only fields listed are included
 	 *
 	 * @param string[optoinal] $elementClass
-	 * @param ?array $includeFields
+	 * @param ?array           $includeFields
 	 *
 	 * @return PMAI_Model_List
 	 */
@@ -165,5 +165,4 @@ class PMAI_Model_List extends PMAI_Model {
 
 		return $this;
 	}
-
 }

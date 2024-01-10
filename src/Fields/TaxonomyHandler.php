@@ -32,8 +32,8 @@ class TaxonomyHandler extends FieldHandler {
 			return $term['term_id'];
 		}
 
-		$term = wp_insert_term( $s, $taxonomy, [ 
-			'slug' => sanitize_title( $s ),
+		$term = wp_insert_term( $s, $taxonomy, [
+			'slug'   => sanitize_title( $s ),
 			'parent' => $parent_id,
 		] );
 
@@ -80,7 +80,7 @@ class TaxonomyHandler extends FieldHandler {
 
 	public function get_value() {
 		$value = parent::get_value();
-		
+
 		$output = [];
 
 		if ( ! is_array( $value ) ) {
@@ -88,27 +88,27 @@ class TaxonomyHandler extends FieldHandler {
 		}
 
 		$taxonomy = $this->field['taxonomy'][0];
-		
+
 		foreach ( $value as $clone_index => $term ) {
 			if ( is_string( $term ) ) {
-				$term_id = $this->get_or_create_term( $term, $taxonomy );
+				$term_id     = $this->get_or_create_term( $term, $taxonomy );
 				$output[0][] = $term_id;
 			} else {
 				foreach ( $term as $s ) {
 					$term_id = $this->get_or_create_term( $s, $taxonomy );
 					if ( ! is_wp_error( $term_id ) ) {
-						$output[$clone_index][] = $term_id;
+						$output[ $clone_index ][] = $term_id;
 					}
 				}
 			}
 		}
-		
+
 		return $output;
 	}
 
 	public function saved_post( $importData ) {
 		$taxonomy = $this->field['taxonomy'][0];
-		
+
 		$values = $this->get_value();
 
 		foreach ( $values as $clone_index => $term_ids ) {

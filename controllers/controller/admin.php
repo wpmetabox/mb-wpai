@@ -17,7 +17,7 @@ abstract class PMAI_Controller_Admin extends PMAI_Controller {
 	 */
 	public $baseUrlParamNames = [ 'page', 'pagenum', 'order', 'order_by', 'type', 's', 'f' ];
 	/**
-	 * Whether controller is rendered inside wordpress page
+	 * Whether controller is rendered inside WordPress page
 	 * @var bool
 	 */
 	public $isInline = false;
@@ -47,21 +47,20 @@ abstract class PMAI_Controller_Admin extends PMAI_Controller {
 			'jquery-ui-droppable',
 			'jquery-nestable',
 			'pmxi-admin-script',
-        ], time() );
+		], time() );
 		wp_enqueue_script( 'pmai-datetimepicker', PMAI_ROOT_URL . '/static/js/jquery/datetime.min.js', [ 'jquery' ] );
 
-
-		// Add base meta box script and style		
+		// Add base meta box script and style
 		wp_enqueue_style( 'rwmb', RWMB_CSS_URL . 'style.css', [], RWMB_VER );
 		if ( is_rtl() ) {
 			wp_enqueue_style( 'rwmb-rtl', RWMB_CSS_URL . 'style-rtl.css', [], RWMB_VER );
 		}
 
 		wp_enqueue_script( 'rwmb', RWMB_JS_URL . 'script.js', [ 'jquery' ], RWMB_VER, true );
-        wp_enqueue_script( 'rwmb-clone', RWMB_JS_URL . 'clone.js', [ 'jquery-ui-sortable' ], time(), true );
-		
-		wp_enqueue_style( 'rwmb-group', plugin_dir_url('') . 'meta-box-group/group.css', [], time() );
-		wp_enqueue_script( 'rwmb-group', plugin_dir_url('') . 'meta-box-group/group.js', [ 'jquery', 'underscore' ], time(), true );
+		wp_enqueue_script( 'rwmb-clone', RWMB_JS_URL . 'clone.js', [ 'jquery-ui-sortable' ], time(), true );
+
+		wp_enqueue_style( 'rwmb-group', plugin_dir_url( '' ) . 'meta-box-group/group.css', [], time() );
+		wp_enqueue_script( 'rwmb-group', plugin_dir_url( '' ) . 'meta-box-group/group.js', [ 'jquery', 'underscore' ], time(), true );
 		wp_localize_script( 'rwmb-group', 'RWMB_Group', [
 			'confirmRemove' => __( 'Are you sure you want to remove this group?', 'meta-box-group' ),
 			'on'            => __( 'On', 'meta-box-group' ),
@@ -77,10 +76,9 @@ abstract class PMAI_Controller_Admin extends PMAI_Controller {
 	protected function render( $viewPath = null ) {
 		// assume template file name depending on calling function
 		if ( is_null( $viewPath ) ) {
-			$trace = debug_backtrace();
+			$trace    = debug_backtrace();
 			$viewPath = str_replace( '_', '/', preg_replace( '%^' . preg_quote( PMAI_Plugin::PREFIX, '%' ) . '%', '', strtolower( $trace[1]['class'] ) ) ) . '/' . $trace[1]['function'];
 		}
 		parent::render( $viewPath );
 	}
-
 }

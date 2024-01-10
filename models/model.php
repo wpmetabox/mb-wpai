@@ -47,7 +47,7 @@ abstract class PMAI_Model extends ArrayObject {
 	 * When 1st parameter is an array, it expected to be an associative array of field => value pairs to read data by
 	 * If 2 parameters are set, first one is expected to be a field name and second - it's value
 	 *
-	 * @param string|array $field
+	 * @param string|array    $field
 	 * @param mixed[optional] $value
 	 *
 	 * @return PMAI_Model
@@ -58,7 +58,7 @@ abstract class PMAI_Model extends ArrayObject {
 	 * Magic function to automatically resolve calls like $obj->getBy%FIELD_NAME%
 	 *
 	 * @param string $method
-	 * @param array $args
+	 * @param array  $args
 	 *
 	 * @return PMAI_Model
 	 */
@@ -68,7 +68,7 @@ abstract class PMAI_Model extends ArrayObject {
 
 			return call_user_func_array( [ $this, 'getBy' ], $args );
 		} else {
-			throw new Exception( "Requested method " . get_class( $this ) . "::$method doesn't exist." );
+			throw new Exception( 'Requested method ' . get_class( $this ) . "::$method doesn't exist." );
 		}
 	}
 
@@ -97,7 +97,10 @@ abstract class PMAI_Model extends ArrayObject {
 					break; // no point to iterate futher since auto_increment means corresponding primary key is simple
 				}
 			}
-			self::$meta_cache[ $this->table ] = [ 'primary' => $primary, 'auto_increment' => $auto_increment ];
+			self::$meta_cache[ $this->table ] = [
+				'primary'        => $primary,
+				'auto_increment' => $auto_increment,
+			];
 		}
 		$this->primary        = self::$meta_cache[ $this->table ]['primary'];
 		$this->auto_increment = self::$meta_cache[ $this->table ]['auto_increment'];
@@ -127,8 +130,8 @@ abstract class PMAI_Model extends ArrayObject {
 	/**
 	 * Compose WHERE clause based on parameters provided
 	 *
-	 * @param string|array $field
-	 * @param mixed[optional] $value
+	 * @param string|array     $field
+	 * @param mixed[optional]  $value
 	 * @param string[optional] $operator AND or OR string, 'AND' by default
 	 *
 	 * @return string
@@ -152,7 +155,7 @@ abstract class PMAI_Model extends ArrayObject {
 				$key = $mtch[1];
 				if ( is_array( $val ) and ( empty( $mtch[2] ) or 'IN' == strtoupper( $mtch[4] ) ) ) {
 					$op      = empty( $mtch[2] ) ? 'IN' : strtoupper( trim( $mtch[2] ) );
-					$where[] = $this->wpdb->prepare( "$key $op (" . implode( ', ', array_fill( 0, count( $val ), "%s" ) ) . ")", $val );
+					$where[] = $this->wpdb->prepare( "$key $op (" . implode( ', ', array_fill( 0, count( $val ), '%s' ) ) . ')', $val );
 				} else {
 					$op      = empty( $mtch[2] ) ? '=' : strtoupper( trim( $mtch[2] ) );
 					$where[] = $this->wpdb->prepare( "$key $op %s", $val );

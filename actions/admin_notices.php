@@ -5,15 +5,17 @@
  */
 function pmai_admin_notices() {
 
-	// notify user if history folder is not writable		
+	// notify user if history folder is not writable
 	if ( ! class_exists( 'PMXI_Plugin' ) ) {
 		?>
 		<div class="error">
 			<p>
-				<?php printf(
+				<?php
+				printf(
 					__( '<b>%s Plugin</b>: WP All Import must be installed. Free edition of WP All Import at <a href="http://wordpress.org/plugins/wp-all-import/" target="_blank">http://wordpress.org/plugins/wp-all-import/</a> and the paid edition at <a href="http://www.wpallimport.com/">http://www.wpallimport.com/</a>', 'mb-wpai' ),
 					PMAI_Plugin::getInstance()->getName()
-				) ?>
+				)
+				?>
 			</p>
 		</div>
 		<?php
@@ -25,10 +27,12 @@ function pmai_admin_notices() {
 		?>
 		<div class="error">
 			<p>
-				<?php printf(
+				<?php
+				printf(
 					__( '<b>%s Plugin</b>: Please update your WP All Import to the latest version', 'mb-wpai' ),
 					PMAI_Plugin::getInstance()->getName()
-				) ?>
+				)
+				?>
 			</p>
 		</div>
 		<?php
@@ -40,10 +44,12 @@ function pmai_admin_notices() {
 		?>
 		<div class="error">
 			<p>
-				<?php printf(
+				<?php
+				printf(
 					__( '<b>%s Plugin</b>: <a target="_blank" href="http://wordpress.org/plugins/meta-box/">Meta Box</a> must be installed', 'mb-wpai' ),
 					PMAI_Plugin::getInstance()->getName()
-				) ?>
+				)
+				?>
 			</p>
 		</div>
 		<?php

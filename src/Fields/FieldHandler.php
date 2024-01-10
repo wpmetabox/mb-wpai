@@ -38,7 +38,7 @@ abstract class FieldHandler {
 
 	/**
 	 * @param $importData
-	 * @param array $args
+	 * @param array      $args
 	 *
 	 * @return mixed
 	 */
@@ -69,13 +69,12 @@ abstract class FieldHandler {
 	 * @param $importData
 	 */
 	public function saved_post( $importData ) {
-		//
 	}
 
 	public function get_value_by_xpath( string $xpath, $post_index = null ): ?array {
 		$post_index = $post_index ?? $this->get_post_index();
 
-		add_filter( 'wp_all_import_multi_glue', function ($glue) {
+		add_filter( 'wp_all_import_multi_glue', function ( $glue ) {
 			return '||';
 		} );
 
@@ -84,7 +83,7 @@ abstract class FieldHandler {
 		$output = [ $xpath ];
 
 		if ( ! empty( $templates ) ) {
-			$output = [];
+			$output         = [];
 			$value_template = [];
 
 			foreach ( $templates as $template ) {
@@ -114,7 +113,7 @@ abstract class FieldHandler {
 			}
 		}
 
-		add_filter( 'wp_all_import_multi_glue', function ($glue) {
+		add_filter( 'wp_all_import_multi_glue', function ( $glue ) {
 			return ',';
 		} );
 
@@ -137,7 +136,7 @@ abstract class FieldHandler {
 
 	/**
 	 * Get the index of the post in the import file, starting from 0
-	 * 
+	 *
 	 * @return int
 	 */
 	public function get_post_index(): int {
@@ -168,7 +167,7 @@ abstract class FieldHandler {
 			$xpath_values = $this->get_value_by_xpath( $xpath, $post_index );
 
 			$segments = pmai_get_segment( $xpath );
-			
+
 			if ( $segments !== false ) {
 				$xpath_values = pmai_array_deep( $xpath_values, $segments );
 			}
@@ -181,13 +180,13 @@ abstract class FieldHandler {
 
 	public function get_value() {
 		$xpaths = $this->get_xpaths();
-		
+
 		$values = $this->get_values( $xpaths );
 		$values = array_map( [ $this, 'recursive_trim' ], $values );
-		
+
 		if ( ! $this->returns_array() ) {
 			$values = array_filter( $values );
-			
+
 			while ( is_array( $values ) ) {
 				$values = array_shift( $values );
 			}
@@ -198,7 +197,7 @@ abstract class FieldHandler {
 
 	/**
 	 * Get the xpaths of the field
-	 * 
+	 *
 	 * @return string[]
 	 */
 	public function get_xpaths(): array {
@@ -221,9 +220,13 @@ abstract class FieldHandler {
 			return true;
 		}
 
-		$multiple_type = [ 
-			'checkbox_list', 'group', 'taxonomy',
-			'taxonomy_advanced', 'post', 'user',
+		$multiple_type = [
+			'checkbox_list',
+			'group',
+			'taxonomy',
+			'taxonomy_advanced',
+			'post',
+			'user',
 			'file',
 			'file_advanced',
 			'file_upload',

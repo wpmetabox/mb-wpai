@@ -10,7 +10,7 @@ class CheckboxHandler extends FieldHandler {
 	public function get_value() {
 		$value = parent::get_value();
 		$value = $this->to_bool( $value );
-		
+
 		return $value;
 	}
 
@@ -19,7 +19,7 @@ class CheckboxHandler extends FieldHandler {
 			return filter_var( $value, FILTER_VALIDATE_BOOLEAN );
 		}
 
-		return array_map( function ($item) {
+		return array_map( function ( $item ) {
 			return $this->to_bool( $item );
 		}, $value );
 	}

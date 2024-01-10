@@ -4,7 +4,7 @@ namespace MetaBox\WPAI\MetaBoxes;
 
 final class MetaBoxFactory {
 	/**
-	 * @param \RW_Meta_Box $meta_box
+	 * @param \RW_Meta_Box      $meta_box
 	 * @param $post array import
 	 *
 	 * @return MetaBoxHandler

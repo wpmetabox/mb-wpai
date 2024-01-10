@@ -11,7 +11,7 @@
  * Plugin root dir with forward slashes as directory separator regardless of actual DIRECTORY_SEPARATOR value
  * @var string
  */
-define( 'PMAI_ROOT_DIR', str_replace( '\\', '/', dirname( __FILE__ ) ) );
+define( 'PMAI_ROOT_DIR', str_replace( '\\', '/', __DIR__ ) );
 /**
  * Plugin root url for referencing static content
  * @var string
@@ -40,7 +40,7 @@ final class PMAI_Plugin {
 
 	const FILE = __FILE__;
 
-	static public function getInstance() {
+	public static function getInstance() {
 		if ( self::$instance == null ) {
 			self::$instance = new self();
 		}
@@ -48,7 +48,7 @@ final class PMAI_Plugin {
 		return self::$instance;
 	}
 
-	static public function getEddName() {
+	public static function getEddName() {
 		return 'Meta Box Add-On';
 	}
 
@@ -59,11 +59,11 @@ final class PMAI_Plugin {
 				return $info[ $mtch[1] ];
 			}
 		}
-		throw new Exception( "Requested method " . get_class( $this ) . "::$method doesn't exist." );
+		throw new Exception( 'Requested method ' . get_class( $this ) . "::$method doesn't exist." );
 	}
 
 	/**
-	 * Get path to plagin dir relative to wordpress root
+	 * Get path to plagin dir relative to WordPress root
 	 *
 	 * @param mixed[optional] $noForwardSlash Whether path should be returned withot forwarding slash
 	 *
@@ -180,9 +180,9 @@ final class PMAI_Plugin {
 
 	public function shortcodeDispatcher( array $args, string $content, string $tag ): string {
 		$controllerName = self::PREFIX . preg_replace_callback( '%(^|_).%', [
-				$this,
-				"replace_callback",
-			], $tag ); // capitalize first letters of class name parts and add prefix
+			$this,
+			'replace_callback',
+		], $tag ); // capitalize first letters of class name parts and add prefix
 		$controller     = new $controllerName();
 
 		if ( ! $controller instanceof PMAI_Controller ) {
@@ -196,7 +196,7 @@ final class PMAI_Plugin {
 	}
 
 	public function adminDispatcher( $page = '', $action = 'index' ) {
-		static $buffer = null;
+		static $buffer          = null;
 		static $buffer_callback = null;
 
 		if ( '' === $page ) {
@@ -218,7 +218,7 @@ final class PMAI_Plugin {
 			// capitalize prefix and first letters of class name parts
 			$controllerName = preg_replace_callback( '%(^' . preg_quote( self::PREFIX, '%' ) . '|_).%', [
 				$this,
-				"replace_callback",
+				'replace_callback',
 			], str_replace( '-', '_', $page ) );
 			if ( method_exists( $controllerName, $actionName ) ) {
 
@@ -255,7 +255,6 @@ final class PMAI_Plugin {
 						$buffer_callback = [ $controller, $action ];
 					}
 				}
-
 			} else { // redirect to dashboard if requested page and/or action don't exist
 				wp_redirect( admin_url() );
 				die();
@@ -294,15 +293,15 @@ final class PMAI_Plugin {
 		return [
 			'meta_box'                => [],
 			'fields'                  => [],
-            'fields_settings'         => [],
+			'fields_settings'         => [],
 			'is_multiple_field_value' => [],
 			'multiple_value'          => [],
 			'fields_delimiter'        => [],
-			'is_update_mb'           => 1,
-			'update_mb_logic'        => 'full_update',
-			'mb_field_list'          => [],
-			'mb_only_list'           => [],
-			'mb_except_list'         => [],
+			'is_update_mb'            => 1,
+			'update_mb_logic'         => 'full_update',
+			'mb_field_list'           => [],
+			'mb_only_list'            => [],
+			'mb_except_list'          => [],
 		];
 	}
 }

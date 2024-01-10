@@ -9,36 +9,36 @@ class FieldsetTextHandler extends KeyValueHandler {
 		$xpaths = $this->get_xpaths();
 		$xpaths = $this->build_xpaths_tree( $xpaths );
 
-        $values = [];
+		$values = [];
 
 		foreach ( $xpaths as $clone_index => $row ) {
-            foreach ($row as $column => $xpath) {
-                $values[$clone_index][$column] = $this->get_value_by_xpath($xpath);
-            }
+			foreach ( $row as $column => $xpath ) {
+				$values[ $clone_index ][ $column ] = $this->get_value_by_xpath( $xpath );
+			}
 		}
 
-        $output = [];
-        foreach ($values as $index => $row) {
-            $output = array_merge($output, $this->convert_array($row));
-        }
+		$output = [];
+		foreach ( $values as $index => $row ) {
+			$output = array_merge( $output, $this->convert_array( $row ) );
+		}
 
 		return $this->field['clone'] ? $output : $output[0] ?? null;
 	}
 
-    private function convert_array($array) {
-        $result = [];
-        $keys = array_keys($array);
-    
-        foreach ($array as $key => $values) {
-            foreach ($values as $index => $value) {
-                foreach ($keys as $k) {
-                    $result[$index][$k] = $array[$k][$index] ?? null;
-                }
-            }
-        }
-    
-        return $result;
-    }
+	private function convert_array( $array ) {
+		$result = [];
+		$keys   = array_keys( $array );
+
+		foreach ( $array as $key => $values ) {
+			foreach ( $values as $index => $value ) {
+				foreach ( $keys as $k ) {
+					$result[ $index ][ $k ] = $array[ $k ][ $index ] ?? null;
+				}
+			}
+		}
+
+		return $result;
+	}
 
 	private function build_xpaths_tree( $xpath ) {
 		$tree = [];

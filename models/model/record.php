@@ -14,7 +14,7 @@ class PMAI_Model_Record extends PMAI_Model {
 	public function __construct( $data = [] ) {
 		parent::__construct();
 		if ( ! is_array( $data ) ) {
-			throw new Exception( "Array expected as paramenter for " . get_class( $this ) . "::" . __METHOD__ );
+			throw new Exception( 'Array expected as paramenter for ' . get_class( $this ) . '::' . __METHOD__ );
 		}
 		$data and $this->set( $data );
 	}
@@ -25,7 +25,7 @@ class PMAI_Model_Record extends PMAI_Model {
 	 */
 	public function getBy( $field = null, $value = null ) {
 		if ( is_null( $field ) ) {
-			throw new Exception( "Field parameter is expected at " . get_class( $this ) . "::" . __METHOD__ );
+			throw new Exception( 'Field parameter is expected at ' . get_class( $this ) . '::' . __METHOD__ );
 		}
 		$sql    = "SELECT * FROM $this->table WHERE " . $this->buildWhere( $field, $value );
 		$result = $this->wpdb->get_row( $sql, ARRAY_A );
@@ -132,7 +132,7 @@ class PMAI_Model_Record extends PMAI_Model {
 	 * When 1st parameter is an array, it expected to be an associative array of field => value pairs
 	 * If 2 parameters are set, first one is expected to be a field name and second - it's value
 	 *
-	 * @param string|array $field
+	 * @param string|array    $field
 	 * @param mixed[optional] $value
 	 *
 	 * @return PMAI_Model_Record
@@ -169,7 +169,7 @@ class PMAI_Model_Record extends PMAI_Model {
 	 * Magic method to assign values to record fields in format $obj->%FIELD_NAME = value
 	 *
 	 * @param string $field
-	 * @param mixed $value
+	 * @param mixed  $value
 	 */
 	public function __set( $field, $value ) {
 		$this[ $field ] = $value;
@@ -194,5 +194,4 @@ class PMAI_Model_Record extends PMAI_Model {
 	public function __unset( $field ) {
 		$this->offsetUnset( $field );
 	}
-
 }

@@ -37,7 +37,7 @@ class PMAI_Config implements IteratorAggregate {
 	/**
 	 * Return value of setting with specified name
 	 *
-	 * @param string $field Setting name
+	 * @param string           $field Setting name
 	 * @param string[optional] $section Section name to look setting in
 	 *
 	 * @return mixed
@@ -79,5 +79,4 @@ class PMAI_Config implements IteratorAggregate {
 	public function getIterator() {
 		return new ArrayIterator( $this->config );
 	}
-
 }

@@ -38,12 +38,12 @@ class TextListHandler extends FieldHandler {
 		}
 
 		$output = [];
-        foreach ($values as $index => $row) {
-            $output = array_merge($output, $row);
-        }
+		foreach ( $values as $index => $row ) {
+			$output = array_merge( $output, $row );
+		}
 
 		$output = $this->combine_values( $output );
-		
+
 		return $this->field['clone'] ? $output : $output[0] ?? null;
 	}
 

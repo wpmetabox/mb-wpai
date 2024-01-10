@@ -32,7 +32,7 @@ $clone        = $field['clone'] ?? false;
 				foreach ( $field['fields'] as $child ) {
 					$child['_id']   = $field['_id'] . '[' . $index . '][' . $child['id'] . ']';
 					$child['std']   = $wpai_attr['xpath'][ $index ][ $child['id'] ] ?? '';
-					$child['_wpai'] = [ 
+					$child['_wpai'] = [
 						'xpath' => $wpai_attr['xpath'][ $index ][ $child['id'] ] ?? '',
 					];
 

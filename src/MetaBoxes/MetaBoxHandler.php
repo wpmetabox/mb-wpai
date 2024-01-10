@@ -58,9 +58,9 @@ class MetaBoxHandler implements MetaBoxInterface {
 
 	public function render_field( array $field ): void {
 		if ( ! isset( $field['_wpai'] ) ) {
-			$wpai_attr = $this->post['fields'][ $field['id'] ] ?? [ 
-				'xpath' => null,
-				'options' => [],
+			$wpai_attr = $this->post['fields'][ $field['id'] ] ?? [
+				'xpath'     => null,
+				'options'   => [],
 				'reference' => $field['id'],
 			];
 
@@ -78,13 +78,13 @@ class MetaBoxHandler implements MetaBoxInterface {
 	}
 
 	private function get_view_path( string $field_type ): ?string {
-		$matches = [ 
-			'taxonomy' => 'taxonomy',
-			'group' => 'group',
+		$matches = [
+			'taxonomy'      => 'taxonomy',
+			'group'         => 'group',
 			'fieldset_text' => 'fieldset_text',
-			'key_value' => 'key_value',
-			'text_list' => 'text_list',
-			'background' => 'background',
+			'key_value'     => 'key_value',
+			'text_list'     => 'text_list',
+			'background'    => 'background',
 		];
 
 		$field_type = $matches[ $field_type ] ?? 'text';

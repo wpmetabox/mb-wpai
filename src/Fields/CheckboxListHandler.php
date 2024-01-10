@@ -7,5 +7,4 @@ namespace MetaBox\WPAI\Fields;
  * to extends from FieldHandler class instead of CheckboxHandler
  */
 class CheckboxListHandler extends FieldHandler {
-    //
 }
