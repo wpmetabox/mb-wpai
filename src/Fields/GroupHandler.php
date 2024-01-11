@@ -59,7 +59,7 @@ class GroupHandler extends FieldHandler {
 
 			foreach ( $xpaths as $xpath ) {
 				$xpath_tree = $this->build_xpaths_tree( $xpath );
-				$output = array_merge( $output, $xpath_tree );
+				$output     = array_merge( $output, $xpath_tree );
 			}
 
 			$output = $this->get_tree_value( $output );
@@ -159,8 +159,8 @@ class GroupHandler extends FieldHandler {
 		}
 
 		$ini += strlen( $start );
-		$len = strpos( $string, $end, $ini ) - $ini;
-		$str = substr( $string, $ini, $len );
+		$len  = strpos( $string, $end, $ini ) - $ini;
+		$str  = substr( $string, $ini, $len );
 
 		if ( $str === '.' ) {
 			return '';

@@ -14,6 +14,6 @@ $fieldset_text_field = array_merge( $field, [
 $fieldset_text_fields = \RW_Meta_Box::normalize_fields( [ $fieldset_text_field ] );
 RWMB_Field::call( 'show', $fieldset_text_fields[0], false );
 
-if ($wpai_attr['reference'] !== false): ?>
+if ( $wpai_attr['reference'] !== false ) : ?>
 	<input type="hidden" name="fields[<?= esc_attr( $field['id'] ) ?>][reference]" value="<?= esc_attr( $wpai_attr['reference'] ?? '' ) ?>" />
 <?php endif; ?>

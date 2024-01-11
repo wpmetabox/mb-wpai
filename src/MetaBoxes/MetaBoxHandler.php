@@ -67,7 +67,6 @@ class MetaBoxHandler implements MetaBoxInterface {
 			$field['_wpai'] = $wpai_attr;
 		}
 
-
 		$handler   = $this;
 		$view_path = $this->get_view_path( $field['type'] );
 
@@ -120,7 +119,7 @@ class MetaBoxHandler implements MetaBoxInterface {
 
 				// Find field by reference id (dot notation)
 				$field = $this->find_field( $this->meta_box->meta_box['fields'], $reference );
-				
+
 				// Create field instance to handle the import
 				if ( $field ) {
 					$field['_wpai']     = $value;

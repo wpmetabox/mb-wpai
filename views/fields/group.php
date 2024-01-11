@@ -33,7 +33,7 @@ $clone        = $field['clone'] ?? false;
 					$child['_id']   = $field['_id'] . '[' . $index . '][' . $child['id'] . ']';
 					$child['std']   = $wpai_attr['xpath'][ $index ][ $child['id'] ] ?? '';
 					$child['_wpai'] = [
-						'xpath' => $wpai_attr['xpath'][ $index ][ $child['id'] ] ?? null,
+						'xpath'     => $wpai_attr['xpath'][ $index ][ $child['id'] ] ?? null,
 						'reference' => false,
 					];
 					$handler->render_field( $child );
@@ -48,7 +48,7 @@ $clone        = $field['clone'] ?? false;
 			<a href="#" class="rwmb-button button-primary add-clone">+ Add more</a>
 		<?php endif; ?>
 	</div>
-	<?php if ($wpai_attr['reference'] !== false): ?>
+	<?php if ( $wpai_attr['reference'] !== false ) : ?>
 		<input type="hidden" name="fields[<?= esc_attr( $field['id'] ) ?>][reference]" value="<?= esc_attr( $wpai_attr['reference'] ?? '' ) ?>" />
 	<?php endif; ?>
 </div>
