@@ -2,10 +2,10 @@
 // This file isn't included in the code base, but is used for testing purposes.
 // Copy contents of this file to functions.php in the theme directory.
 add_filter( 'rwmb_meta_boxes', function ($meta_boxes) {
-	// Movie meta box with cloneable fields
+	// Product meta box with cloneable fields
 	$meta_boxes[] = [ 
-		'id' => 'movie-detail',
-		'title' => 'Movie Detail',
+		'id' => 'product-detail',
+		'title' => 'Product Detail',
 		'fields' => [
 			[
 				'id' => 'description',
