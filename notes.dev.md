@@ -45,7 +45,7 @@ wp db query "TRUNCATE TABLE xp_posts; TRUNCATE TABLE xp_pmxi_posts;"
 ```
 
 ### XPath Guide
-To test the xpath, try this tool [http://xpather.com/](http://xpather.com/)
+To test the xpath, try using either the tool [http://xpather.com/](http://xpather.com/) or [https://extendsclass.com/xpath-tester.html](https://extendsclass.com/xpath-tester.html)
 
 Some useful xpath related to the example:
 - `casts[1]/cast/name[1]` - Get first cast name.
